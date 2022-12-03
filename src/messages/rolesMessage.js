@@ -65,7 +65,7 @@ const secondRolesMessages = async (channel) => {
         `<@&${readingRoleid}>: Vamos ler a obra dos membros presentes, apresentando um feedback ao fim. O foco é a história e não a gramática!\n\n` +
         `<@&${drawRoleid}>: Evento semanal para desenhar sobre temas escolhidos. Livre a todos sem exigência de habilidade.\n\n` +
         `<@&${creativeRoleid}>: O membro deve fazer um texto todo dia usando como referência as imagens e textos postados pelos membros da staff.\n\n` +
-        `<@&${novelClubRoleid}>: `
+        `<@&${novelClubRoleid}>: Uma conversa descontraída sobre um tema que será informado no fixado do Eventos.`
     );
 
   const row = new ActionRowBuilder().addComponents(
@@ -73,7 +73,7 @@ const secondRolesMessages = async (channel) => {
       .setCustomId("select-roles")
       .setPlaceholder("Selecione uma ou mais opções!")
       .setMinValues(0)
-      .setMaxValues(3)
+      .setMaxValues(4)
       .addOptions([
         {
           label: "Leitura Interativa",
@@ -91,6 +91,12 @@ const secondRolesMessages = async (channel) => {
           description:
             "O membro deve fazer um texto todo dia usando como referência as imagens e textos do chat.",
           value: "creative",
+        },
+        {
+          label: "Clube da Novel",
+          description:
+            "Uma conversa descontraída sobre um tema que será informado no fixado do Eventos.",
+          value: "novel-club",
         },
       ])
   );

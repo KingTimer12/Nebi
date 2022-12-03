@@ -38,6 +38,7 @@ module.exports = {
       const readingId = await getter(guildId, "role", "interactive-reading");
       const drawId = await getter(guildId, "role", "draw-week");
       const creativeId = await getter(guildId, "role", "creative");
+      const novelClubId = await getter(guildId, "role", "novel-club");
 
       let selecteds = [];
       let removeds = [];
@@ -46,6 +47,7 @@ module.exports = {
         (role) => role.id === readingId
       );
       const drawRole = guild.roles.cache.find((role) => role.id === drawId);
+      const novelClubRole = guild.roles.cache.find((role) => role.id === novelClubId);
       const creativeRole = guild.roles.cache.find(
         (role) => role.id === creativeId
       );
@@ -54,6 +56,7 @@ module.exports = {
         member.roles.remove(readingRole);
         member.roles.remove(drawRole);
         member.roles.remove(creativeRole);
+        member.roles.remove(novelClubRole);
         return interaction.reply({
           content: `Todos os cargos de anúncio foram retirados.`,
           ephemeral: true,
@@ -71,6 +74,19 @@ module.exports = {
       ) {
         member.roles.remove(readingRole);
         removeds.push(readingId);
+      }
+
+      if (values.includes("novel-club")) {
+        if (member.roles.cache.get(novelClubId) == undefined) {
+          member.roles.add(novelClubRole);
+          selecteds.push(novelClubId);
+        }
+      } else if (
+        member.roles.cache.get(novelClubId) !== undefined &&
+        !selecteds.includes(novelClubId)
+      ) {
+        member.roles.remove(novelClubRole);
+        removeds.push(novelClubId);
       }
 
       if (values.includes("draw")) {
