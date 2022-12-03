@@ -2,11 +2,11 @@ const { google } = require("googleapis");
 require('dotenv').config()
 
 const service = google.sheets("v4");
-const credentials = require("../../credentials.json");
+//const credentials = require("../../credentials.json");
 const authClient = new google.auth.JWT(
-    credentials.client_email,
+    process.env.CLIENT_EMAIL,
     null,
-    credentials.private_key.replace(/\\n/g, "\n"),
+    process.env.PRIVATE_KEY.replace(/\\n/g, "\n"),
     ["https://www.googleapis.com/auth/spreadsheets"]
 );
 const id = process.env.SPREADSHEETID
