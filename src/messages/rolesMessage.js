@@ -61,11 +61,11 @@ const secondRolesMessages = async (channel) => {
     .setDescription(
       "A Novel Brasil realiza alguns eventos, sejam mensais, semanais ou diários. " +
         "Esses são os cargos que precisa para ser marcado quando o evento ocorre, " +
-        "basta **SELECIONE AS OPÇÕES** correspondente ao cargo que deseja.\n\n" +
+        "basta **SELECIONAR A OPÇÃO** correspondente ao cargo que deseja.\n\n" +
         `<@&${readingRoleid}>: Vamos ler a obra dos membros presentes, apresentando um feedback ao fim. O foco é a história e não a gramática!\n\n` +
         `<@&${drawRoleid}>: Evento semanal para desenhar sobre temas escolhidos. Livre a todos sem exigência de habilidade.\n\n` +
         `<@&${creativeRoleid}>: O membro deve fazer um texto todo dia usando como referência as imagens e textos postados pelos membros da staff.\n\n` +
-        `<@&${novelClubRoleid}>: Uma conversa descontraída sobre um tema que será informado no fixado do Eventos.`
+        `<@&${novelClubRoleid}>: Uma conversa descontraída sobre um tema que será informado no anúncio do Evento.`
     );
 
   const row = new ActionRowBuilder().addComponents(
@@ -80,23 +80,27 @@ const secondRolesMessages = async (channel) => {
           description:
             "Vamos ler a obra dos membros presentes, apresentando um feedback ao fim.",
           value: "reading",
+          emoji: '📖'
         },
         {
           label: "Desenho da Semana",
           description: "Evento semanal para desenhar sobre temas escolhidos.",
           value: "draw",
+          emoji: '🖌'
         },
         {
           label: "Criativo",
           description:
             "O membro deve fazer um texto todo dia usando como referência as imagens e textos do chat.",
           value: "creative",
+          emoji: '🎨'
         },
         {
           label: "Clube da Novel",
           description:
             "Uma conversa descontraída sobre um tema que será informado no fixado do Eventos.",
           value: "novel-club",
+          emoji: '📚'
         },
       ])
   );
