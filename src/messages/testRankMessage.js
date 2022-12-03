@@ -62,7 +62,6 @@ const buttonFinalMessages = async (channel) => {
 
   const row = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
-      .setCustomId("registration")
       .setLabel("FAZER A MATRÍCULA")
       .setURL("https://forms.gle/mMVGaSrvxxFvr3u49")
       .setStyle(ButtonStyle.Link)
