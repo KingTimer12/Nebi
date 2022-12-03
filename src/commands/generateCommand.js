@@ -6,6 +6,7 @@ const {
   fourthMessages,
 } = require("../messages/howWorksMessage");
 const { firstRolesMessages, secondRolesMessages } = require("../messages/rolesMessage");
+const { firstRankMessages, buttonFinalMessages } = require("../messages/testRankMessage");
 const { getter } = require("../utils/firebaseApi");
 require("dotenv").config();
 
@@ -46,8 +47,14 @@ module.exports = {
 
     if (name === "roles") {
       const embednumber = options.get("embed-number").value;
-      if (embednumber == "1") firstRolesMessages(channel);
-      if (embednumber == "2") secondRolesMessages(channel);
+      if (embednumber == "1") secondRolesMessages(channel);
+      if (embednumber == "2") firstRolesMessages(channel);
+    }
+
+    if (name === "roles") {
+      const embednumber = options.get("embed-number").value;
+      if (embednumber == "1") firstRankMessages(channel);
+      if (embednumber == "2") buttonFinalMessages(channel);
     }
 
     interaction.reply({
