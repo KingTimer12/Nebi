@@ -21,9 +21,9 @@ const firstRankMessages = async (channel) => {
     .setTitle("Como funcionam as tutorias?")
     .setDescription(
       "A tutoria ocorre com um contato direto entre o tutorando (membro que decidiu fazer sua matrícula) " +
-      "e os tutores (membros que já atingiram “classes” mais altas e querem ajudar), " +
-      "podendo ocorrer no chat de tutoria (liberado apenas para membros matriculados), " +
-      "nas mensagens privadas entre tutor e tutorando, e em calls privadas.\n\n" +
+        "e os tutores (membros que já atingiram “classes” mais altas e querem ajudar), " +
+        "podendo ocorrer no chat de tutoria (liberado apenas para membros matriculados), " +
+        "nas mensagens privadas entre tutor e tutorando, e em calls privadas.\n\n" +
         "Existem três formas de tutoria: tutoria, correção de exercícios e _close reading_ (para tutorando+). " +
         "A tutoria começa em um momento anterior ao encontro tutorando-tutor, o tutorando deve escrever um texto que será avaliado (apontar erros gramaticais e narrativos de acordo com a Classe do tutorando) pelo tutor durante o encontro. " +
         "A correção de exercício foi criada para aqueles estudantes que não podem escrever toda semana, nesses casos serão passadas atividades com o conteúdo da classe. O _close reading_ é um extra para os tutorandos+, o tutor irá ler e comentar sobre seu texto (parecido com um beta reader, mas de forma mais profunda).\n\n" +
@@ -33,18 +33,26 @@ const firstRankMessages = async (channel) => {
     .setColor(redHex)
     .setTitle("O que são as Classes?")
     .setDescription(
-      "As Classes foram a forma que estruturamos e dividimos o ensinamento do nosso currículo por turmas. "+
-      "A Novel Brasil acredita que para o desenvolvimento de um bom escritor é necessário não apenas o conhecimento narrativo, mas também o seu aprimoramento na gramática.\n\n" +
-
-      "Nosso currículo abrange essas duas áreas e as Classes servem nada mais como forma de organizar esses conteúdos e ensinar ao estudante de uma forma didática, "+
-      "realista e ordenada. Existem ao total 7 Classes (F, E, D, C, B, A e S) e cada uma possui seus requisitos de entrada e avaliações para sua conclusão.\n\n" +
-
-      "Deve-se deixar claro que as classes não servem para nivelamento de escritores. " +
-      "Ter uma Classe maior não significa que sua história é melhor do que a de um autor de Classe menor. " +
-      "Usamos as classes como uma forma de saber qual conteúdo o autor está estudando, o que ainda precisa estudar e o que já estudou."
+      "As Classes foram a forma que estruturamos e dividimos o ensinamento do nosso currículo por turmas. " +
+        "A Novel Brasil acredita que para o desenvolvimento de um bom escritor é necessário não apenas o conhecimento narrativo, mas também o seu aprimoramento na gramática.\n\n" +
+        "Nosso currículo abrange essas duas áreas e as Classes servem nada mais como forma de organizar esses conteúdos e ensinar ao estudante de uma forma didática, " +
+        "realista e ordenada. Existem ao total 7 Classes (F, E, D, C, B, A e S) e cada uma possui seus requisitos de entrada e avaliações para sua conclusão.\n\n" +
+        "Deve-se deixar claro que as classes não servem para nivelamento de escritores. " +
+        "Ter uma Classe maior não significa que sua história é melhor do que a de um autor de Classe menor. " +
+        "Usamos as classes como uma forma de saber qual conteúdo o autor está estudando, o que ainda precisa estudar e o que já estudou."
     );
 
-  await channel.send({ embeds: [embedIntro, embed1, embed2] });
+  const embed3 = new EmbedBuilder()
+    .setColor(redHex)
+    .setTitle("O que a Novel Brasil ganha com isso?")
+    .setDescription(
+      "Entrar na tutoria é gratuito! " +
+      "Somos uma comunidade que preza pelo crescimento do gênero webnovel e light novel, então o membro pode aproveitar e participar de nossas aulas e eventos sem precisar pagar nada.\n\n" +
+      "Porém, eventos, produção e edição de vídeos, artigos, busca por novos apoiadores, tudo isso custa dinheiro. " +
+      "E, por conta disso, decidimos que com um valor simbólico de R$ 5, que não pretendemos aumentar, você fará parte da tutoria+, onde você nos ajuda com essa pequena quantia e ainda consegue benefícios básicos da Novel Brasil."
+    );
+
+  await channel.send({ embeds: [embedIntro, embed1, embed2, embed3] });
 };
 
 const buttonFinalMessages = async (channel) => {
@@ -57,8 +65,10 @@ const buttonFinalMessages = async (channel) => {
         "para a quantidade de membros que desejam entrar na tutoria. " +
         "Por causa disso decidimos limitar a quantidade de vagas (20) e abri-las apenas sazonalmente (no começo de cada estação/a cada três meses), " +
         "dessa forma podemos controlar melhor a entrada de novos tutorandos e atender todos.\n\n" +
-        "Caso deseje fazer a matrícula, clique no botão abaixo."
-    );
+        "Clique no botão abaixo para abrir o formulário."
+    )
+    .setTimestamp()
+    .setFooter({ text: "Atenciosamente, Coordenação da Novel Brasil" });
 
   const row = new ActionRowBuilder().addComponents(
     new ButtonBuilder()
@@ -70,4 +80,4 @@ const buttonFinalMessages = async (channel) => {
   await channel.send({ embeds: [embed], components: [row] });
 };
 
-module.exports = {firstRankMessages, buttonFinalMessages}
+module.exports = { firstRankMessages, buttonFinalMessages };
