@@ -37,25 +37,57 @@ module.exports = {
     const name = options.get("id-name").value;
     const genericId = await getter(guildId, "channel", name);
     const channel = guild.channels.cache.find((chn) => chn.id === genericId);
+    var error = false
 
     if (name === "how-works") {
       const embednumber = options.get("embed-number").value;
-      if (embednumber == "1") firstMessages(channel);
-      if (embednumber == "2") secondsMessages(channel);
-      if (embednumber == "3") thirdMessages(channel);
-      if (embednumber == "4") fourthMessages(channel);
+      if (embednumber == "1") firstMessages(channel).catch(err => {
+        console.log(err.rawError.message)
+        error = true
+      });
+      if (embednumber == "2") secondsMessages(channel).catch(err => {
+        console.log(err.rawError.message)
+        error = true
+      });
+      if (embednumber == "3") thirdMessages(channel).catch(err => {
+        console.log(err.rawError.message)
+        error = true
+      });
+      if (embednumber == "4") fourthMessages(channel).catch(err => {
+        console.log(err.rawError.message)
+        error = true
+      });
     }
 
     if (name === "roles") {
       const embednumber = options.get("embed-number").value;
-      if (embednumber == "1") secondRolesMessages(channel);
-      if (embednumber == "2") firstRolesMessages(channel);
+      if (embednumber == "1") secondRolesMessages(channel).catch(err => {
+        console.log(err.rawError.message)
+        error = true
+      });
+      if (embednumber == "2") firstRolesMessages(channel).catch(err => {
+        console.log(err.rawError.message)
+        error = true
+      });
     }
 
     if (name === "rank") {
       const embednumber = options.get("embed-number").value;
-      if (embednumber == "1") firstRankMessages(channel);
-      if (embednumber == "2") buttonFinalMessages(channel);
+      if (embednumber == "1") firstRankMessages(channel).catch(err => {
+        console.log(err.rawError.message)
+        error = true
+      });
+      if (embednumber == "2") buttonFinalMessages(channel).catch(err => {
+        console.log(err.rawError.message)
+        error = true
+      });
+    }
+
+    if (error == true) {
+      return interaction.reply({
+        content: "Ocorreu um erro ao executar o comando.",
+        ephemeral: true,
+      });
     }
 
     interaction.reply({

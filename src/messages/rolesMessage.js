@@ -45,7 +45,7 @@ const firstRolesMessages = async (channel) => {
       ])
   );
 
-  await channel.send({ embeds: [embed1], components: [row] });
+  return await channel.send({ embeds: [embed1], components: [row] });
 };
 
 const secondRolesMessages = async (channel) => {
@@ -105,7 +105,7 @@ const secondRolesMessages = async (channel) => {
       ])
   );
 
-  await channel.send({ embeds: [embed1], components: [row] });
+  return await channel.send({ embeds: [embed1], components: [row] });
 };
 
 module.exports = {

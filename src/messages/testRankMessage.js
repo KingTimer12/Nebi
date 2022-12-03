@@ -52,7 +52,7 @@ const firstRankMessages = async (channel) => {
       "E, por conta disso, decidimos que com um valor simbólico de R$ 5, que não pretendemos aumentar, você fará parte da tutoria+, onde você nos ajuda com essa pequena quantia e ainda consegue benefícios básicos da Novel Brasil."
     );
 
-  await channel.send({ embeds: [embedIntro, embed1, embed2, embed3] });
+  return await channel.send({ embeds: [embedIntro, embed1, embed2, embed3] });
 };
 
 const buttonFinalMessages = async (channel) => {
@@ -77,7 +77,7 @@ const buttonFinalMessages = async (channel) => {
       .setStyle(ButtonStyle.Link)
   );
 
-  await channel.send({ embeds: [embed], components: [row] }).error((e) => e);
+  return await channel.send({ embeds: [embed], components: [row] });
 };
 
 module.exports = { firstRankMessages, buttonFinalMessages };

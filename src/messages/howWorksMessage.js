@@ -33,7 +33,7 @@ const firstMessages = async (channel) => {
       "Os vencedores dos eventos aparecem em <#902684183518937138> e estão marcados para sempre na história da Novel Brasil!"
     );
 
-  await channel.send({ files: [events], embeds: [embed1, embed2, embed3] });
+  return await channel.send({ files: [events], embeds: [embed1, embed2, embed3] });
 };
 
 const secondsMessages = async (channel) => {
@@ -43,7 +43,7 @@ const secondsMessages = async (channel) => {
       "Caso deseje ficar sempre informado sobre o que está acontecendo na Novel Brasil, sigam e fiquem atentos ao canal <#823997834973806653>"
     );
 
-  await channel.send({ files: [announcement], embeds: [embed] });
+  return await channel.send({ files: [announcement], embeds: [embed] });
 };
 
 const thirdMessages = async (channel) => {
@@ -129,7 +129,7 @@ const thirdMessages = async (channel) => {
       "**13.** Devido a problemas antecedentes, decidimos estipular a idade mínima de 14 anos para que possam se matricular na tutoria (o tutor poderá retirar o membro mais novo caso seja descoberto);"
     );
   //new Promise((resolve) => setTimeout(resolve, 200));
-  await channel.send({
+  return await channel.send({
     files: [rule],
     embeds: [embed1, embed2, embed3, embed4, embed5, embed6, embed7],
   });
@@ -156,7 +156,7 @@ const fourthMessages = async (channel) => {
 					.setStyle(ButtonStyle.Secondary),
 			);
 
-  await channel.send({ embeds: [embed], components: [row] });
+  return await channel.send({ embeds: [embed], components: [row] });
 };
 
 module.exports = {

@@ -9,7 +9,7 @@ const activities = [
 module.exports = {
   async createEvent(client) {
     console.log("Bot ready!");
-    
+
     client.user.setActivity({ type: ActivityType.Playing, name: 'meu jogo!' })
     setInterval(() => {
       const randomActivity = activities[Math.floor(Math.random() * activities.length)];
