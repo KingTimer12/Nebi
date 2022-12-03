@@ -21,7 +21,8 @@ module.exports = {
         .setRequired(true)
         .addChoices(
           { name: "Cargos", value: "roles" },
-          { name: "Como funciona", value: "how-works" }
+          { name: "Como funciona", value: "how-works" },
+          { name: "Classes", value: "rank" }
         )
     )
     .addStringOption((option) =>
