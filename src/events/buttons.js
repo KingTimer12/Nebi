@@ -1,4 +1,4 @@
-const { getter } = require("../utils/firebaseApi");
+const { getter } = require("../utils/firebaseGuildApi");
 
 module.exports = {
   async createEvent(interaction) {

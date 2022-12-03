@@ -350,6 +350,6 @@ MigrationBackup/
 .ionide/
 
 .env
-managers/
+firebaseManager.js
 Nebi.zip
 credentials.json

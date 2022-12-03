@@ -5,6 +5,7 @@ const events = {
     "newMember.js": "guildMemberAdd",
     "slashCreate.js": "interactionCreate",
     "buttons.js": "interactionCreate",
+    "leaveMember.js": "guildMemberRemove",
     "selectMenu.js": "interactionCreate"
 }
 

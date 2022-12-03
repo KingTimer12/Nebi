@@ -1,5 +1,5 @@
 const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
-const { getter } = require("../utils/firebaseApi");
+const { getter } = require("../utils/firebaseGuildApi");
 
 const events =
   "https://cdn.discordapp.com/attachments/905904400902537288/1029059110177624064/eventos_1.png";

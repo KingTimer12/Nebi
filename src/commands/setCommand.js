@@ -1,5 +1,5 @@
 const { SlashCommandBuilder } = require("discord.js");
-const { setter } = require("../utils/firebaseApi");
+const { setter } = require("../utils/firebaseGuildApi");
 require("dotenv").config();
 
 module.exports = {
@@ -15,7 +15,6 @@ module.exports = {
         .setRequired(true)
         .addChoices(
           { name: "Canal", value: "channel" },
-          { name: "Emoji", value: "emoji" },
           { name: "Cargo", value: "role" }
         )
     )
@@ -27,6 +26,7 @@ module.exports = {
         .addChoices(
           { name: "Cargos", value: "roles" },
           { name: "Como funciona", value: "how-works" },
+          { name: "Fórum", value: "forum" },
           { name: "Classe", value: "rank" },
           { name: "Leitura Interativa", value: "interactive-reading" },
           { name: "Desenho da Semana", value: "draw-week" },
@@ -42,7 +42,7 @@ module.exports = {
       option
         .setName("id")
         .setDescription(
-          "O id em snowflake do emoji/canal/cargo para armazenar no banco de dados."
+          "O id em snowflake do tag/canal/cargo para armazenar no banco de dados."
         )
         .setRequired(true)
     ),
@@ -50,16 +50,14 @@ module.exports = {
   dev: true,
 
   async execute(interaction) {
-    const { guild, options, guildId } = interaction;
+    const { options, guildId } = interaction;
     const type = options.get("type").value;
     const name = options.get("id-name").value;
     const genericId = options.get("id").value;
     await setter(guildId, type, name, genericId);
-    let markResult = `<#${genericId}> foi gerado e`;
+    let markResult = `<#${genericId}> foi`;
     if (type == "role") {
       markResult = `<@&${genericId}> foi`;
-    } else if (type == "emoji") {
-      markResult = `(${genericId}) foi`;
     }
     interaction.reply({
       content: `O ${markResult} adicionado no banco de dados!`,

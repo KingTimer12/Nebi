@@ -9,6 +9,7 @@ const authClient = new google.auth.JWT(
     process.env.PRIVATE_KEY.replace(/\\n/g, "\n"),
     ["https://www.googleapis.com/auth/spreadsheets"]
 );
+
 const id = process.env.SPREADSHEETID
 const range = 'Respostas ao formulário 1'
 
