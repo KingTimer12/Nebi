@@ -52,7 +52,7 @@ module.exports = {
       if (embednumber == "2") firstRolesMessages(channel);
     }
 
-    if (name === "roles") {
+    if (name === "rank") {
       const embednumber = options.get("embed-number").value;
       if (embednumber == "1") firstRankMessages(channel);
       if (embednumber == "2") buttonFinalMessages(channel);
