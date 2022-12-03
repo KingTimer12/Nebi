@@ -352,3 +352,4 @@ MigrationBackup/
 .env
 managers/
 Nebi.zip
+credentials.json

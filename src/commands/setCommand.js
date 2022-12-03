@@ -41,21 +41,25 @@ module.exports = {
     .addStringOption((option) =>
       option
         .setName("id")
-        .setDescription("O id em snowflake do emoji/canal/cargo para armazenar no banco de dados.")
+        .setDescription(
+          "O id em snowflake do emoji/canal/cargo para armazenar no banco de dados."
+        )
         .setRequired(true)
     ),
+
+  dev: true,
 
   async execute(interaction) {
     const { guild, options, guildId } = interaction;
     const type = options.get("type").value;
     const name = options.get("id-name").value;
     const genericId = options.get("id").value;
-    await setter(guildId, type, name, genericId)
-    let markResult = `<#${genericId}> foi gerado e`
-    if (type == 'role') {
-      markResult = `<@&${genericId}> foi`
-    } else if (type == 'emoji') {
-      markResult = `(${genericId}) foi`
+    await setter(guildId, type, name, genericId);
+    let markResult = `<#${genericId}> foi gerado e`;
+    if (type == "role") {
+      markResult = `<@&${genericId}> foi`;
+    } else if (type == "emoji") {
+      markResult = `(${genericId}) foi`;
     }
     interaction.reply({
       content: `O ${markResult} adicionado no banco de dados!`,
