@@ -77,7 +77,7 @@ const buttonFinalMessages = async (channel) => {
       .setStyle(ButtonStyle.Link)
   );
 
-  await channel.send({ embeds: [embed], components: [row] });
+  await channel.send({ embeds: [embed], components: [row] }).error((e) => e);
 };
 
 module.exports = { firstRankMessages, buttonFinalMessages };
