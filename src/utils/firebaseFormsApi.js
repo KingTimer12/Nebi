@@ -15,19 +15,6 @@ const hasSent = async (userId) => {
 };
 
 //Pegar o id da mensagem para sobrescrever
-const getMessageId = async (userId) => {
-  const dbRef = ref(db());
-  let messageId = "";
-  await get(child(dbRef, `Forms/${userId}`)).then(async (snapshot) => {
-    if (snapshot.exists()) {
-      messageId = await snapshot.val().messageId;
-    }
-  });
-  new Promise((resolve) => setTimeout(resolve, 150));
-  return messageId;
-};
-
-//Pegar o id da mensagem para sobrescrever
 const getAnswer = async (userId) => {
   const dbRef = ref(db());
   let messageId = "";
@@ -53,14 +40,13 @@ const getData = async (userId) => {
   return data;
 };
 
-const sendApp = async (userId, messageId, data, answer) => {
+const sendApp = async (userId, data, answer) => {
   const dbRef = ref(db());
   await set(child(dbRef, `Forms/${userId}`), {
     stats: "true",
-    messageId: messageId,
     data: data,
     answer: answer,
   });
 };
 
-module.exports = { hasSent, sendApp, getData, getAnswer, getMessageId };
+module.exports = { hasSent, sendApp, getData, getAnswer };
