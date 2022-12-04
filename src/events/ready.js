@@ -24,11 +24,11 @@ module.exports = {
       add(rows.name, rows.id)
     }
 
-    await checking(client, forumChannel, guild.id)
+    await checking(guild, forumChannel)
 
     setInterval(async () => {
-      await checking(client, guild, guild.id)
-    }, 10 * 60 * 1000);
+      await checking(guild, forumChannel)
+    }, 30 * 1000);
 
     client.user.setActivity({ type: ActivityType.Playing, name: 'meu jogo!' })
     setInterval(() => {
