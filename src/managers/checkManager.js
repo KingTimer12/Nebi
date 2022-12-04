@@ -1,6 +1,10 @@
 require("dotenv").config();
 const { listValues } = require("../utils/googleApi.js");
-const { sendApp, getData } = require("../utils/firebaseFormsApi");
+const {
+  sendApp,
+  getData,
+  getMessagesId,
+} = require("../utils/firebaseFormsApi");
 const { toCompare } = require("../utils/timerApi.js");
 const {
   mainMessagesForum,
@@ -10,6 +14,7 @@ const {
   thirdMessagesForum,
 } = require("../messages/forumAppMessage.js");
 const { array } = require("./forumManager.js");
+let arrayTemporary = []
 
 const createFormat = async (guild, row, forumChannel) => {
   const dataNowValue = row[0];
@@ -34,13 +39,15 @@ const createFormat = async (guild, row, forumChannel) => {
     (thread) => thread.name == user.tag.replace("#", "")
   );
 
-  let overwrite = topicThread != undefined;
+  let overwrite = topicThread != undefined || arrayTemporary.includes(user.id);
 
   if (overwrite == true) {
     const dataOldValue = await getData(user.id);
     if (toCompare(dataOldValue, dataNowValue) == true) {
       overwrite = undefined;
     }
+  } else {
+    arrayTemporary.push(user.id)
   }
 
   answers.push({
@@ -76,6 +83,8 @@ const checkForms = async (guild, list, forumChannel) => {
 };
 
 const checking = async (guild, forumChannel) => {
+  if (forumChannel == undefined) return;
+  if (guild == undefined) return;
   console.log("CHECKING FORMS...");
   const list = await listValues();
   const questions = list[0];
@@ -86,33 +95,32 @@ const checking = async (guild, forumChannel) => {
   if (answers.length) {
     for (const row of answers) {
       const userId = row.userId;
-      
-      if (row.overwrite == undefined) continue;
 
+      if (row.overwrite == undefined) continue;
+      const nickname = row.answer[2].replace("#", "");
       if (row.overwrite == true) {
         //overwrite existing thread
-        const topicThread = forumChannel.threads.cache.find(
-          (thread) => thread.name == row.answer[2].replace("#", "")
+        const topicThread = await forumChannel.threads.cache.find(
+          (thread) => thread.name == nickname
         );
         if (topicThread == undefined) continue;
-        const msgIds = threadChannel.messages.cache
-          .filter((msg) => msg.author.id === process.env.BOT_ID)
-          .map((msg) => msg.id);
-        
-          await topicThread.messages.edit(msgIds.at(0), {
-            content: `<@!${userId}>`,
-            embeds: mainMessagesForum(userId, row.answer, row.data, questions),
-          })
-          await topicThread.messages.edit(msgIds.at(1), {
-            embeds: secondMessagesForum(row.answer, questions),
-          })
-          await topicThread.messages.edit(msgIds.at(2), {
-            embeds: thirdMessagesForum(row.answer, questions),
-          })
-          await topicThread.messages.edit(msgIds.at(4), {
-            embeds: lastMessagesForum(row.answer, questions)
-          })
-          await sendApp(userId, row.data)
+
+        const arrayMsgs = await getMessagesId(userId);
+
+        await topicThread.messages.edit(arrayMsgs.at(0), {
+          content: `<@!${userId}>`,
+          embeds: mainMessagesForum(userId, row.answer, row.data, questions),
+        });
+        await topicThread.messages.edit(arrayMsgs.at(1), {
+          embeds: secondMessagesForum(row.answer, questions),
+        });
+        await topicThread.messages.edit(arrayMsgs.at(2), {
+          embeds: thirdMessagesForum(row.answer, questions),
+        });
+        await topicThread.messages.edit(arrayMsgs.at(3), {
+          embeds: lastMessagesForum(row.answer, questions),
+        });
+        await sendApp(userId, row.data, arrayMsgs);
         continue;
       }
 
@@ -122,7 +130,7 @@ const checking = async (guild, forumChannel) => {
       }
       await forumChannel.threads
         .create({
-          name: `${row.answer[2]}`,
+          name: `${nickname}`,
           message: {
             content: `<@!${userId}>`,
             embeds: mainMessagesForum(userId, row.answer, row.data, questions),
@@ -130,7 +138,7 @@ const checking = async (guild, forumChannel) => {
           appliedTags: tagEmoji,
         })
         .then(async (threadChannel) => {
-          const msgIds = threadChannel.messages.cache
+          const msgURL = threadChannel.messages.cache
             .filter((msg) => msg.author.id === process.env.BOT_ID)
             .map((msg) => msg.url);
 
@@ -144,13 +152,19 @@ const checking = async (guild, forumChannel) => {
 
           await threadChannel.send({
             embeds: lastMessagesForum(row.answer, questions),
-            components: [buttonUpPageForum(`${msgIds.at(0)}`)],
+            components: [buttonUpPageForum(`${msgURL.at(0)}`)],
           });
 
-          await sendApp(userId, row.data);
+
+          const msgIds = threadChannel.messages.cache
+            .filter((msg) => msg.author.id === process.env.BOT_ID)
+            .map((msg) => msg.id);
+
+          await sendApp(userId, row.data, msgIds);
         });
     }
     answers = [];
+    arrayTemporary = []
   }
 };
 

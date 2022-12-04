@@ -6,7 +6,8 @@ const events = {
     "slashCreate.js": "interactionCreate",
     "buttons.js": "interactionCreate",
     "leaveMember.js": "guildMemberRemove",
-    "selectMenu.js": "interactionCreate"
+    "selectMenu.js": "interactionCreate",
+    "updateMember.js": "guildMemberUpdate"
 }
 
 module.exports = (client) => {
