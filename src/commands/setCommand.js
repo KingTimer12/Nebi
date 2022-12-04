@@ -31,8 +31,12 @@ module.exports = {
           { name: "Leitura Interativa", value: "interactive-reading" },
           { name: "Desenho da Semana", value: "draw-week" },
           { name: "Criativo", value: "creative" },
+
           { name: "Membro", value: "member" },
           { name: "Desenhista", value: "designer" },
+          { name: "Leitor", value: "reader" },
+          { name: "Escritor", value: "writer" },
+
           { name: "Registro", value: "register" },
           { name: "Divulgação Obras", value: "divulgation-works" },
           { name: "Clube da Novel", value: "novel-club" }

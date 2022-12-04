@@ -1,6 +1,10 @@
 const { InteractionType } = require("discord.js");
 
 module.exports = {
+  name: 'Slash Create',
+  event: 'interactionCreate',
+  once: false,
+  
   async createEvent(interaction, client) {
     const { user, type, commandName } = interaction;
     if (user.bot) return;

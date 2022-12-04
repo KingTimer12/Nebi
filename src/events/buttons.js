@@ -1,6 +1,10 @@
 const { getter } = require("../utils/firebaseGuildApi");
 
 module.exports = {
+  name: 'Buttons',
+  event: 'interactionCreate',
+  once: false,
+  
   async createEvent(interaction) {
     if (!interaction.isButton()) return;
     const { member, customId, guildId } = interaction;

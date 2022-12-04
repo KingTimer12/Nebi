@@ -2,8 +2,6 @@ const {
   EmbedBuilder,
   StringSelectMenuBuilder,
   ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle,
 } = require("discord.js");
 const { getter } = require("../utils/firebaseGuildApi");
 
@@ -19,13 +17,15 @@ const firstRolesMessages = async (channel) => {
       "Para finalizar o registro, selecione uma das opções abaixo!\n\n" +
         "`📚` ⬩ Escritor\n" +
         "`🎨` ⬩ Desenhista\n" +
-        "`🏃‍♂️` ⬩ Só de passagem\n"
+        "`📖` ⬩ Leitor\n"
     );
 
   const row = new ActionRowBuilder().addComponents(
     new StringSelectMenuBuilder()
       .setCustomId("select-roles-main")
       .setPlaceholder("Selecione uma opção")
+      .setMinValues(1)
+      .setMaxValues(3)
       .addOptions([
         {
           label: "Escritor",
@@ -38,9 +38,9 @@ const firstRolesMessages = async (channel) => {
           emoji: "🎨",
         },
         {
-          label: "Só de passagem",
-          value: "member",
-          emoji: "🏃‍♂️",
+          label: "Leitor",
+          value: "reader",
+          emoji: "📖",
         },
       ])
   );

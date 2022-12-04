@@ -11,6 +11,10 @@ const activities = [
 ]
 
 module.exports = {
+  name: 'Ready',
+  event: 'ready',
+  once: true,
+
   async createEvent(client) {
     console.log("Bot ready!");
 

@@ -4,6 +4,10 @@ const { getter } = require('../utils/firebaseGuildApi');
 require('dotenv').config()
 
 module.exports = {
+  name: 'Leave Member',
+  event: 'guildMemberRemove',
+  once: false,
+  
   async createEvent(member) {
     if (member.bot) return;
     const guild = member.guild
