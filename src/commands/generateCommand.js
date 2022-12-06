@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require("discord.js");
+const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 const {
   firstMessages,
   secondsMessages,
@@ -36,7 +36,7 @@ module.exports = {
         .setName("embed-number")
         .setDescription("Digite o número do embed.")
         .setRequired(false)
-    ),
+    ).setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
 
   dev: true,
 

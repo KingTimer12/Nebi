@@ -14,7 +14,7 @@ const firstRolesMessages = async (channel) => {
     .setColor("Aqua")
     .setTitle("FINALIZAÇÃO")
     .setDescription(
-      "Para finalizar o registro, selecione uma das opções abaixo!\n\n" +
+      "Para finalizar o registro, selecione uma ou mais das opções abaixo!\n\n" +
         "`📚` ⬩ Escritor\n" +
         "`🎨` ⬩ Desenhista\n" +
         "`📖` ⬩ Leitor\n"
@@ -23,7 +23,7 @@ const firstRolesMessages = async (channel) => {
   const row = new ActionRowBuilder().addComponents(
     new StringSelectMenuBuilder()
       .setCustomId("select-roles-main")
-      .setPlaceholder("Selecione uma opção")
+      .setPlaceholder("Selecione uma ou mais opções!")
       .setMinValues(1)
       .setMaxValues(3)
       .addOptions([

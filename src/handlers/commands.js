@@ -21,16 +21,17 @@ module.exports = async (client) => {
   try {
     console.log("Loading application commands...");
     if (publicCommand.length) {
-      await rest.put(Routes.applicationCommands(process.env.BOT_ID), {
+      const data = await rest.put(Routes.applicationCommands(process.env.BOT_ID), {
         body: publicCommand,
       });
+      console.log(`Successfully reloaded ${data.length} application (/) public commands.`);
     }
     if (privateCommand.length) {
-      await rest.put(Routes.applicationCommands(process.env.BOT_ID, process.env.GUILD_ID), {
+      const data = await rest.put(Routes.applicationGuildCommands(process.env.BOT_ID, process.env.GUILD_ID), {
         body: privateCommand,
       });
+      console.log(`Successfully reloaded ${data.length} application (/) private commands.`);
     }
-    console.log("Application commands loaded");
   } catch (error) {
     console.error(error);
   }

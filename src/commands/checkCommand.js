@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require("discord.js");
+const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 const { getter } = require("../utils/firebaseGuildApi.js");
 const { checkSheetTitle } = require("../utils/googleApi.js");
 require("dotenv").config();
@@ -18,7 +18,7 @@ module.exports = {
           { name: "Sheets", value: "sheets" },
           { name: "Tags", value: "tag" }
         )
-    ),
+    ).setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
 
   dev: true,
 

@@ -4,6 +4,8 @@ const {
   sendApp,
   getData,
   getMessagesId,
+  has,
+  getTag,
 } = require("../utils/firebaseFormsApi");
 const { toCompare } = require("../utils/timerApi.js");
 const {
@@ -14,7 +16,7 @@ const {
   thirdMessagesForum,
 } = require("../messages/forumAppMessage.js");
 const { array } = require("./forumManager.js");
-let arrayTemporary = []
+let arrayTemporary = [];
 
 const createFormat = async (guild, row, forumChannel) => {
   const dataNowValue = row[0];
@@ -35,19 +37,29 @@ const createFormat = async (guild, row, forumChannel) => {
     answer.push(row[i]);
   }
 
-  const topicThread = forumChannel.threads.cache.find(
+  let topicThread = forumChannel.threads.cache.find(
     (thread) => thread.name == user.tag.replace("#", "")
   );
 
   let overwrite = topicThread != undefined || arrayTemporary.includes(user.id);
 
+  let dataOldValue = await getData(user.id);
   if (overwrite == true) {
-    const dataOldValue = await getData(user.id);
     if (toCompare(dataOldValue, dataNowValue) == true) {
       overwrite = undefined;
     }
   } else {
-    arrayTemporary.push(user.id)
+    const oldTag = await getTag(user.id);
+    if (oldTag != undefined) {
+      topicThread = forumChannel.threads.cache.find(
+        (thread) => thread.name == oldTag.replace("#", "")
+      );
+      if (topicThread != undefined) {
+        topicThread.delete()
+      }
+    }
+
+    arrayTemporary.push(user.id);
   }
 
   answers.push({
@@ -120,7 +132,7 @@ const checking = async (guild, forumChannel) => {
         await topicThread.messages.edit(arrayMsgs.at(3), {
           embeds: lastMessagesForum(row.answer, questions),
         });
-        await sendApp(userId, row.data, arrayMsgs);
+        await sendApp(userId, row.data, row.answer[2], arrayMsgs);
         continue;
       }
 
@@ -155,16 +167,15 @@ const checking = async (guild, forumChannel) => {
             components: [buttonUpPageForum(`${msgURL.at(0)}`)],
           });
 
-
           const msgIds = threadChannel.messages.cache
             .filter((msg) => msg.author.id === process.env.BOT_ID)
             .map((msg) => msg.id);
 
-          await sendApp(userId, row.data, msgIds);
+          await sendApp(userId, row.data, row.answer[2], msgIds);
         });
     }
     answers = [];
-    arrayTemporary = []
+    arrayTemporary = [];
   }
 };
 
