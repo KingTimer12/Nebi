@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require("discord.js");
+const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 const { setter } = require("../utils/firebaseGuildApi");
 require("dotenv").config();
 
@@ -49,7 +49,7 @@ module.exports = {
           "O id em snowflake do tag/canal/cargo para armazenar no banco de dados."
         )
         .setRequired(true)
-    ),
+    ).setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
 
   dev: true,
 
