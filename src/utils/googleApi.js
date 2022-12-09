@@ -1,5 +1,6 @@
 const { google } = require("googleapis");
 require('dotenv').config()
+let error = false
 
 const service = google.sheets("v4");
 //const credentials = require("../../credentials.json");
@@ -19,7 +20,7 @@ const checkSheetTitle = async () => {
     const metadata = await service.spreadsheets.get({
         auth: authClient,
         spreadsheetId: id
-    })
+    }).catch(() => setError(true));
     console.log(metadata.data.sheets)
 }
 
@@ -30,10 +31,20 @@ const listValues = async () => {
         auth: authClient,
         spreadsheetId: id,
         range: range,
-    });
+    }).catch(() => setError(true));
+    if (res == undefined) return undefined
+    if (res.data == undefined) return undefined
     return res.data.values
 }
 
+const setError = (bool) => {
+    error = bool
+}
+
+const getError = () => {
+    return error
+}
+
 module.exports = {
-    listValues, checkSheetTitle
+    listValues, checkSheetTitle, getError, setError
 }

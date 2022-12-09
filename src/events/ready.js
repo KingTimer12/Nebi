@@ -3,7 +3,7 @@ const { checking } = require('../managers/checkManager.js');
 const { add, array } = require('../managers/forumManager.js');
 const { getId } = require('../utils/firebaseFormsApi.js');
 const { getter } = require('../utils/firebaseGuildApi.js');
-const { listValues } = require("../utils/googleApi.js");
+const { listValues, getError, setError } = require("../utils/googleApi.js");
 
 const activities = [
   { type: ActivityType.Playing, name: 'meu jogo!' },
@@ -32,7 +32,14 @@ module.exports = {
     await checking(guild, forumChannel)
 
     setInterval(async () => {
-      await checking(guild, forumChannel)
+      if (getError() == true) {
+        setInterval(async () => {
+          setError(false)
+          await checking(guild, forumChannel)
+        }, 10 * 60 * 1000);
+      } else {
+        await checking(guild, forumChannel)
+      }
     }, 30 * 1000);
 
     client.user.setActivity({ type: ActivityType.Playing, name: 'meu jogo!' })

@@ -99,6 +99,7 @@ const checking = async (guild, forumChannel) => {
   if (guild == undefined) return;
   console.log("CHECKING FORMS...");
   const list = await listValues();
+  if (list == undefined) return
   const questions = list[0];
 
   const tagEmoji = [array().find((r) => r.name == "Aberto").id];

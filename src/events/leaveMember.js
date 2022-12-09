@@ -17,8 +17,11 @@ module.exports = {
       (chn) => chn.id === genericId
     );
     if (forumChannel == undefined) return
-    const leaveTag = array().find(r => r.name == 'Saiu do Servidor').id
-    const closeTag = array().find(r => r.name == 'Fechado').id
+    const leaveServer = array().find(r => r.name == 'Saiu do Servidor')
+    const close = array().find(r => r.name == 'Fechado')
+    if (leaveServer == undefined || close == undefined) return
+    const leaveTag = leaveServer.id
+    const closeTag = close.id
     if (leaveTag == undefined && closeTag == undefined) return
     const topicThread = forumChannel.threads.cache.find(thread => thread.name == member.user.tag.replace('#', ''))
     if (topicThread == undefined) return

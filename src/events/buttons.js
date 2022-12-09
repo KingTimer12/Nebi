@@ -14,6 +14,13 @@ module.exports = {
       const rolesRoleId = await getter(guildId, 'role', 'roles')
       const registerRoleId = await getter(guildId, 'role', 'register')
 
+      if (rolesChannelId == undefined) {
+        return interaction.reply({
+          content: `O canal 'cargos' não está setado! Comunique para algum administrador sobre o ocorrido.`,
+          ephemeral: true,
+        });
+      }
+
       const registerRole = member.roles.cache.find(
         (role) => role.id === registerRoleId
       );

@@ -1,3 +1,5 @@
+const { getter } = require("../utils/firebaseGuildApi");
+
 module.exports = {
   name: 'Update Member',
   event: 'guildMemberUpdate',
@@ -5,9 +7,12 @@ module.exports = {
   
   async createEvent(oldMember, newMember) {
     if (oldMember.pending && !newMember.pending) {
+      const genericId = await getter(guild.id, "role", "register");
+      if (genericId == undefined) return
       var role = newMember.guild.roles.cache.find(
-        (role) => role.name === "registrar"
+        (role) => role.id == genericId
       );
+      if (role == undefined) return
       newMember.roles.add(role);
     }
   },

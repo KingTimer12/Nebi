@@ -1,6 +1,7 @@
 require('dotenv').config()
 const {Client, Collection, GatewayIntentBits} = require('discord.js')
 const { loadEvents } = require('./handlers/eventHandler')
+const discordModals = require('discord-modals');
 
 const client = new Client({ intents: [
     GatewayIntentBits.Guilds, 
@@ -10,6 +11,7 @@ const client = new Client({ intents: [
     GatewayIntentBits.GuildPresences, 
     GatewayIntentBits.GuildMembers
 ]})
+discordModals(client);
 module.exports = client
 
 client.commands = new Collection()
