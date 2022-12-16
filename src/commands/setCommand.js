@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
-const { setter } = require("../utils/firebaseGuildApi");
+const { setter } = require("../utils/firebase/firebaseGuildApi");
 require("dotenv").config();
 
 module.exports = {

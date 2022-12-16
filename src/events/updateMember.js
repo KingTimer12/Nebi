@@ -1,4 +1,4 @@
-const { getter } = require("../utils/firebaseGuildApi");
+const { getter } = require("../utils/firebase/firebaseGuildApi");
 
 module.exports = {
   name: 'Update Member',

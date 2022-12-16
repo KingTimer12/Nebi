@@ -1,4 +1,4 @@
-const { db } = require("../managers/firebaseManager");
+const { db } = require("../../managers/firebaseManager");
 const { ref, child, get, set } = require("firebase/database");
 
 //Pegar a tag de envio

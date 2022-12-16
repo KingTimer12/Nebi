@@ -3,8 +3,7 @@ require("dotenv").config();
 const {
   Modal,
   TextInputComponent,
-  showModal,
-  SelectMenuComponent,
+  showModal
 } = require("discord-modals");
 
 module.exports = {
@@ -67,7 +66,7 @@ module.exports = {
             .setCustomId("comments")
             .setStyle("LONG")
             .setLabel("Comentário:")
-            .setPlaceholder("")
+            .setPlaceholder("O máximo de caracteres é 1000! Mais do que isso não será enviado.")
             .setRequired(false)
         );
       return showModal(modal, { client: client, interaction: interaction });

@@ -4,9 +4,8 @@ const {
   sendApp,
   getData,
   getMessagesId,
-  has,
   getTag,
-} = require("../utils/firebaseFormsApi");
+} = require("../utils/firebase/firebaseFormsApi");
 const { toCompare } = require("../utils/timerApi.js");
 const {
   mainMessagesForum,
@@ -55,7 +54,7 @@ const createFormat = async (guild, row, forumChannel) => {
         (thread) => thread.name == oldTag.replace("#", "")
       );
       if (topicThread != undefined) {
-        topicThread.delete()
+        topicThread.delete();
       }
     }
 
@@ -99,7 +98,7 @@ const checking = async (guild, forumChannel) => {
   if (guild == undefined) return;
   console.log("CHECKING FORMS...");
   const list = await listValues();
-  if (list == undefined) return
+  if (list == undefined) return;
   const questions = list[0];
 
   const tagEmoji = [array().find((r) => r.name == "Aberto").id];

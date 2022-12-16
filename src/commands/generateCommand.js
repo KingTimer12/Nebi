@@ -13,7 +13,7 @@ const {
   firstRankMessages,
   buttonFinalMessages,
 } = require("../messages/testRankMessage");
-const { getter } = require("../utils/firebaseGuildApi");
+const { getter } = require("../utils/firebase/firebaseGuildApi");
 require("dotenv").config();
 
 module.exports = {

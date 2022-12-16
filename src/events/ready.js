@@ -1,9 +1,10 @@
 const { ActivityType } = require('discord.js');
 const { checking } = require('../managers/checkManager.js');
-const { add, array } = require('../managers/forumManager.js');
-const { getId } = require('../utils/firebaseFormsApi.js');
-const { getter } = require('../utils/firebaseGuildApi.js');
-const { listValues, getError, setError } = require("../utils/googleApi.js");
+const { checkingDraw } = require('../managers/drawCheckManager.js');
+const { add } = require('../managers/forumManager.js');
+const { getter } = require('../utils/firebase/firebaseGuildApi.js');
+const { getError, setError } = require("../utils/googleApi.js");
+const { testUpload } = require('../utils/imgurApi.js');
 
 const activities = [
   { type: ActivityType.Playing, name: 'meu jogo!' },
@@ -30,8 +31,10 @@ module.exports = {
     }
 
     await checking(guild, forumChannel)
+    await checkingDraw(guild)
 
     setInterval(async () => {
+      await checkingDraw(guild)
       if (getError() == true) {
         setInterval(async () => {
           setError(false)

@@ -1,4 +1,44 @@
-const { getter } = require("../utils/firebaseGuildApi");
+const { array, add, removeElement } = require("../managers/drawManager");
+const { getter } = require("../utils/firebase/firebaseGuildApi");
+const { emojis } = require("../utils/emotes.json");
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const { getData, createEvent } = require("../utils/firebase/firabaseDraw");
+const { getNextSunday } = require("../utils/timerApi");
+
+async function awaitMessage(interaction) {
+  const filter = (msg) => interaction.user.id == msg.author.id;
+  const sendedMessage = interaction.channel
+    .awaitMessages({ max: 1, time: 300_000, errors: ["time"], filter })
+    .then(async (msg) => {
+      const msgFirst = await msg.first();
+      const response = { content: undefined, message: msgFirst };
+
+      const text = msgFirst.content;
+      if (text != undefined) response.content = text;
+
+      return response;
+    })
+    .catch(console.error);
+  return sendedMessage;
+}
+
+async function awaitImage(interaction) {
+  const filter = (msg) =>
+    interaction.user.id == msg.author.id && msg.attachments.size > 0;
+  const sendedMessage = interaction.channel
+    .awaitMessages({ max: 1, time: 300_000, errors: ["time"], filter })
+    .then(async (msg) => {
+      const msgFirst = await msg.first();
+      const response = { url: undefined, message: msgFirst };
+
+      const img = msgFirst.attachments.at(0);
+      if (img != undefined) response.url = img.url;
+
+      return response;
+    })
+    .catch(console.error);
+  return sendedMessage;
+}
 
 module.exports = {
   name: "Select Menu",
@@ -7,7 +47,314 @@ module.exports = {
 
   async createEvent(interaction) {
     if (!interaction.isStringSelectMenu()) return;
-    const { member, guildId, guild, values, customId } = interaction;
+    const { member, guildId, guild, values, customId, user } = interaction;
+    const userId = user.id;
+
+    if (customId === "select-question") {
+      const selected = values[0];
+      const list = array();
+      const obj = list.find((l) => l.userId == userId);
+      if (obj == undefined) return;
+      const int = obj.interaction;
+      const week = obj.week;
+
+      let drawName = obj.drawName;
+      let type = obj.type;
+      let comments = obj.comments;
+      let url = obj.url;
+
+      if (selected == "title") {
+        return await interaction.deferUpdate().then(() => {
+          int
+            .editReply({
+              content: `${emojis["send"]} Digite qual será o novo título:`,
+              files: [],
+              components: [],
+              ephemeral: true,
+            })
+            .then(async () => {
+              const collectedMessage = await awaitMessage(int);
+              if (collectedMessage != undefined) {
+                setTimeout(
+                  async () => await collectedMessage.message.delete(),
+                  90
+                );
+                const text = collectedMessage.content;
+                let data = undefined;
+                if (week > 0) {
+                  data = await getData(week);
+                } else {
+                  data = getNextSunday().getTime();
+                  await createEvent(1, data);
+                }
+                removeElement(obj);
+                add(week, userId, text, type, comments, url, int);
+
+                const msgComments =
+                  comments != undefined ? `${comments}` : "~~vazio~~";
+                let msgFinal =
+                  `Veja se todas as informações estão corretas. Caso estejam, clique no botão **enviar**.\n` +
+                  `Houve algum erro? Clique em **editar** para corrigir.\n\n` +
+                  `Título: ${text}\nTipo: ${type}\nComentário: ${msgComments}\nImagem:`;
+
+                const send = new ActionRowBuilder().addComponents(
+                  new ButtonBuilder()
+                    .setCustomId("send")
+                    .setEmoji({ id: "1051884166276460604", name: "send" })
+                    .setLabel("Enviar")
+                    .setStyle(ButtonStyle.Success),
+                  new ButtonBuilder()
+                    .setCustomId("edit")
+                    .setEmoji("✏️")
+                    .setLabel("Editar")
+                    .setStyle(ButtonStyle.Primary),
+                  new ButtonBuilder()
+                    .setCustomId("cancel")
+                    .setEmoji({ id: "1051884167782219776", name: "error" })
+                    .setLabel("Cancelar")
+                    .setStyle(ButtonStyle.Danger)
+                );
+
+                int
+                  .editReply({
+                    content: msgFinal,
+                    files: [{ attachment: url, name: `${text}.png` }],
+                    components: [send],
+                    ephemeral: true,
+                  })
+                  .catch((err) => {});
+              } else {
+                int.editReply({
+                  content:
+                    emojis["error"] +
+                    " Você demorou demais para enviar o título! Use o comando `/enviar` novamente.",
+                  ephemeral: true,
+                });
+              }
+            })
+            .catch((err) => {});
+        });
+      } else if (selected == "type") {
+        return await interaction.deferUpdate().then(() => {
+          int
+            .editReply({
+              content: `${emojis["send"]} Digite qual será o novo tipo:`,
+              files: [],
+              components: [],
+              ephemeral: true,
+            })
+            .then(async () => {
+              const collectedMessage = await awaitMessage(int);
+              if (collectedMessage != undefined) {
+                setTimeout(
+                  async () => await collectedMessage.message.delete(),
+                  90
+                );
+                const text = collectedMessage.content;
+                let data = undefined;
+                if (week > 0) {
+                  data = await getData(week);
+                } else {
+                  data = getNextSunday().getTime();
+                  await createEvent(1, data);
+                }
+                removeElement(obj);
+                add(week, userId, drawName, text, comments, url, int);
+
+                const msgComments =
+                  comments != undefined ? `${comments}` : "~~vazio~~";
+                let msgFinal =
+                  `Veja se todas as informações estão corretas. Caso estejam, clique no botão **enviar**.\n` +
+                  `Houve algum erro? Clique em **editar** para corrigir.\n\n` +
+                  `Título: ${drawName}\nTipo: ${text}\nComentário: ${msgComments}\nImagem:`;
+
+                const send = new ActionRowBuilder().addComponents(
+                  new ButtonBuilder()
+                    .setCustomId("send")
+                    .setEmoji({ id: "1051884166276460604", name: "send" })
+                    .setLabel("Enviar")
+                    .setStyle(ButtonStyle.Success),
+                  new ButtonBuilder()
+                    .setCustomId("edit")
+                    .setEmoji("✏️")
+                    .setLabel("Editar")
+                    .setStyle(ButtonStyle.Primary),
+                  new ButtonBuilder()
+                    .setCustomId("cancel")
+                    .setEmoji({ id: "1051884167782219776", name: "error" })
+                    .setLabel("Cancelar")
+                    .setStyle(ButtonStyle.Danger)
+                );
+
+                int
+                  .editReply({
+                    content: msgFinal,
+                    files: [{ attachment: url, name: `${drawName}.png` }],
+                    components: [send],
+                    ephemeral: true,
+                  })
+                  .catch((err) => {});
+              } else {
+                int.editReply({
+                  content:
+                    emojis["error"] +
+                    " Você demorou demais para enviar o tipo! Use o comando `/enviar` novamente.",
+                  ephemeral: true,
+                });
+              }
+            })
+            .catch((err) => {});
+        });
+      } else if (selected == "comment") {
+        return await interaction.deferUpdate().then(() => {
+          int
+            .editReply({
+              content: `${emojis["send"]} Digite qual será o novo comentário:`,
+              files: [],
+              components: [],
+              ephemeral: true,
+            })
+            .then(async () => {
+              const collectedMessage = await awaitMessage(int);
+              if (collectedMessage != undefined) {
+                setTimeout(
+                  async () => await collectedMessage.message.delete(),
+                  90
+                );
+                let text = collectedMessage.content;
+                let data = undefined;
+                if (week > 0) {
+                  data = await getData(week);
+                } else {
+                  data = getNextSunday().getTime();
+                  await createEvent(1, data);
+                }
+
+                if (text.length > 1000) {
+                  text = text.slice(0, 1000);
+                }
+
+                removeElement(obj);
+                add(week, userId, drawName, type, text, url, int);
+
+                const msgComments =
+                  comments != undefined ? `${text}` : "~~vazio~~";
+                let msgFinal =
+                  `Veja se todas as informações estão corretas. Caso estejam, clique no botão **enviar**.\n` +
+                  `Houve algum erro? Clique em **editar** para corrigir.\n\n` +
+                  `Título: ${drawName}\nTipo: ${type}\nComentário: ${msgComments}\nImagem:`;
+
+                const send = new ActionRowBuilder().addComponents(
+                  new ButtonBuilder()
+                    .setCustomId("send")
+                    .setEmoji({ id: "1051884166276460604", name: "send" })
+                    .setLabel("Enviar")
+                    .setStyle(ButtonStyle.Success),
+                  new ButtonBuilder()
+                    .setCustomId("edit")
+                    .setEmoji("✏️")
+                    .setLabel("Editar")
+                    .setStyle(ButtonStyle.Primary),
+                  new ButtonBuilder()
+                    .setCustomId("cancel")
+                    .setEmoji({ id: "1051884167782219776", name: "error" })
+                    .setLabel("Cancelar")
+                    .setStyle(ButtonStyle.Danger)
+                );
+
+                int
+                  .editReply({
+                    content: msgFinal,
+                    files: [{ attachment: url, name: `${drawName}.png` }],
+                    components: [send],
+                    ephemeral: true,
+                  })
+                  .catch((err) => {});
+              } else {
+                int.editReply({
+                  content:
+                    emojis["error"] +
+                    " Você demorou demais para enviar o título! Use o comando `/enviar` novamente.",
+                  ephemeral: true,
+                });
+              }
+            })
+            .catch((err) => {});
+        });
+      } else if (selected == "image") {
+        return await interaction.deferUpdate().then(() => {
+          int
+            .editReply({
+              content: `${emojis["send"]} Envie a nova imagem.`,
+              files: [],
+              components: [],
+              ephemeral: true,
+            })
+            .then(async () => {
+              const collectedMessage = await awaitImage(int);
+              if (collectedMessage != undefined) {
+                setTimeout(
+                  async () => await collectedMessage.message.delete(),
+                  90
+                );
+                let text = collectedMessage.url;
+                let data = undefined;
+                if (week > 0) {
+                  data = await getData(week);
+                } else {
+                  data = getNextSunday().getTime();
+                  await createEvent(1, data);
+                }
+
+                removeElement(obj);
+                add(week, userId, drawName, type, comments, text, int);
+
+                const msgComments =
+                  comments != undefined ? `${comments}` : "~~vazio~~";
+                let msgFinal =
+                  `Veja se todas as informações estão corretas. Caso estejam, clique no botão **enviar**.\n` +
+                  `Houve algum erro? Clique em **editar** para corrigir.\n\n` +
+                  `Título: ${drawName}\nTipo: ${type}\nComentário: ${msgComments}\nImagem:`;
+
+                const send = new ActionRowBuilder().addComponents(
+                  new ButtonBuilder()
+                    .setCustomId("send")
+                    .setEmoji({ id: "1051884166276460604", name: "send" })
+                    .setLabel("Enviar")
+                    .setStyle(ButtonStyle.Success),
+                  new ButtonBuilder()
+                    .setCustomId("edit")
+                    .setEmoji("✏️")
+                    .setLabel("Editar")
+                    .setStyle(ButtonStyle.Primary),
+                  new ButtonBuilder()
+                    .setCustomId("cancel")
+                    .setEmoji({ id: "1051884167782219776", name: "error" })
+                    .setLabel("Cancelar")
+                    .setStyle(ButtonStyle.Danger)
+                );
+
+                int
+                  .editReply({
+                    content: msgFinal,
+                    files: [{ attachment: text, name: `${drawName}.png` }],
+                    components: [send],
+                    ephemeral: true,
+                  })
+                  .catch((err) => {});
+              } else {
+                int.editReply({
+                  content:
+                    emojis["error"] +
+                    " Você demorou demais para enviar o título! Use o comando `/enviar` novamente.",
+                  ephemeral: true,
+                });
+              }
+            })
+            .catch((err) => {});
+        });
+      }
+    }
 
     if (customId === "select-roles-main") {
       const registerId = await getter(guildId, "role", "register");
@@ -114,10 +461,12 @@ module.exports = {
         }
         let agreementRemoved = removeds.length > 1 ? "os cargos" : "o cargo";
         let agreementSelected = selecteds.length > 1 ? "os cargos" : "o cargo";
-        await interaction.reply({
-          content: `Foi removido ${agreementRemoved} ${messageRemoved} da sua conta e adicionado ${agreementSelected} ${messageSelected}`,
-          ephemeral: true,
-        }).catch(err => {});
+        await interaction
+          .reply({
+            content: `Foi removido ${agreementRemoved} ${messageRemoved} da sua conta e adicionado ${agreementSelected} ${messageSelected}`,
+            ephemeral: true,
+          })
+          .catch((err) => {});
       } else if (removeds.length) {
         let message = "";
         let index = 0;
@@ -129,10 +478,12 @@ module.exports = {
           index++;
         }
         let agreement = removeds.length > 1 ? "os cargos" : "o cargo";
-        await interaction.reply({
-          content: `Foi removido ${agreement} ${message} da sua conta.`,
-          ephemeral: true,
-        }).catch(err => {});
+        await interaction
+          .reply({
+            content: `Foi removido ${agreement} ${message} da sua conta.`,
+            ephemeral: true,
+          })
+          .catch((err) => {});
       } else if (selecteds.length) {
         let message = "";
         let index = 0;
@@ -148,15 +499,19 @@ module.exports = {
           welcome == true
             ? `Seja bem-vindo ao servidor! Foi adicionado ${agreement} ${message} à sua conta.`
             : `Foi adicionado ${agreement} ${message} à sua conta.`;
-        await interaction.reply({
-          content: messageFinal,
-          ephemeral: true,
-        }).catch(err => {});
+        await interaction
+          .reply({
+            content: messageFinal,
+            ephemeral: true,
+          })
+          .catch((err) => {});
       } else {
-        await interaction.reply({
-          content: `Você já tem os cargos selecionados.`,
-          ephemeral: true,
-        }).catch(err => {});
+        await interaction
+          .reply({
+            content: `Você já tem os cargos selecionados.`,
+            ephemeral: true,
+          })
+          .catch((err) => {});
       }
     }
 
@@ -185,10 +540,12 @@ module.exports = {
         member.roles.remove(drawRole);
         member.roles.remove(creativeRole);
         member.roles.remove(novelClubRole);
-        return interaction.reply({
-          content: `Todos os cargos de anúncio foram retirados.`,
-          ephemeral: true,
-        }).catch(err => {});
+        return interaction
+          .reply({
+            content: `Todos os cargos de anúncio foram retirados.`,
+            ephemeral: true,
+          })
+          .catch((err) => {});
       }
 
       if (values.includes("reading")) {
@@ -264,10 +621,12 @@ module.exports = {
         }
         let agreementRemoved = removeds.length > 1 ? "os cargos" : "o cargo";
         let agreementSelected = selecteds.length > 1 ? "os cargos" : "o cargo";
-        interaction.reply({
-          content: `Foi removido ${agreementRemoved} ${messageRemoved} da sua conta e adicionado ${agreementSelected} ${messageSelected}`,
-          ephemeral: true,
-        }).catch(err => {});
+        interaction
+          .reply({
+            content: `Foi removido ${agreementRemoved} ${messageRemoved} da sua conta e adicionado ${agreementSelected} ${messageSelected}`,
+            ephemeral: true,
+          })
+          .catch((err) => {});
       } else if (removeds.length) {
         let message = "";
         let index = 0;
@@ -279,10 +638,12 @@ module.exports = {
           index++;
         }
         let agreement = removeds.length > 1 ? "os cargos" : "o cargo";
-        interaction.reply({
-          content: `Foi removido ${agreement} ${message} da sua conta.`,
-          ephemeral: true,
-        }).catch(err => {});
+        interaction
+          .reply({
+            content: `Foi removido ${agreement} ${message} da sua conta.`,
+            ephemeral: true,
+          })
+          .catch((err) => {});
       } else if (selecteds.length) {
         let message = "";
         let index = 0;
@@ -294,15 +655,19 @@ module.exports = {
           index++;
         }
         let agreement = selecteds.length > 1 ? "os cargos" : "o cargo";
-        interaction.reply({
-          content: `Foi adicionado ${agreement} ${message} à sua conta.`,
-          ephemeral: true,
-        }).catch(err => {});
+        interaction
+          .reply({
+            content: `Foi adicionado ${agreement} ${message} à sua conta.`,
+            ephemeral: true,
+          })
+          .catch((err) => {});
       } else {
-        interaction.reply({
-          content: `Você já tem os cargos selecionados.`,
-          ephemeral: true,
-        }).catch(err => {});
+        interaction
+          .reply({
+            content: `Você já tem os cargos selecionados.`,
+            ephemeral: true,
+          })
+          .catch((err) => {});
       }
     }
   },

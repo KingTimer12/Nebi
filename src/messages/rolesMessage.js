@@ -3,7 +3,7 @@ const {
   StringSelectMenuBuilder,
   ActionRowBuilder,
 } = require("discord.js");
-const { getter } = require("../utils/firebaseGuildApi");
+const { getter } = require("../utils/firebase/firebaseGuildApi");
 
 const bell = "https://cdn-icons-png.flaticon.com/512/747/747185.png";
 

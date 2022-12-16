@@ -1,5 +1,17 @@
 const moment = require('moment')
 
+const unix = (ts) => {
+    return moment.unix(ts)
+}
+
+const toMoment = (timestamp) => {
+    return moment(timestamp)
+}
+
+const getNextSunday = (timestamp) => {
+    return moment(timestamp).day(7).toDate()
+}
+
 const transformTimestamp = (dateString) => {
     return moment.parseZone(dateString, 'DD/MM/yyyy hh:mm:ss').toDate().getTime()
 }
@@ -14,4 +26,4 @@ const toCompare = (old, now) => {
     return timestampNow <= timestampOld
 }
 
-module.exports = {toCompare, transformTimestamp}
+module.exports = {toCompare, transformTimestamp, getNextSunday, toMoment, unix}

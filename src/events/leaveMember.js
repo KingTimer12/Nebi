@@ -1,5 +1,5 @@
 const { array } = require('../managers/forumManager');
-const { getter } = require('../utils/firebaseGuildApi');
+const { getter } = require('../utils/firebase/firebaseGuildApi');
 
 require('dotenv').config()
 
