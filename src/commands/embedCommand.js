@@ -18,6 +18,12 @@ module.exports = {
         .setName("json")
         .setDescription("O json do embed. (Pode conter mensagem) (Não recomendo colocar botão)")
         .setRequired(true)
+    )
+    .addStringOption((option) =>
+      option
+        .setName("image")
+        .setDescription("Coloque o link da imagem.")
+        .setRequired(false)
     ).setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
 
   dev: true,
@@ -26,6 +32,11 @@ module.exports = {
     const { options, guild } = interaction;
     const channelId = options.get("channel").value;
     const jsonString = options.get("json").value;
+    const imageGet = options.get("image")
+
+    let imageUrl = ''
+    if (imageGet != undefined) imageUrl = imageGet.value
+
     const json = JSON.parse(jsonString)
 
     const channel = guild.channels.cache.find((chn) => chn.id === channelId);
@@ -34,7 +45,7 @@ module.exports = {
         ephemeral: true,
       });
       
-      channel.send({embeds:json}).then(c => {
+      channel.send({embeds:json, files: [{ attachment: imageUrl, name: `nebiImagem.png` }]}).then(c => {
         interaction.reply({
             content: "Embed gerado com sucesso!.",
             ephemeral: true,

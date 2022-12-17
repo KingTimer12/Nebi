@@ -23,10 +23,10 @@ const checkingDraw = async (guild) => {
     await createEvent(1, data);
   }
   if (data == undefined) return console.log("data's undefined");
-  const momentData = toMoment(data);
-  const momentDate = toMoment(Date.now());
+  const eventDate = toMoment(data);
+  const currentDate = toMoment(Date.now());
 
-  if (momentData.dayOfYear() == momentDate.dayOfYear()) {
+  if (eventDate.dayOfYear() == currentDate.dayOfYear()) {
     const drawChannelId = await getter(guild.id, "channel", "draw-week");
     if (drawChannelId == undefined) console.log("DrawChannelId's undefined");
     const drawChannel = guild.channels.cache.find(

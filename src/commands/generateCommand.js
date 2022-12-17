@@ -36,7 +36,8 @@ module.exports = {
         .setName("embed-number")
         .setDescription("Digite o número do embed.")
         .setRequired(false)
-    ).setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
+    )
+    .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
 
   dev: true,
 
@@ -48,27 +49,10 @@ module.exports = {
     var error = false;
 
     if (name === "how-works") {
-      const embednumber = options.get("embed-number").value;
-      if (embednumber == "1")
-        firstMessages(channel).catch((err) => {
-          console.log(err.rawError.message);
-          error = true;
-        });
-      if (embednumber == "2")
-        secondsMessages(channel).catch((err) => {
-          console.log(err.rawError.message);
-          error = true;
-        });
-      if (embednumber == "3")
-        thirdMessages(channel).catch((err) => {
-          console.log(err.rawError.message);
-          error = true;
-        });
-      if (embednumber == "4")
-        fourthMessages(channel).catch((err) => {
-          console.log(err.rawError.message);
-          error = true;
-        });
+      fourthMessages(channel).catch((err) => {
+        console.log(err.rawError.message);
+        error = true;
+      });
     }
 
     if (name === "roles") {
