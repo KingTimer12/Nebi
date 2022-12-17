@@ -45,18 +45,33 @@ module.exports = {
         ephemeral: true,
       });
       
-      channel.send({embeds:json, files: [{ attachment: imageUrl, name: `nebiImagem.png` }]}).then(c => {
-        interaction.reply({
-            content: "Embed gerado com sucesso!.",
-            ephemeral: true,
-          });    
-      }).catch(err => {
-        interaction.reply({
-            content: "Ocorreu um erro!",
-            ephemeral: true,
-          });
-          console.log(err)
-      })
+      if (imageGet == undefined) {
+        channel.send({embeds:json}).then(c => {
+          interaction.reply({
+              content: "Embed gerado com sucesso!.",
+              ephemeral: true,
+            });    
+        }).catch(err => {
+          interaction.reply({
+              content: "Ocorreu um erro!",
+              ephemeral: true,
+            });
+            console.log(err)
+        })
+      } else {
+        channel.send({embeds:json, files: [{ attachment: imageUrl, name: `nebiImagem.png` }]}).then(c => {
+          interaction.reply({
+              content: "Embed gerado com sucesso!.",
+              ephemeral: true,
+            });    
+        }).catch(err => {
+          interaction.reply({
+              content: "Ocorreu um erro!",
+              ephemeral: true,
+            });
+            console.log(err)
+        })
+      }
     
   },
 };
