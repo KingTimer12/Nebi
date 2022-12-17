@@ -49,6 +49,7 @@ module.exports = {
     setInterval(() => {
       const randomActivity = activities[Math.floor(Math.random() * activities.length)];
       client.user.setActivity(randomActivity.name, { type: randomActivity.type });
+      //a
     }, 30*60*1000);
   },
 };
