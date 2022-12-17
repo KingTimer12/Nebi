@@ -188,6 +188,19 @@ module.exports = {
         });
       });
     }
+    if (customId == "cancel") {
+      const list = array();
+      const obj = list.find((l) => l.userId == userId);
+      if (obj == undefined) return;
+      const int = obj.interaction;
+      removeElement(obj)
+      int.editReply({
+        content: `${emojis["error"]} O envio foi cancelado com sucesso!`,
+        components: [],
+        files: [],
+        ephemeral: true,
+      })
+    }
     if (customId == "send") {
       const list = array();
       const obj = list.find((l) => l.userId == userId);
