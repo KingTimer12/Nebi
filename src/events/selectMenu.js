@@ -122,7 +122,7 @@ module.exports = {
                     components: [send],
                     ephemeral: true,
                   })
-                  .catch((err) => {});
+                  .catch(console.log);
               } else {
                 int.editReply({
                   content:
@@ -132,7 +132,7 @@ module.exports = {
                 });
               }
             })
-            .catch((err) => {});
+            .catch(console.log);
         });
       } else if (selected == "type") {
         return await interaction.deferUpdate().then(() => {
@@ -193,7 +193,7 @@ module.exports = {
                     components: [send],
                     ephemeral: true,
                   })
-                  .catch((err) => {});
+                  .catch(console.log);
               } else {
                 int.editReply({
                   content:
@@ -203,7 +203,7 @@ module.exports = {
                 });
               }
             })
-            .catch((err) => {});
+            .catch(console.log);
         });
       } else if (selected == "comment") {
         return await interaction.deferUpdate().then(() => {
@@ -269,7 +269,7 @@ module.exports = {
                     components: [send],
                     ephemeral: true,
                   })
-                  .catch((err) => {});
+                  .catch(console.log);
               } else {
                 int.editReply({
                   content:
@@ -279,7 +279,7 @@ module.exports = {
                 });
               }
             })
-            .catch((err) => {});
+            .catch(console.log);
         });
       } else if (selected == "image") {
         return await interaction.deferUpdate().then(() => {
@@ -341,7 +341,7 @@ module.exports = {
                     components: [send],
                     ephemeral: true,
                   })
-                  .catch((err) => {});
+                  .catch(console.log);
               } else {
                 int.editReply({
                   content:
@@ -351,7 +351,7 @@ module.exports = {
                 });
               }
             })
-            .catch((err) => {});
+            .catch(console.log);
         });
       }
     }
@@ -466,7 +466,7 @@ module.exports = {
             content: `Foi removido ${agreementRemoved} ${messageRemoved} da sua conta e adicionado ${agreementSelected} ${messageSelected}`,
             ephemeral: true,
           })
-          .catch((err) => {});
+          .catch(console.log);
       } else if (removeds.length) {
         let message = "";
         let index = 0;
@@ -478,12 +478,12 @@ module.exports = {
           index++;
         }
         let agreement = removeds.length > 1 ? "os cargos" : "o cargo";
-        await interaction
+        interaction
           .reply({
             content: `Foi removido ${agreement} ${message} da sua conta.`,
             ephemeral: true,
           })
-          .catch((err) => {});
+          .catch(console.log);
       } else if (selecteds.length) {
         let message = "";
         let index = 0;
@@ -499,19 +499,19 @@ module.exports = {
           welcome == true
             ? `Seja bem-vindo ao servidor! Foi adicionado ${agreement} ${message} à sua conta.`
             : `Foi adicionado ${agreement} ${message} à sua conta.`;
-        await interaction
+        interaction
           .reply({
             content: messageFinal,
             ephemeral: true,
           })
-          .catch((err) => {});
+          .catch(console.log);
       } else {
-        await interaction
+        interaction
           .reply({
             content: `Você já tem os cargos selecionados.`,
             ephemeral: true,
           })
-          .catch((err) => {});
+          .catch(console.log);
       }
     }
 
@@ -545,7 +545,7 @@ module.exports = {
             content: `Todos os cargos de anúncio foram retirados.`,
             ephemeral: true,
           })
-          .catch((err) => {});
+          .catch(console.log);
       }
 
       if (values.includes("reading")) {
@@ -626,7 +626,7 @@ module.exports = {
             content: `Foi removido ${agreementRemoved} ${messageRemoved} da sua conta e adicionado ${agreementSelected} ${messageSelected}`,
             ephemeral: true,
           })
-          .catch((err) => {});
+          .catch(console.log);
       } else if (removeds.length) {
         let message = "";
         let index = 0;
@@ -643,7 +643,7 @@ module.exports = {
             content: `Foi removido ${agreement} ${message} da sua conta.`,
             ephemeral: true,
           })
-          .catch((err) => {});
+          .catch(console.log);
       } else if (selecteds.length) {
         let message = "";
         let index = 0;
@@ -660,14 +660,14 @@ module.exports = {
             content: `Foi adicionado ${agreement} ${message} à sua conta.`,
             ephemeral: true,
           })
-          .catch((err) => {});
+          .catch(console.log);
       } else {
         interaction
           .reply({
             content: `Você já tem os cargos selecionados.`,
             ephemeral: true,
           })
-          .catch((err) => {});
+          .catch(console.log);
       }
     }
   },

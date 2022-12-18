@@ -7,6 +7,7 @@ module.exports = {
   
   async createEvent(oldMember, newMember) {
     if (oldMember.pending && !newMember.pending) {
+      const {guild} = newMember
       const genericId = await getter(guild.id, "role", "register");
       if (genericId == undefined) return
       var role = newMember.guild.roles.cache.find(
