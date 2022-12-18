@@ -7,14 +7,17 @@ module.exports = {
   
   async createEvent(oldMember, newMember) {
     if (oldMember.pending && !newMember.pending) {
-      const {guild} = newMember
+      const {guild, roles} = newMember
+
       const genericId = await getter(guild.id, "role", "register");
       if (genericId == undefined) return
-      var role = newMember.guild.roles.cache.find(
+
+      let role = guild.roles.cache.find(
         (role) => role.id == genericId
       );
       if (role == undefined) return
-      newMember.roles.add(role);
+
+      roles.add(role);
     }
   },
 };

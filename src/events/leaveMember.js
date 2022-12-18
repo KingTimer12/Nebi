@@ -13,20 +13,22 @@ module.exports = {
     const guild = member.guild
     const genericId = await getter(guild.id, "channel", "forum");
     if (genericId == undefined) return
+
     const forumChannel = guild.channels.cache.find(
       (chn) => chn.id === genericId
     );
     if (forumChannel == undefined) return
+
     const leaveServer = array().find(r => r.name == 'Saiu do Servidor')
     const close = array().find(r => r.name == 'Fechado')
     if (leaveServer == undefined || close == undefined) return
+
     const leaveTag = leaveServer.id
     const closeTag = close.id
     if (leaveTag == undefined && closeTag == undefined) return
+
     const topicThread = forumChannel.threads.cache.find(thread => thread.name == member.user.tag.replace('#', ''))
     if (topicThread == undefined) return
     topicThread.setAppliedTags([leaveTag, closeTag])
-    
-    //console.log('leave forum member')
   },
 };

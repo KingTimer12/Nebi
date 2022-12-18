@@ -2,6 +2,7 @@ require('dotenv').config()
 const {Client, Collection, GatewayIntentBits} = require('discord.js')
 const { loadEvents } = require('./handlers/eventHandler')
 const discordModals = require('discord-modals');
+const { loadButton } = require('./handlers/buttonHandler');
 
 const client = new Client({ intents: [
     GatewayIntentBits.Guilds, 
@@ -16,9 +17,11 @@ module.exports = client
 
 client.commands = new Collection()
 client.events = new Collection()
+client.buttons = new Collection()
 
 require(`./handlers/commands`)(client)
 loadEvents(client)
+loadButton(client)
 //require(`./handlers/events`)(client)
 
 client.login(process.env.BOT_TOKEN)

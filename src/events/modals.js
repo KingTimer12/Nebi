@@ -4,11 +4,9 @@ const { emojis } = require("../utils/emotes.json");
 const {
   getWeek,
   createEvent,
-  sendDraw,
   getData,
 } = require("../utils/firebase/firabaseDraw");
-const { uploadImg } = require("../utils/imgurApi");
-const { getNextSunday, toMoment, unix } = require("../utils/timerApi");
+const { getNextSunday } = require("../utils/timerApi");
 
 async function awaitMessage(interaction) {
   const filter = (msg) =>

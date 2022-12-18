@@ -1,3 +1,5 @@
+const { toMoment } = require("../utils/timerApi");
+
 let drawsCache = [];
 
 const add = (week, userId, drawName, type, comments, url, interaction) => {
@@ -26,4 +28,11 @@ const removeElement = (obj) => {
   set(drawsCache);
 };
 
-module.exports = { add, array, set, removeElement };
+const hasSend = async (week) => {
+  const data = await getData(week);
+  const eventDate = toMoment(data);
+  const currentDate = toMoment(Date.now());
+  return eventDate.dayOfYear() == currentDate.dayOfYear();
+};
+
+module.exports = { add, array, set, removeElement, hasSend };
