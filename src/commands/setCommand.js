@@ -28,18 +28,31 @@ module.exports = {
           { name: "Como funciona", value: "how-works" },
           { name: "Fórum", value: "forum" },
           { name: "Classe", value: "rank" },
+
           { name: "Leitura Interativa", value: "interactive-reading" },
           { name: "Desenho da Semana", value: "draw-week" },
           { name: "Criativo", value: "creative" },
+          { name: "Clube da Novel", value: "novel-club" },
+          { name: "Filminho", value: "movie" },
+          { name: "Torneio", value: "tournament" },
 
           { name: "Membro", value: "member" },
           { name: "Desenhista", value: "designer" },
           { name: "Leitor", value: "reader" },
           { name: "Escritor", value: "writer" },
+          { name: "Revisor", value: "reviser" },
+          { name: "Tradutor", value: "translate" },
+          { name: "Roteirista", value: "screenwriter" },
 
-          { name: "Registro", value: "register" },
+          { name: "Aulas", value: "classes" },
+          { name: "Artigos", value: "articles" },
+          { name: "Youtube", value: "youtube" },
+          { name: "Redes sociais", value: "social-media" },
+          { name: "Anúncios Parceiros", value: "partners" },
+
           { name: "Divulgação Obras", value: "divulgation-works" },
-          { name: "Clube da Novel", value: "novel-club" }
+
+          { name: "Registro", value: "register" }
         )
     )
     .addStringOption((option) =>

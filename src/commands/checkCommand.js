@@ -28,7 +28,9 @@ module.exports = {
     console.log(args);
     if (args == "tag") {
       const genericId = await getter(guildId, "channel", 'forum');
+      if (genericId == undefined) return
       const forumChannel = guild.channels.cache.find((chn) => chn.id === genericId);
+      if (forumChannel == undefined) return
       let resultArray = ""
       let index = 0
       for (const rows of forumChannel.availableTags) {

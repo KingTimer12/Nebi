@@ -53,7 +53,7 @@ const checkingDraw = async (guild) => {
             .setImage(info.url)
         );
       }
-      //testar o enable
+      
       await setEnable(week, userId, false);
     }
 
@@ -62,7 +62,6 @@ const checkingDraw = async (guild) => {
         embeds: embeds,
       });
     }
-    console.log(currentDate.minutes())
   } else if ((eventDate.dayOfYear()+1) == currentDate.dayOfYear() && (currentDate.hours() == 00 && currentDate.minutes() == 00)) {
     data = getNextSunday().getTime();
     await createEvent(week+1, data);

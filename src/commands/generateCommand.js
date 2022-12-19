@@ -1,13 +1,9 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
-const {
-  firstMessages,
-  secondsMessages,
-  thirdMessages,
-  fourthMessages,
-} = require("../messages/howWorksMessage");
+const { fourthMessages, thirdMessages } = require("../messages/howWorksMessage");
 const {
   firstRolesMessages,
   secondRolesMessages,
+  thirdRolesMessages,
 } = require("../messages/rolesMessage");
 const {
   firstRankMessages,
@@ -46,6 +42,9 @@ module.exports = {
     const name = options.get("id-name").value;
     const genericId = await getter(guildId, "channel", name);
     const channel = guild.channels.cache.find((chn) => chn.id === genericId);
+    if (channel == undefined) {
+      return
+    }
     var error = false;
 
     if (name === "how-works") {
@@ -58,12 +57,17 @@ module.exports = {
     if (name === "roles") {
       const embednumber = options.get("embed-number").value;
       if (embednumber == "1")
-        secondRolesMessages(channel).catch((err) => {
+        firstRolesMessages(channel).catch((err) => {
           console.log(err.rawError.message);
           error = true;
         });
       if (embednumber == "2")
-        firstRolesMessages(channel).catch((err) => {
+        secondRolesMessages(channel).catch((err) => {
+          console.log(err.rawError.message);
+          error = true;
+        });
+      if (embednumber == "3")
+        thirdRolesMessages(channel).catch((err) => {
           console.log(err.rawError.message);
           error = true;
         });
