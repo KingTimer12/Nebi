@@ -26,7 +26,7 @@ module.exports = {
       const dateInt = parseInt(date / 1000);
 
       const hasBool = await hasSend(obj.week)
-      const dateString = hasBool ? ', hoje' : `<t:${dateInt}:R>`
+      const dateString = hasBool ? ', hoje' : ` <t:${dateInt}:R>`
 
       await sendDraw(
         obj.week,
@@ -37,7 +37,7 @@ module.exports = {
         dataImg.link
       ).then(() =>
         int.editReply({
-          content: `${emojis["ready"]} A imagem foi salva e será enviada no mural ${dateString}!`,
+          content: `${emojis["ready"]} A imagem foi salva e será enviada no mural${dateString}!`,
           components: [],
           files: [],
           ephemeral: true,
