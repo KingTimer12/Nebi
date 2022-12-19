@@ -1,3 +1,4 @@
+const { getData } = require("../utils/firebase/firabaseDraw");
 const { toMoment } = require("../utils/timerApi");
 
 let drawsCache = [];
