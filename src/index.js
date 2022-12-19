@@ -22,6 +22,5 @@ client.buttons = new Collection()
 require(`./handlers/commands`)(client)
 loadEvents(client)
 loadButton(client)
-//require(`./handlers/events`)(client)
 
 client.login(process.env.BOT_TOKEN)
