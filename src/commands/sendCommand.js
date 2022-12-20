@@ -1,10 +1,35 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
-require("dotenv").config();
 const {
-  Modal,
-  TextInputComponent,
-  showModal
-} = require("discord-modals");
+  SlashCommandBuilder,
+  PermissionFlagsBits,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+} = require("discord.js");
+require("dotenv").config();
+const { Modal, TextInputComponent, showModal } = require("discord-modals");
+const { add } = require("../managers/drawManager");
+const { getWeek, getData } = require("../utils/firebase/firabaseDraw");
+const { getNextSunday } = require("../utils/timerApi");
+const { createEvent } = require("../events/modalsEvent");
+const { emojis } = require("../utils/emotes.json");
+
+async function awaitImage(interaction) {
+  const filter = (msg) =>
+    interaction.user.id == msg.author.id && msg.attachments.size > 0;
+  const sendedMessage = interaction.channel
+    .awaitMessages({ max: 1, time: 300_000, errors: ["time"], filter })
+    .then(async (msg) => {
+      const msgFirst = await msg.first();
+      const response = { url: undefined, message: msgFirst };
+
+      const img = msgFirst.attachments.at(0);
+      if (img != undefined) response.url = img.url;
+
+      return response;
+    })
+    .catch(console.error);
+  return sendedMessage;
+}
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -22,8 +47,9 @@ module.exports = {
   dev: false,
 
   async execute(interaction) {
-    const { options, client } = interaction;
+    const { options, client, user } = interaction;
     const event = options.get("evento").value;
+    const userId = user.id;
 
     if (event == "LI") {
       const modal = new Modal()
@@ -46,30 +72,44 @@ module.exports = {
       return showModal(modal, { client: client, interaction: interaction });
     }
     if (event == "MD") {
-      const modal = new Modal()
-        .setCustomId("modal-md")
-        .setTitle("Mural dos Desenhos da Semana")
-        .addComponents(
-          new TextInputComponent()
-            .setCustomId("draw-name")
-            .setStyle("SHORT")
-            .setLabel("Título/nome do desenho:")
-            .setPlaceholder("")
-            .setRequired(true),
-          new TextInputComponent()
-            .setCustomId("type")
-            .setStyle("SHORT")
-            .setLabel("Tipo:")
-            .setPlaceholder("Exemplos de tipo: original, fanart, releitura, cópia, etc...")
-            .setRequired(true),
-          new TextInputComponent()
-            .setCustomId("comments")
-            .setStyle("LONG")
-            .setLabel("Comentário:")
-            .setPlaceholder("O máximo de caracteres é 1000! Mais do que isso não será enviado.")
-            .setRequired(false)
-        );
-      return showModal(modal, { client: client, interaction: interaction });
+      const row = new ActionRowBuilder().addComponents(
+        new ButtonBuilder()
+          .setCustomId("send-img")
+          .setEmoji({ id: "1051884167782219776", name: "error" })
+          .setLabel("Enviar imagem")
+          .setStyle(ButtonStyle.Danger),
+        new ButtonBuilder()
+          .setCustomId("send-info")
+          .setEmoji({ id: "1051884167782219776", name: "error" })
+          .setLabel("Enviar informações")
+          .setStyle(ButtonStyle.Danger)
+      );
+
+      const week = await getWeek();
+      let data = undefined;
+      if (week > 0) {
+        data = await getData(week);
+      } else {
+        data = getNextSunday().getTime();
+        await createEvent(1, data);
+      }
+
+      add(
+        week,
+        userId,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        interaction
+      );
+
+      interaction.reply({
+        content: `Aperte nos botões abaixo e faça como pedem. Após concluir, será enviado a segunda etapa.`,
+        fetchReply: true,
+        components: [row],
+        ephemeral: true,
+      });
     }
   },
 };
