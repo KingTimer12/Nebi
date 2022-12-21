@@ -35,7 +35,7 @@ module.exports = {
     )
     .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
 
-  dev: true,
+  dev: false,
 
   async execute(interaction) {
     const { guild, options, guildId } = interaction;

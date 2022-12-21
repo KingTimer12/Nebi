@@ -111,6 +111,7 @@ module.exports = {
             });
           }
         } else {
+          removeElement(obj);
           int.editReply({
             content:
               emojis["error"] +

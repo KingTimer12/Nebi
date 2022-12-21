@@ -4,11 +4,10 @@ const { checkingDraw } = require('../managers/drawCheckManager.js');
 const { add } = require('../managers/forumManager.js');
 const { getter } = require('../utils/firebase/firebaseGuildApi.js');
 const { getError, setError } = require("../utils/googleApi.js");
-const { testUpload } = require('../utils/imgurApi.js');
 
 const activities = [
   { type: ActivityType.Playing, name: 'meu jogo!' },
-  { type: ActivityType.Listening, name: 'NovelCast' },
+  { type: ActivityType.Listening, name: 'NovelCastBR' },
   { type: ActivityType.Watching, name: 'vídeos da Novel Brasil.' }
 ]
 

@@ -35,7 +35,7 @@ const firstRolesMessages = async (channel) => {
       .setCustomId("select-roles-main")
       .setPlaceholder("Selecione uma ou mais opções!")
       .setMinValues(1)
-      .setMaxValues(3)
+      .setMaxValues(6)
       .addOptions([
         {
           label: "Leitor",
@@ -174,6 +174,26 @@ const thirdRolesMessages = async (channel) => {
       .setMaxValues(6)
       .addOptions([
         {
+          label: "Torneio",
+          value: "tournament",
+          emoji: "⚔",
+        },
+        {
+          label: "Criativo",
+          value: "creative",
+          emoji: "✍",
+        },
+        {
+          label: "Filminho",
+          value: "movie",
+          emoji: "📽",
+        },
+        {
+          label: "Clube da Novel",
+          value: "novel-club",
+          emoji: "📚",
+        },
+        {
           label: "Leitura Interativa",
           value: "interactive-reading",
           emoji: "📖",
@@ -183,26 +203,6 @@ const thirdRolesMessages = async (channel) => {
           value: "draw-week",
           emoji: "🎨",
         },
-        {
-          label: "Criativo",
-          value: "creative",
-          emoji: "✍",
-        },
-        {
-          label: "Clube da Novel",
-          value: "novel-club",
-          emoji: "📚",
-        },
-        {
-          label: "Filminho",
-          value: "movie",
-          emoji: "📽",
-        },
-        {
-          label: "Torneio",
-          value: "tournament",
-          emoji: "⚔",
-        }
       ])
   );
 
