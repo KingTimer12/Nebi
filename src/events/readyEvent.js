@@ -25,24 +25,26 @@ module.exports = {
         (chn) => chn.id === genericId
       );
 
-      for (const rows of forumChannel.availableTags) {
-        add(rows.name, rows.id);
-      }
-
-      await checking(guild, forumChannel);
-      await checkingDraw(guild);
-
-      setInterval(async () => {
-        await checkingDraw(guild);
-        if (getError() == true) {
-          setInterval(async () => {
-            setError(false);
-            await checking(guild, forumChannel);
-          }, 10 * 60 * 1000);
-        } else {
-          await checking(guild, forumChannel);
+      if (forumChannel != undefined) {
+        for (const rows of forumChannel.availableTags) {
+          add(rows.name, rows.id);
         }
-      }, 60 * 1000);
+  
+        await checking(guild, forumChannel);
+        await checkingDraw(guild);
+  
+        setInterval(async () => {
+          await checkingDraw(guild);
+          if (getError() == true) {
+            setInterval(async () => {
+              setError(false);
+              await checking(guild, forumChannel);
+            }, 10 * 60 * 1000);
+          } else {
+            await checking(guild, forumChannel);
+          }
+        }, 60 * 1000);
+      }
     }
 
     client.user.setActivity({ type: ActivityType.Playing, name: "meu jogo!" });
