@@ -11,7 +11,6 @@ const { add } = require("../managers/drawManager");
 const { getWeek, getData } = require("../utils/firebase/firabaseDraw");
 const { getNextSunday } = require("../utils/timerApi");
 const { createEvent } = require("../events/modalsEvent");
-const { emojis } = require("../utils/emotes.json");
 
 async function awaitImage(interaction) {
   const filter = (msg) =>
