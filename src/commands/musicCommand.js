@@ -80,6 +80,9 @@ module.exports = {
         break;
       case "leave":
         client.distube.voices.leave(interaction);
+        interaction.reply({
+          content: `${emojis["ready"]} O bot saiu da sala.`,
+        });
         break;
       case "loop":
         if (!queue)
@@ -225,14 +228,12 @@ module.exports = {
         const q = queue.songs
           .map(
             (song, i) =>
-              `${i === 0 ? "Tocando:" : `${i}.`} ${song.name} - \`${
-                song.formattedDuration
-              }\``
+              `${i === 0 ? "**Tocando:**" : (i > 10 ? '' : `**${i}.**`)}${(i > 10 ? '' : ` ${song.name}  - \`${song.formattedDuration}\``)}`
           )
           .join("\n");
 
         interaction.reply({
-          content: `**Lista**\n${q}`,
+          content: `${q}`,
         });
         break;
       default:
