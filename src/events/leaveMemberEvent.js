@@ -19,8 +19,8 @@ module.exports = {
     );
     if (forumChannel == undefined) return
 
-    const leaveServer = array().find(r => r.name == 'Saiu do Servidor')
-    const close = array().find(r => r.name == 'Fechado')
+    const leaveServer = forumChannel.availableTags.find(r => r.name == 'Saiu do Servidor')
+    const close = forumChannel.availableTags.find(r => r.name == 'Fechado')
     if (leaveServer == undefined || close == undefined) return
 
     const leaveTag = leaveServer.id

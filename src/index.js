@@ -21,12 +21,13 @@ const { DisTube } = require("distube");
 const { SpotifyPlugin } = require('@distube/spotify')
 const { SoundCloudPlugin } = require('@distube/soundcloud')
 const { YtDlpPlugin } = require('@distube/yt-dlp')
+const { DeezerPlugin } = require("@distube/deezer");
 
 discordModals(client);
 module.exports = client;
 
 client.distube = new DisTube(client, {
-  leaveOnStop: false,
+  leaveOnStop: true,
   emitNewSongOnly: true,
   emitAddSongWhenCreatingQueue: false,
   emitAddListWhenCreatingQueue: false,
@@ -36,6 +37,7 @@ client.distube = new DisTube(client, {
     }),
     new SoundCloudPlugin(),
     new YtDlpPlugin(),
+    new DeezerPlugin(),
   ],
 });
 

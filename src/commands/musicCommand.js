@@ -38,7 +38,7 @@ module.exports = {
   dev: false,
 
   async execute(interaction) {
-    const { options, member, channel, client, guild } = interaction;
+    const { options, member, channel, client } = interaction;
     const action = options.get("action").value;
 
     const queue = client.distube.getQueue(interaction);
@@ -47,6 +47,7 @@ module.exports = {
 
     switch (action) {
       case "play":
+        let int = interaction;
         const music = options.get("music");
         if (music == undefined)
           return interaction.reply({
@@ -60,12 +61,16 @@ module.exports = {
             ephemeral: true,
           });
 
-        client.distube.play(member.voice.channel, musicString, {
-          member: member,
-          textChannel: channel,
-        });
-
-        interaction.deferReply({ ephemeral: true }).catch(console.error);
+        interaction
+          .deferReply()
+          .then(() => {
+            client.distube.play(member.voice.channel, musicString, {
+              member: member,
+              textChannel: channel,
+              metadata: int,
+            });
+          })
+          .catch(console.error);
         break;
       case "stop":
         if (!queue)
@@ -74,9 +79,10 @@ module.exports = {
             ephemeral: true,
           });
         queue.stop();
-        client.distube.voices.leave(interaction);
 
-        interaction.reply(`${emojis["ready"]} Todas as músicas da lista foram canceladas.`);
+        interaction.reply(
+          `${emojis["ready"]} Todas as músicas da lista foram canceladas.`
+        );
         break;
       case "leave":
         client.distube.voices.leave(interaction);
@@ -131,13 +137,12 @@ module.exports = {
         const song = await queue.skip();
 
         embed
-          .setColor("DarkRed")
-          .setDescription(
-            `Todas as músicas na lista foram paradas com sucesso!`
-          );
+          .setColor("Green")
+          .setTitle("Pulada!")
+          .setDescription(`Próxima música: ${song.name}`);
 
         interaction.reply({
-          content: `${emojis["ready"]} Música pulada! Agora será tocado: ${song.name}`,
+          embeds: [embed],
         });
         break;
       case "pause":
@@ -228,7 +233,9 @@ module.exports = {
         const q = queue.songs
           .map(
             (song, i) =>
-              `${i === 0 ? "**Tocando:**" : (i > 10 ? '' : `**${i}.**`)}${(i > 10 ? '' : ` ${song.name}  - \`${song.formattedDuration}\``)}`
+              `${i === 0 ? "**Tocando:**" : i > 10 ? "" : `**${i}.**`}${
+                i > 10 ? "" : ` ${song.name}  - \`${song.formattedDuration}\``
+              }`
           )
           .join("\n");
 

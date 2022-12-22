@@ -26,13 +26,9 @@ module.exports = {
       );
 
       if (forumChannel != undefined) {
-        for (const rows of forumChannel.availableTags) {
-          add(rows.name, rows.id);
-        }
-  
         await checking(guild, forumChannel);
         await checkingDraw(guild);
-  
+
         setInterval(async () => {
           await checkingDraw(guild);
           if (getError() == true) {

@@ -101,7 +101,7 @@ const checking = async (guild, forumChannel) => {
   if (list == undefined) return;
   const questions = list[0];
 
-  const tagEmoji = [array().find((r) => r.name == "Aberto").id];
+  const tagEmoji = [forumChannel.availableTags.find((r) => r.name == "Aberto").id];
 
   let answers = await checkForms(guild, list, forumChannel);
   if (answers.length) {
@@ -138,7 +138,7 @@ const checking = async (guild, forumChannel) => {
 
       //create new thread
       if (row.answer[5] == "Sim") {
-        tagEmoji.push(array().find((r) => r.name == "Tutorando+").id);
+        tagEmoji.push(forumChannel.availableTags.find((r) => r.name == "Tutorando+").id);
       }
       await forumChannel.threads
         .create({

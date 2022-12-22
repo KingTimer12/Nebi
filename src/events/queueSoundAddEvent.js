@@ -7,12 +7,17 @@ module.exports = {
   distube: true,
 
   createEvent(queue, song) {
+    const interaction = song.metadata;
 
     const embed = new EmbedBuilder()
       .setColor("Green")
       .setTitle("Adicionado a lista")
-      .setDescription(`**${song.name}**`)
+      .setDescription(`**${song.name}**`);
 
+    if (interaction != undefined)
+      return interaction.editReply({
+        embeds: [embed],
+      });
     queue.textChannel.send({ embeds: [embed] });
   },
 };
