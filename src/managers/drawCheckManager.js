@@ -12,6 +12,7 @@ const { getter } = require("../utils/firebase/firebaseGuildApi");
 const { toMoment, getNextSunday } = require("../utils/timerApi");
 
 const checkingDraw = async (guild) => {
+  if (guild == undefined) return
   console.log("CHECKING DRAW...");
 
   const week = await getWeek();
