@@ -14,7 +14,6 @@ const {
   lastMessagesForum,
   thirdMessagesForum,
 } = require("../messages/forumAppMessage.js");
-const { array } = require("./forumManager.js");
 let arrayTemporary = [];
 
 const createFormat = async (guild, row, forumChannel) => {

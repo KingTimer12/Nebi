@@ -60,7 +60,7 @@ const checkingDraw = async (guild) => {
     if (embeds.length) {
       drawChannel.send({
         embeds: embeds,
-      });
+      }).catch(console.log);
     }
   } else if ((eventDate.dayOfYear()+1) == currentDate.dayOfYear() && (currentDate.hours() == 00 && currentDate.minutes() == 00)) {
     data = getNextSunday().getTime();

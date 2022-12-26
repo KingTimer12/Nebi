@@ -4,7 +4,7 @@ const { emojis } = require("../utils/emotes.json");
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("música")
-    .setDescription("Use: /música <ação> [link/nome da música]")
+    .setDescription("Use: /musica <ação> [link/nome da música]")
     .addStringOption((option) =>
       option
         .setName("action")

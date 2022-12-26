@@ -47,7 +47,7 @@ module.exports = {
       .then(async () => {
         const responseCollected = await awaitImage(int);
         if (responseCollected != undefined) {
-          setTimeout(async () => await responseCollected.message.delete(), 90);
+          setTimeout(async () => await responseCollected.message.delete().catch(console.log), 90);
 
           const url = responseCollected.url;
           const week = obj.week;
