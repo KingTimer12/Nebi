@@ -12,16 +12,6 @@ module.exports = {
         .setDescription("Tocar a música")
         .addStringOption((option) =>
           option
-            .setName("type")
-            .setDescription(
-              "Diga se o link é uma playlist ou somente um vídeo."
-            )
-            .setRequired(true)
-            .addChoices({ name: "Video", value: "video" })
-            .addChoices({ name: "Playlist", value: "playlist" })
-        )
-        .addStringOption((option) =>
-          option
             .setName("song")
             .setDescription("O link ou nome da música que deseja tocar.")
             .setRequired(true)
@@ -34,10 +24,14 @@ module.exports = {
       subcommand.setName("parar").setDescription("Parar a lista de músicas.")
     )
     .addSubcommand((subcommand) =>
-      subcommand.setName("pausar").setDescription("Pausa a música que está tocando.")
+      subcommand
+        .setName("pausar")
+        .setDescription("Pausa a música que está tocando.")
     )
     .addSubcommand((subcommand) =>
-      subcommand.setName("continuar").setDescription("Continua a música que estava tocando.")
+      subcommand
+        .setName("continuar")
+        .setDescription("Continua a música que estava tocando.")
     )
     .addSubcommand((subcommand) =>
       subcommand
@@ -56,238 +50,33 @@ module.exports = {
   dev: false,
 
   async execute(interaction) {
-    const { guildId, options, member, channel, client } = interaction;
+    const { options, member, channel, client } = interaction;
 
     const subcommand = interaction.options.data[0];
 
-    let guildQueue = client.player.getQueue(guildId);
+    const queue = client.distube.getQueue(interaction);
 
     const embed = new EmbedBuilder();
 
     switch (subcommand.name) {
       case "tocar":
         let int = interaction;
-        const type = options.get("type").value;
-
-        const music = options.get("song");
-        const musicString = music.value;
+        const musicString = options.get("song").value;
         if (musicString == undefined)
           return interaction.reply({
             content: `${emojis["error"]} Faltou enviar o link ou nome da música que deseja tocar.`,
             ephemeral: true,
           });
 
-        interaction
-          .deferReply()
-          .then(async () => {
-            let queue = client.player.createQueue(guildId);
-            await queue.join(member.voice.channel);
-
-            if (type == "video") {
-              await queue
-                .play(musicString, { requestedBy: member.user })
-                .then((song) => {
-                  song.setData({ interaction: int });
-                  const embed = new EmbedBuilder()
-                    .setColor("Green")
-                    .setTitle("Adicionado a lista")
-                    .setDescription(`Vídeo: **${song.name}**`);
-
-                  int.editReply({
-                    embeds: [embed],
-                    ephemeral: false,
-                  });
-                })
-                .catch((err) => {
-                  console.log(err);
-                  if (!guildQueue) queue.stop();
-                });
-            } else {
-              await queue.playlist(musicString, { requestedBy: member.user })
-                .then((playlist) => {
-                  playlist.songs.forEach(song => song.setData({ interaction: int }));
-                  const embed = new EmbedBuilder()
-                    .setColor("Green")
-                    .setTitle("Adicionado a lista")
-                    .setDescription(`Playlist: **${playlist.name}**`);
-
-                  int.editReply({
-                    embeds: [embed],
-                    ephemeral: false,
-                  });
-                })
-                .catch((err) => {
-                  console.log(err);
-                  if (!guildQueue) queue.stop();
-                });
-            }
-          })
-          .catch(console.error);
+        interaction.deferReply().then(async () => {
+          await client.distube.play(member.voice.channel, musicString, {
+            member: member,
+            textChannel: channel,
+            metadata: int,
+          });
+        });
         break;
       case "pular":
-        if (!guildQueue)
-          return interaction.reply({
-            content: `${emojis["error"]} Não tem nenhuma música tocando.`,
-            ephemeral: true,
-          });
-
-        await guildQueue.skip();
-
-        embed.setColor("Green").setTitle("A música foi pulada!");
-
-        interaction.reply({
-          embeds: [embed],
-        }).catch(console.error);
-        break;
-      case "parar":
-        if (!guildQueue)
-          return interaction.reply({
-            content: `${emojis["error"]} Não tem nenhuma música tocando.`,
-            ephemeral: true,
-          });
-
-        await guildQueue.stop();
-
-        embed.setColor("Green").setTitle("Todas as músicas foram canceladas!");
-
-        interaction.reply({
-          embeds: [embed],
-        }).catch(console.error);
-        break;
-      case "pausar":
-        if (!guildQueue)
-          return interaction.reply({
-            content: `${emojis["error"]} Não tem nenhuma música tocando.`,
-            ephemeral: true,
-          });
-
-        await guildQueue.setPaused(true);
-
-        embed.setColor("Grey").setTitle("Música pausada!");
-
-        interaction.reply({
-          embeds: [embed],
-        }).catch(console.error);
-        break;
-      case "continuar":
-        if (!guildQueue)
-          return interaction.reply({
-            content: `${emojis["error"]} Não tem nenhuma música tocando.`,
-            ephemeral: true,
-          });
-
-        await guildQueue.setPaused(false);
-
-        embed.setColor("Green").setTitle("A música retornou!");
-
-        interaction.reply({
-          embeds: [embed],
-        }).catch(console.error);
-        break;
-      case "loop":
-        if (!guildQueue)
-          return interaction.reply({
-            content: `${emojis["error"]} Não tem nenhuma música tocando.`,
-            ephemeral: true,
-          });
-
-        const modeSelect = options.get("mode");
-        const modeString = modeSelect.value;
-        if (modeString == undefined)
-          return interaction.reply({
-            content: `${emojis["error"]} Faltou dizer o que deseja repetir ou desabilitar.`,
-            ephemeral: true,
-          });
-
-        let mode = 0;
-
-        if (modeString == "queue") {
-          guildQueue.setRepeatMode(RepeatMode.QUEUE);
-          mode = 2;
-        } else if (modeString == "disable") {
-          guildQueue.setRepeatMode(RepeatMode.DISABLED);
-          mode = 0;
-        } else if (modeString == "song") {
-          guildQueue.setRepeatMode(RepeatMode.SONG);
-          mode = 1;
-        }
-
-        mode = mode
-          ? mode === 2
-            ? "Repetir habilidado e repetindo a lista."
-            : "Repetir habilidado e repetindo a música."
-          : "Repetir desabilitado.";
-
-        interaction.reply({
-          content: `${emojis["ready"]} ${mode}`,
-        }).catch(console.error);
-        break;
-      default:
-        break;
-    }
-
-    /*const queue = client.distube.getQueue(interaction);
-
-    const embed = new EmbedBuilder();
-
-    switch (action) {
-      case "stop":
-        if (!queue)
-          return interaction.reply({
-            content: `${emojis["error"]} Não tem nenhuma música tocando.`,
-            ephemeral: true,
-          });
-        queue.stop();
-
-        interaction.reply(
-          `${emojis["ready"]} Todas as músicas da lista foram canceladas.`
-        );
-        break;
-      case "leave":
-        client.distube.voices.leave(interaction);
-        interaction.reply({
-          content: `${emojis["ready"]} O bot saiu da sala.`,
-        });
-        break;
-      case "loop":
-        if (!queue)
-          return interaction.reply({
-            content: `${emojis["error"]} Não tem nenhuma música tocando.`,
-            ephemeral: true,
-          });
-
-        const modeSelect = options.get("mode");
-        if (modeSelect == undefined)
-          return interaction.reply({
-            content: `${emojis["error"]} Faltou dizer o que deseja repetir ou desabilitar.`,
-            ephemeral: true,
-          });
-        const modeString = modeSelect.value;
-        if (modeString == undefined)
-          return interaction.reply({
-            content: `${emojis["error"]} Faltou dizer o que deseja repetir ou desabilitar.`,
-            ephemeral: true,
-          });
-        let mode = 0;
-        if (modeString == "queue") {
-          mode = 2;
-        } else if (modeString == "song") {
-          mode = 1;
-        }
-
-        mode = queue.setRepeatMode(mode);
-        mode = mode
-          ? mode === 2
-            ? "Repetir habilidado e repetindo a lista."
-            : "Repetir habilidado e repetindo a música."
-          : "Repetir desabilitado.";
-
-        interaction.reply({
-          content: `${emojis["ready"]} ${mode}`,
-        });
-
-        break;
-      case "skip":
         if (!queue)
           return interaction.reply({
             content: `${emojis["error"]} Não tem nenhuma música tocando.`,
@@ -304,7 +93,23 @@ module.exports = {
           embeds: [embed],
         });
         break;
-      case "pause":
+      case "parar":
+        if (!queue)
+          return interaction
+            .reply({
+              content: `${emojis["error"]} Não tem nenhuma música tocando.`,
+              ephemeral: true,
+            })
+            .catch(console.log);
+        await queue.stop();
+
+        interaction
+          .reply(
+            `${emojis["ready"]} Todas as músicas da lista foram canceladas.`
+          )
+          .catch(console.log);
+        break;
+      case "pausar":
         if (!queue)
           return interaction.reply({
             content: `${emojis["error"]} Não tem nenhuma música tocando.`,
@@ -343,7 +148,7 @@ module.exports = {
           embeds: [embed],
         });
         break;
-      case "resume":
+      case "continuar":
         if (!queue)
           return interaction.reply({
             content: `${emojis["error"]} Não tem nenhuma música tocando.`,
@@ -382,6 +187,50 @@ module.exports = {
           embeds: [embed],
         });
         break;
+      case "loop":
+        if (!queue)
+          return interaction
+            .reply({
+              content: `${emojis["error"]} Não tem nenhuma música tocando.`,
+              ephemeral: true,
+            })
+            .catch(console.log);
+
+        const modeString = options.get("mode").value;
+        if (modeString == undefined)
+          return interaction
+            .reply({
+              content: `${emojis["error"]} Faltou dizer o que deseja repetir ou desabilitar.`,
+              ephemeral: true,
+            })
+            .catch(console.log);
+        let mode = 0;
+        if (modeString == "queue") {
+          mode = 2;
+        } else if (modeString == "song") {
+          mode = 1;
+        }
+
+        mode = queue.setRepeatMode(mode);
+        mode = mode
+          ? mode === 2
+            ? "Repetir habilidado e repetindo a lista."
+            : "Repetir habilidado e repetindo a música."
+          : "Repetir desabilitado.";
+
+        interaction
+          .reply({
+            content: `${emojis["ready"]} ${mode}`,
+          })
+          .catch(console.log);
+
+        break;
+      default:
+        break;
+    }
+
+    /*
+    switch (action) {
       case "queue":
         if (!queue)
           return interaction.reply({

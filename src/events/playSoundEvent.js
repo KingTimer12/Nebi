@@ -1,24 +1,22 @@
 const { EmbedBuilder } = require("discord.js");
 
 module.exports = {
-  name: "First Song",
-  event: "songFirst",
+  name: "Play Song",
+  event: "playSong",
   once: false,
-  player: true,
+  distube: true,
 
   createEvent(queue, song) {
-    const interaction = song.data.interaction;
-    const user = song.requestedBy;
-
-    const author = song.author;
-    const duration = song.duration;
+    const interaction = song.metadata;
+    const user = song.user;
+    const { name } = song.uploader;
 
     const embed = new EmbedBuilder()
       .setColor("DarkRed")
       .setTitle("Tocando agora")
       .setImage(song.thumbnail)
       .setDescription(
-        `**[${song.name}](${song.url})**\nDuração: **${duration}**\nCanal: **${author}**`
+        `**[${song.name}](${song.url})**\nDuração: **[${queue.formattedCurrentTime} - ${song.formattedDuration}]**\nCanal: **${name}**`
       )
       .setTimestamp()
       .setFooter({
@@ -30,9 +28,10 @@ module.exports = {
         }),
       });
 
-    return interaction.editReply({
-      embeds: [embed],
-      ephemeral: false
-    }).catch(console.error);
+    if (interaction != undefined)
+      return interaction.editReply({
+        embeds: [embed],
+      });
+    queue.textChannel.send({ embeds: [embed] });
   },
 };

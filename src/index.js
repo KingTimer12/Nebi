@@ -16,22 +16,17 @@ const client = new Client({
   ],
 });
 
-const { Player } = require("discord-music-player");
-const player = new Player(client);
-
-client.player = player;
-
-/*const { DisTube } = require("distube");
+const { DisTube } = require("distube");
 
 const { SpotifyPlugin } = require('@distube/spotify')
 const { SoundCloudPlugin } = require('@distube/soundcloud')
 const { YtDlpPlugin } = require('@distube/yt-dlp')
-const { DeezerPlugin } = require("@distube/deezer");*/
+const { DeezerPlugin } = require("@distube/deezer");
 
 discordModals(client);
 module.exports = client;
 
-/*client.distube = new DisTube(client, {
+client.distube = new DisTube(client, {
   leaveOnStop: true,
   emitNewSongOnly: true,
   emitAddSongWhenCreatingQueue: false,
@@ -44,7 +39,7 @@ module.exports = client;
     new YtDlpPlugin(),
     new DeezerPlugin(),
   ],
-});*/
+});
 
 client.commands = new Collection();
 client.events = new Collection();
