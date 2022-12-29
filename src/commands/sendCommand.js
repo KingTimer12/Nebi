@@ -11,6 +11,7 @@ const { add } = require("../managers/drawManager");
 const { getWeek, getData } = require("../utils/firebase/firabaseDraw");
 const { getNextSunday } = require("../utils/timerApi");
 const { createEvent } = require("../events/modalsEvent");
+const { emojis } = require("../utils/emotes.json");
 
 async function awaitImage(interaction) {
   const filter = (msg) =>
@@ -104,7 +105,11 @@ module.exports = {
       );
 
       interaction.reply({
-        content: `Aperte nos botões abaixo e faça como pedem. Após concluir, será enviado a segunda etapa.`,
+        content: `Descrição de cada botão:
+        **Botão de imagem**: é para __enviar__ o desenho que deseja colocar no mural.
+        **Botão de informações**: é para __enviar__ as informações sobre seu desenho. Preencha o que pede no formulário que aparecer.\n\n`+
+        `Quando ambos botões estiverem verdes(${emojis["ready"]}) será iniciado a etapa de confirmação.\n`+
+        `Esse comando foi criado pelo <@462040475684175904>! Peça ajuda a ele caso tenha alguma dúvida.`,
         fetchReply: true,
         components: [row],
         ephemeral: true,

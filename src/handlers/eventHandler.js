@@ -12,7 +12,7 @@ const loadEvents = async (client) => {
     const execute = (...args) => event.createEvent(...args, client);
     client.events.set(event.event, execute);
 
-    if (!event.distube) {
+    if (!event.player) {
       if (event.rest) {
         if (event.once) client.rest.once(event.event, execute);
         else client.rest.on(event.event, execute);
@@ -21,7 +21,7 @@ const loadEvents = async (client) => {
         else client.on(event.event, execute);
       }
     } else {
-      client.distube.on(event.event, execute);
+      client.player.on(event.event, execute);
     }
     
     table.addRow(event.name, event.event, "✅");

@@ -1,59 +1,75 @@
+const { RepeatMode } = require("discord-music-player");
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const { emojis } = require("../utils/emotes.json");
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName("música")
+    .setName("musica")
     .setDescription("Use: /musica <ação> [link/nome da música]")
-    .addStringOption((option) =>
-      option
-        .setName("action")
-        .setDescription("Qual ação deseja praticar?")
-        .setRequired(true)
-        .addChoices({ name: "Tocar", value: "play" })
-        .addChoices({ name: "Pular", value: "skip" })
-        .addChoices({ name: "Parar", value: "stop" })
-        .addChoices({ name: "Pausar", value: "pause" })
-        .addChoices({ name: "Continuar", value: "resume" })
-        .addChoices({ name: "Listar", value: "queue" })
-        .addChoices({ name: "Repetir", value: "loop" })
-        .addChoices({ name: "Sair", value: "leave" })
+    .addSubcommand((subcommand) =>
+      subcommand
+        .setName("tocar")
+        .setDescription("Tocar a música")
+        .addStringOption((option) =>
+          option
+            .setName("type")
+            .setDescription(
+              "Diga se o link é uma playlist ou somente um vídeo."
+            )
+            .setRequired(true)
+            .addChoices({ name: "Video", value: "video" })
+            .addChoices({ name: "Playlist", value: "playlist" })
+        )
+        .addStringOption((option) =>
+          option
+            .setName("song")
+            .setDescription("O link ou nome da música que deseja tocar.")
+            .setRequired(true)
+        )
     )
-    .addStringOption((option) =>
-      option
-        .setName("music")
-        .setDescription("O link ou nome da música que deseja tocar.")
-        .setRequired(false)
+    .addSubcommand((subcommand) =>
+      subcommand.setName("pular").setDescription("Pular para próxima música.")
     )
-    .addStringOption((option) =>
-      option
-        .setName("mode")
-        .setDescription("Selecione entre: desabilitar, lista e música.")
-        .setRequired(false)
-        .addChoices({ name: "Desabilitar", value: "disable" })
-        .addChoices({ name: "Lista", value: "queue" })
-        .addChoices({ name: "Música", value: "song" })
+    .addSubcommand((subcommand) =>
+      subcommand.setName("parar").setDescription("Parar a lista de músicas.")
+    )
+    .addSubcommand((subcommand) =>
+      subcommand.setName("pausar").setDescription("Pausa a música que está tocando.")
+    )
+    .addSubcommand((subcommand) =>
+      subcommand.setName("continuar").setDescription("Continua a música que estava tocando.")
+    )
+    .addSubcommand((subcommand) =>
+      subcommand
+        .setName("loop")
+        .setDescription("Loopar a lista inteira ou só a música?")
+        .addStringOption((option) =>
+          option
+            .setName("mode")
+            .setDescription("Selecione entre: desabilitar, lista e música.")
+            .setRequired(true)
+            .addChoices({ name: "Desabilitar", value: "disable" })
+            .addChoices({ name: "Lista", value: "queue" })
+            .addChoices({ name: "Música", value: "song" })
+        )
     ),
-
   dev: false,
 
   async execute(interaction) {
-    const { options, member, channel, client } = interaction;
-    const action = options.get("action").value;
+    const { guildId, options, member, channel, client } = interaction;
 
-    const queue = client.distube.getQueue(interaction);
+    const subcommand = interaction.options.data[0];
+
+    let guildQueue = client.player.getQueue(guildId);
 
     const embed = new EmbedBuilder();
 
-    switch (action) {
-      case "play":
+    switch (subcommand.name) {
+      case "tocar":
         let int = interaction;
-        const music = options.get("music");
-        if (music == undefined)
-          return interaction.reply({
-            content: `${emojis["error"]} Faltou enviar o link ou nome da música que deseja tocar.`,
-            ephemeral: true,
-          });
+        const type = options.get("type").value;
+
+        const music = options.get("song");
         const musicString = music.value;
         if (musicString == undefined)
           return interaction.reply({
@@ -63,15 +79,158 @@ module.exports = {
 
         interaction
           .deferReply()
-          .then(() => {
-            client.distube.play(member.voice.channel, musicString, {
-              member: member,
-              textChannel: channel,
-              metadata: int,
-            });
+          .then(async () => {
+            let queue = client.player.createQueue(guildId);
+            await queue.join(member.voice.channel);
+
+            if (type == "video") {
+              await queue
+                .play(musicString, { requestedBy: member.user })
+                .then((song) => {
+                  song.setData({ interaction: int });
+                  const embed = new EmbedBuilder()
+                    .setColor("Green")
+                    .setTitle("Adicionado a lista")
+                    .setDescription(`Vídeo: **${song.name}**`);
+
+                  int.editReply({
+                    embeds: [embed],
+                    ephemeral: false,
+                  });
+                })
+                .catch((err) => {
+                  console.log(err);
+                  if (!guildQueue) queue.stop();
+                });
+            } else {
+              await queue.playlist(musicString, { requestedBy: member.user })
+                .then((playlist) => {
+                  playlist.songs.forEach(song => song.setData({ interaction: int }));
+                  const embed = new EmbedBuilder()
+                    .setColor("Green")
+                    .setTitle("Adicionado a lista")
+                    .setDescription(`Playlist: **${playlist.name}**`);
+
+                  int.editReply({
+                    embeds: [embed],
+                    ephemeral: false,
+                  });
+                })
+                .catch((err) => {
+                  console.log(err);
+                  if (!guildQueue) queue.stop();
+                });
+            }
           })
           .catch(console.error);
         break;
+      case "pular":
+        if (!guildQueue)
+          return interaction.reply({
+            content: `${emojis["error"]} Não tem nenhuma música tocando.`,
+            ephemeral: true,
+          });
+
+        await guildQueue.skip();
+
+        embed.setColor("Green").setTitle("A música foi pulada!");
+
+        interaction.reply({
+          embeds: [embed],
+        }).catch(console.error);
+        break;
+      case "parar":
+        if (!guildQueue)
+          return interaction.reply({
+            content: `${emojis["error"]} Não tem nenhuma música tocando.`,
+            ephemeral: true,
+          });
+
+        await guildQueue.stop();
+
+        embed.setColor("Green").setTitle("Todas as músicas foram canceladas!");
+
+        interaction.reply({
+          embeds: [embed],
+        }).catch(console.error);
+        break;
+      case "pausar":
+        if (!guildQueue)
+          return interaction.reply({
+            content: `${emojis["error"]} Não tem nenhuma música tocando.`,
+            ephemeral: true,
+          });
+
+        await guildQueue.setPaused(true);
+
+        embed.setColor("Grey").setTitle("Música pausada!");
+
+        interaction.reply({
+          embeds: [embed],
+        }).catch(console.error);
+        break;
+      case "continuar":
+        if (!guildQueue)
+          return interaction.reply({
+            content: `${emojis["error"]} Não tem nenhuma música tocando.`,
+            ephemeral: true,
+          });
+
+        await guildQueue.setPaused(false);
+
+        embed.setColor("Green").setTitle("A música retornou!");
+
+        interaction.reply({
+          embeds: [embed],
+        }).catch(console.error);
+        break;
+      case "loop":
+        if (!guildQueue)
+          return interaction.reply({
+            content: `${emojis["error"]} Não tem nenhuma música tocando.`,
+            ephemeral: true,
+          });
+
+        const modeSelect = options.get("mode");
+        const modeString = modeSelect.value;
+        if (modeString == undefined)
+          return interaction.reply({
+            content: `${emojis["error"]} Faltou dizer o que deseja repetir ou desabilitar.`,
+            ephemeral: true,
+          });
+
+        let mode = 0;
+
+        if (modeString == "queue") {
+          guildQueue.setRepeatMode(RepeatMode.QUEUE);
+          mode = 2;
+        } else if (modeString == "disable") {
+          guildQueue.setRepeatMode(RepeatMode.DISABLED);
+          mode = 0;
+        } else if (modeString == "song") {
+          guildQueue.setRepeatMode(RepeatMode.SONG);
+          mode = 1;
+        }
+
+        mode = mode
+          ? mode === 2
+            ? "Repetir habilidado e repetindo a lista."
+            : "Repetir habilidado e repetindo a música."
+          : "Repetir desabilitado.";
+
+        interaction.reply({
+          content: `${emojis["ready"]} ${mode}`,
+        }).catch(console.error);
+        break;
+      default:
+        break;
+    }
+
+    /*const queue = client.distube.getQueue(interaction);
+
+    const embed = new EmbedBuilder();
+
+    switch (action) {
       case "stop":
         if (!queue)
           return interaction.reply({
@@ -245,6 +404,6 @@ module.exports = {
         break;
       default:
         break;
-    }
+    }*/
   },
 };
