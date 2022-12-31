@@ -27,7 +27,8 @@ discordModals(client);
 module.exports = client;
 
 client.distube = new DisTube(client, {
-  leaveOnFinish: true,
+  leaveOnEmpty: true,
+  leaveOnStop: true,
   emitNewSongOnly: true,
   emitAddSongWhenCreatingQueue: false,
   emitAddListWhenCreatingQueue: false,
