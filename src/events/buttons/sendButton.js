@@ -41,8 +41,8 @@ module.exports = {
           components: [],
           files: [],
           ephemeral: true,
-        })
-      );
+        }).catch(console.log)
+      ).catch(console.log);
     });
   },
 };

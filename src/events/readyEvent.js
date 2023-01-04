@@ -39,7 +39,7 @@ module.exports = {
           } else {
             await checking(guild, forumChannel);
           }
-        }, 30 * 1000);
+        }, 60 * 1000);
       }
     }
 

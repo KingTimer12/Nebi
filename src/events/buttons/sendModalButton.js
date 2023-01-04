@@ -33,6 +33,6 @@ module.exports = {
           )
           .setRequired(false)
       );
-    showModal(modal, {interaction: interaction, client:client});
+    showModal(modal, {interaction: interaction, client:client}).catch(console.log);
   },
 };

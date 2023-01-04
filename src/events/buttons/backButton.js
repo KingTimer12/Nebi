@@ -49,7 +49,7 @@ module.exports = {
           components: [send],
           ephemeral: true,
         })
-        .catch((err) => {});
+        .catch(console.log);
     });
   },
 };

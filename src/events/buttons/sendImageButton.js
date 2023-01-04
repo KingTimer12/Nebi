@@ -88,7 +88,7 @@ module.exports = {
                 components: [send],
                 ephemeral: true,
               })
-              .catch((err) => {});
+              .catch(console.log);
           } else {
             const row = new ActionRowBuilder().addComponents(
               new ButtonBuilder()

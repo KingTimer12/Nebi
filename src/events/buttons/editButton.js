@@ -61,7 +61,7 @@ module.exports = {
         components: [row2, row],
         files: [],
         ephemeral: true,
-      });
+      }).catch(console.log);
     });
   },
 };

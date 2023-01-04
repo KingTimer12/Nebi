@@ -37,10 +37,10 @@ module.exports = {
         ephemeral: true,
       });
     }
-    member.roles.add(role);
+    member.roles.add(role).catch(console.log);
     return interaction.reply({
       content: `Siga para o próximo passo no chat <#${rolesChannelId}>!`,
       ephemeral: true,
-    });
+    }).catch(console.log);
   },
 };

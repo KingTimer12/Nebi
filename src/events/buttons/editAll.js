@@ -31,6 +31,6 @@ module.exports = {
           )
           .setRequired(false)
       );
-    return showModal(modal, { client: client, interaction: interaction });
+    return showModal(modal, { client: client, interaction: interaction }).catch(console.log);
   },
 };
