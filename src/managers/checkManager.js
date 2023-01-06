@@ -160,23 +160,24 @@ const checking = async (guild, forumChannel) => {
 
           await threadChannel.send({
             embeds: secondMessagesForum(row.answer, questions),
-          });
+          }).catch(console.log);
 
           await threadChannel.send({
             embeds: thirdMessagesForum(row.answer, questions),
-          });
+          }).catch(console.log);
 
           await threadChannel.send({
             embeds: lastMessagesForum(row.answer, questions),
             components: [buttonUpPageForum(`${msgURL.at(0)}`)],
-          });
+          }).catch(console.log);
 
           const msgIds = threadChannel.messages.cache
             .filter((msg) => msg.author.id === process.env.BOT_ID)
             .map((msg) => msg.id);
 
           await sendApp(userId, row.data, row.answer[2], msgIds);
-        });
+        })
+        .catch(console.log);
     }
     answers = [];
     arrayTemporary = [];

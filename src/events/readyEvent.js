@@ -26,7 +26,7 @@ module.exports = {
       );
 
       if (forumChannel != undefined) {
-        //await checking(guild, forumChannel);
+        await checking(guild, forumChannel);
         await checkingDraw(guild);
 
         setInterval(async () => {
@@ -34,10 +34,10 @@ module.exports = {
           if (getError() == true) {
             setInterval(async () => {
               setError(false);
-              //await checking(guild, forumChannel);
+              await checking(guild, forumChannel);
             }, 10 * 60 * 1000);
           } else {
-            //await checking(guild, forumChannel);
+            await checking(guild, forumChannel);
           }
         }, 60 * 1000);
       }
