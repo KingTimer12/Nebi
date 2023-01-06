@@ -135,6 +135,11 @@ const checking = async (guild, forumChannel) => {
         continue;
       }
 
+      const topicThread = await forumChannel.threads.cache.find(
+        (thread) => thread.name == nickname
+      );
+      if (topicThread != undefined) continue;
+
       //create new thread
       if (row.answer[5] == "Sim") {
         tagEmoji.push(forumChannel.availableTags.find((r) => r.name == "Tutorando+").id);
