@@ -30,14 +30,14 @@ module.exports = {
         await checkingDraw(guild);
 
         setInterval(async () => {
-          await checkingDraw(guild);
+          //await checkingDraw(guild);
           if (getError() == true) {
             setInterval(async () => {
               setError(false);
-              await checking(guild, forumChannel);
+              //await checking(guild, forumChannel);
             }, 10 * 60 * 1000);
           } else {
-            await checking(guild, forumChannel);
+            //await checking(guild, forumChannel);
           }
         }, 60 * 1000);
       }
