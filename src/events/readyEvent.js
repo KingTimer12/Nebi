@@ -1,7 +1,6 @@
 const { ActivityType } = require("discord.js");
 const { checking } = require("../managers/checkManager.js");
 const { checkingDraw } = require("../managers/drawCheckManager.js");
-const { add } = require("../managers/forumManager.js");
 const { getter } = require("../utils/firebase/firebaseGuildApi.js");
 const { getError, setError } = require("../utils/googleApi.js");
 
