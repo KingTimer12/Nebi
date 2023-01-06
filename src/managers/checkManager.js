@@ -117,17 +117,25 @@ const checking = async (guild, forumChannel) => {
         if (topicThread == undefined) continue;
 
         const arrayMsgs = await getMessagesId(userId);
+        if (arrayMsgs == undefined) continue
+        if (arrayMsgs.at(0) == undefined) continue
 
         await topicThread.messages.edit(arrayMsgs.at(0), {
           content: `<@!${userId}>`,
           embeds: mainMessagesForum(userId, row.answer, row.data, questions),
         });
+
+        if (arrayMsgs.at(1) == undefined) continue
         await topicThread.messages.edit(arrayMsgs.at(1), {
           embeds: secondMessagesForum(row.answer, questions),
         });
+
+        if (arrayMsgs.at(2) == undefined) continue
         await topicThread.messages.edit(arrayMsgs.at(2), {
           embeds: thirdMessagesForum(row.answer, questions),
         });
+
+        if (arrayMsgs.at(3) == undefined) continue
         await topicThread.messages.edit(arrayMsgs.at(3), {
           embeds: lastMessagesForum(row.answer, questions),
         });
