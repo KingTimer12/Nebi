@@ -109,6 +109,15 @@ module.exports = {
           )
           .catch(console.log);
         break;
+      case "sair":
+        client.distube.voices.leave(interaction)
+
+        interaction
+          .reply(
+            `${emojis["ready"]} O bot saiu da call.`
+          )
+          .catch(console.log);
+        break;
       case "pausar":
         if (!queue)
           return interaction.reply({
