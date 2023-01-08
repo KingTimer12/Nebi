@@ -106,9 +106,9 @@ module.exports = {
 
       interaction.reply({
         content: `Descrição de cada botão:
-        **Botão de imagem**: é para __enviar__ o desenho que deseja colocar no mural.
-        **Botão de informações**: é para __enviar__ as informações sobre seu desenho. Preencha o que pede no formulário que aparecer.\n\n`+
-        `Quando ambos botões estiverem verdes(${emojis["ready"]}) será iniciado a etapa de confirmação.\n`+
+        **Botão de imagem**: __envia__ o desenho que deseja colocar no mural.
+        **Botão de informações**: __envia__ as informações sobre seu desenho. (Aparecerá um formulário no próprio Discord que deverá ser preenchido)\n\n`+
+        `Quando ambos botões estiverem verdes(${emojis["ready"]}), será iniciado a etapa de confirmação.\n`+
         `Esse comando foi criado pelo <@462040475684175904>! Peça ajuda a ele caso tenha alguma dúvida.`,
         fetchReply: true,
         components: [row],
