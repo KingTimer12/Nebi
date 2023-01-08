@@ -35,6 +35,11 @@ module.exports = {
     )
     .addSubcommand((subcommand) =>
       subcommand
+        .setName("sair")
+        .setDescription("O bot sairá do canal.")
+    )
+    .addSubcommand((subcommand) =>
+      subcommand
         .setName("loop")
         .setDescription("Loopar a lista inteira ou só a música?")
         .addStringOption((option) =>
