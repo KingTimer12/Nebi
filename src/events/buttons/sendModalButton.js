@@ -28,9 +28,7 @@ module.exports = {
           .setCustomId("comments")
           .setStyle("LONG")
           .setLabel("Comentário:")
-          .setPlaceholder(
-            "O máximo de caracteres é 1000! Mais do que isso não será enviado."
-          )
+          .setMaxLength(1000)
           .setRequired(false)
       );
     showModal(modal, {interaction: interaction, client:client}).catch(console.log);
