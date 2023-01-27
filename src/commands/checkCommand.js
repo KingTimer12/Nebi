@@ -1,6 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
 const { getter } = require("../utils/firebase/firebaseGuildApi.js");
-const { checkSheetTitle } = require("../utils/googleApi.js");
+const { checkSheetTitle } = require("../utils/googleApi/forumApi.js");
 require("dotenv").config();
 
 module.exports = {

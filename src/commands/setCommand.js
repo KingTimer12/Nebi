@@ -52,7 +52,9 @@ module.exports = {
 
           { name: "Divulgação Obras", value: "divulgation-works" },
 
-          { name: "Registro", value: "register" }
+          { name: "Registro", value: "register" },
+
+          { name: "Tutorando", value: "student" }
         )
     )
     .addStringOption((option) =>

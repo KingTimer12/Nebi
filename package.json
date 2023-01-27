@@ -26,6 +26,7 @@
     "ffmpeg-static": "^4.4.1",
     "firebase": "^9.14.0",
     "glob": "^8.0.3",
+    "google-spreadsheet": "^3.3.0",
     "googleapis": "^109.0.1",
     "imgur": "^2.2.0",
     "isomorphic-unfetch": "^3.1.0",

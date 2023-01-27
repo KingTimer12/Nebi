@@ -9,4 +9,3 @@ const loadFiles = async (dirName) => {
 }
 
 module.exports = {loadFiles}
-

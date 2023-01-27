@@ -1,4 +1,5 @@
 const { getter } = require("../utils/firebase/firebaseGuildApi");
+const { updateNicknameRow } = require("../utils/googleApi/rankApi");
 
 module.exports = {
   name: 'Update Member',
@@ -6,6 +7,9 @@ module.exports = {
   once: false,
   
   async createEvent(oldMember, newMember) {
+
+    await updateNicknameRow(923626006, newMember)
+
     if (oldMember.pending && !newMember.pending) {
       const {guild, roles} = newMember
 
@@ -19,5 +23,8 @@ module.exports = {
 
       roles.add(role);
     }
+
+    
+
   },
 };
