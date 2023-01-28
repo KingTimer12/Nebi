@@ -101,7 +101,7 @@ const updateNicknameRow = async (sheetId, newMember) => {
     if (sheet == undefined || sheet.getRows() == undefined) return;
     sheet.getRows().then((rows) => {
       rows
-        .filter((row) => row.id == id)
+        .filter((row) => row.Id == id)
         .map((row) => {
           row.Nickname = nickname;
           row.save().then(() => {
@@ -123,7 +123,7 @@ const updateUsernameRow = async (sheetId, oldUser, newUser) => {
     if (sheet == undefined || sheet.getRows() == undefined) return;
     sheet.getRows().then((rows) => {
       rows
-        .filter((row) => row.id == id)
+        .filter((row) => row.Id == id)
         .map((row) => {
           row.AntigoUsername = oldUsername;
           row.AtualUsername = username;
