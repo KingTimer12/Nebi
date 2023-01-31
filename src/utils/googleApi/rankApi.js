@@ -30,20 +30,74 @@ const getTutores = async (sheetId) => {
   }
 };
 
-const addDadoRow = async (sheetId, username, tutor) => {
+const addDadoRow = async (sheetId, user, tutor) => {
+  await getDoc().then(async (doc) => {
+    const sheet = doc.sheetsById[sheetId];
+    if (sheet == undefined) return;
+
+    const rows = await sheet.getRows();
+    if (rows && rows.find((row) => row.TutorandoId == user.id)) {
+      rows
+        .filter((row) => row.TutorandoId == user.id)
+        .forEach((row) => {
+          row.Tutor = tutor;
+          row.save().then(() => {
+            console.log("Dados tutor atualizado!");
+          });
+        });
+    } else {
+      sheet.addRow(
+        {
+          TutorandoId: user.id,
+          Tutorando: user.tag,
+          Tutor: tutor,
+        },
+        { raw: true }
+      );
+    }
+  }).catch(console.error);
+};
+
+const updateDadosUserRow = async (sheetId, oldUser, newUser) => {
+  await getDoc().then((doc) => {
+    const username = newUser.tag;
+
+    const sheet = doc.sheetsById[sheetId];
+
+    if (sheet != undefined || sheet.getRows() != undefined) {
+      sheet.getRows().then((rows) => {
+        rows
+          .filter(
+            (row) => row.TutorandoId == oldUser.id && oldUser.tag != newUser.tag
+          )
+          .map((row) => {
+            row.Tutorando = username;
+            row.save().then(() => {
+              console.log("Dados atual user atualizados!");
+            });
+          });
+      });
+    }
+  }).catch(console.error);
+};
+
+const updateDadosTutorRow = async (sheetId, user, newTutor) => {
   await getDoc().then((doc) => {
     const sheet = doc.sheetsById[sheetId];
-    sheet.addRow(
-      {
-        Tutorando: username,
-        Tutor: tutor,
-        F01: true,
-      },
-      {
-        raw: true,
-      }
-    );
-  });
+
+    if (sheet != undefined || sheet.getRows() != undefined) {
+      sheet.getRows().then((rows) => {
+        rows
+          .filter((row) => row.TutorandoId == user.id)
+          .map((row) => {
+            row.Tutor = newTutor;
+            row.save().then(() => {
+              console.log("Dados atual user atualizados!");
+            });
+          });
+      });
+    }
+  }).catch(console.error);
 };
 
 const hasTutorandoRow = async (sheetId, id) => {
@@ -66,7 +120,7 @@ const addTutorandoRow = async (sheetId, id, username, nickname) => {
       if (sheet == undefined) return;
 
       const rows = sheet.getRows();
-      if (rows && (await rows).find((row) => row.Id == id)) return
+      if (!rows || (await rows).find((row) => row.Id == id)) return;
 
       sheet
         .addRow(
@@ -109,21 +163,21 @@ const updateNicknameRow = async (sheetId, newMember) => {
           });
         });
     });
-  });
+  }).catch(console.error);
 };
 
 const updateUsernameRow = async (sheetId, oldUser, newUser) => {
   const id = newUser.id;
 
-  const oldUsername = oldUser.username;
-  const username = newUser.username;
+  const oldUsername = oldUser.tag;
+  const username = newUser.tag;
 
   await getDoc().then((doc) => {
     const sheet = doc.sheetsById[sheetId];
     if (sheet == undefined || sheet.getRows() == undefined) return;
     sheet.getRows().then((rows) => {
       rows
-        .filter((row) => row.Id == id)
+        .filter((row) => row.Id == id && oldUser.tag != newUser.tag)
         .map((row) => {
           row.AntigoUsername = oldUsername;
           row.AtualUsername = username;
@@ -132,31 +186,31 @@ const updateUsernameRow = async (sheetId, oldUser, newUser) => {
           });
         });
     });
-  });
+  }).catch(console.error);
 };
 
 let index = 0;
 
 const addUsersRow = async (role) => {
   {
-    const member = role.members.at(index)
-    const username = member.user.username;
+    const member = role.members.at(index);
+    const username = member.user.tag;
     let nickname = member.nickname;
     if (!nickname) {
-      nickname = username;
+      nickname = member.user.username;
     }
-    await addTutorandoRow(755009417, member.id, username, nickname)
+    await addTutorandoRow(755009417, member.id, username, nickname);
   }
   setInterval(async () => {
-    index++
-    const member = role.members.at(index)
-    const username = member.user.username;
+    index++;
+    const member = role.members.at(index);
+    const username = member.user.tag;
     let nickname = member.nickname;
     if (!nickname) {
-      nickname = username;
+      nickname = member.user.username;
     }
-    await addTutorandoRow(755009417, member.id, username, nickname)
-  }, 30*1000)
+    await addTutorandoRow(755009417, member.id, username, nickname);
+  }, 20 * 1000);
 };
 
 module.exports = {
@@ -167,4 +221,6 @@ module.exports = {
   addDadoRow,
   getTutores,
   addUsersRow,
+  updateDadosUserRow,
+  updateDadosTutorRow,
 };
