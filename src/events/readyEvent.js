@@ -4,8 +4,6 @@ const { checkingDraw } = require("../managers/drawCheckManager.js");
 const { getter } = require("../utils/firebase/firebaseGuildApi.js");
 const { getError, setError } = require("../utils/googleApi/forumApi");
 const {
-  getTutores,
-  addTutorandoRow,
   addUsersRow,
 } = require("../utils/googleApi/rankApi.js");
 
@@ -24,6 +22,9 @@ module.exports = {
     console.log("Bot ready!");
 
     for (const guild of client.guilds.cache.values()) {
+
+      /*const role = guild.roles.cache.find(role => role.id == '846146794613243915')
+      if (role) await addUsersRow(role)*/
 
       const genericId = await getter(guild.id, "channel", "forum");
       const forumChannel = guild.channels.cache.find(

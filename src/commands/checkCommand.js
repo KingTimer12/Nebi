@@ -18,7 +18,7 @@ module.exports = {
           { name: "Sheets", value: "sheets" },
           { name: "Tags", value: "tag" }
         )
-    ).setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
+    ).setDefaultMemberPermissions(PermissionFlagsBits.CreatePublicThreads),
 
   dev: false,
 

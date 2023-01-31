@@ -33,7 +33,7 @@ module.exports = {
         .setDescription("Digite o número do embed.")
         .setRequired(false)
     )
-    .setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
+    .setDefaultMemberPermissions(PermissionFlagsBits.CreatePublicThreads),
 
   dev: false,
 

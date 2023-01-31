@@ -24,7 +24,7 @@ module.exports = {
         .setName("image")
         .setDescription("Coloque o link da imagem.")
         .setRequired(false)
-    ).setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
+    ).setDefaultMemberPermissions(PermissionFlagsBits.CreatePublicThreads),
 
   dev: false,
 
