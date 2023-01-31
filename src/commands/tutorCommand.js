@@ -57,7 +57,7 @@ module.exports = {
   dev: false,
 
   async execute(interaction) {
-    const { options, member, channel, guild } = interaction;
+    const { options, guild } = interaction;
     const int = interaction;
 
     const subcommand = options.data[0];
@@ -180,7 +180,7 @@ module.exports = {
             }
           }
 
-          await updateDadosTutorRow(1365207529, username, "Inativo");
+          await updateDadosTutorRow(1365207529, targetMember.user, "Inativo");
 
           targetMember.roles.remove(studentRole);
 
