@@ -85,8 +85,20 @@ module.exports = {
     if (genericId == undefined) return;
     let studentRole = guild.roles.cache.find((role) => role.id == genericId);
 
+    const hasStudent = targetMember.roles.cache.find(
+      (role) => role == studentRole
+    );
+
     switch (subcommand.name) {
       case "adicionar":
+
+        if (hasStudent) {
+          return interaction.reply({
+            content: `${emojis["error"]} <@${userIdTarget}> já faz parte da tutoria.`,
+            ephemeral: true,
+          });
+        }
+
         interaction.deferReply({ ephemeral: true }).then(async () => {
           targetMember.roles.add(studentRole);
 
@@ -125,13 +137,9 @@ module.exports = {
 
         break;
       case "alterar":
-        const hasStudent = targetMember.roles.cache.find(
-          (role) => role == studentRole
-        );
-
         if (!hasStudent) {
           return interaction.reply({
-            content: `${emojis["error"]} <@${userIdTarget}> não faz parte da tutoria!`,
+            content: `${emojis["error"]} <@${userIdTarget}> não faz parte da tutoria.`,
             ephemeral: true,
           });
         }
@@ -162,6 +170,13 @@ module.exports = {
 
         break;
       case "remover":
+        if (!hasStudent) {
+          return interaction.reply({
+            content: `${emojis["error"]} <@${userIdTarget}> não faz parte da tutoria.`,
+            ephemeral: true,
+          });
+        }
+
         interaction.deferReply({ ephemeral: true }).then(async () => {
           const tutores = await getTutores(429915779);
           for (const row of tutores) {
