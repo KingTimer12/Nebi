@@ -16,7 +16,7 @@ module.exports = {
     .addSubcommand((subcommand) =>
       subcommand
         .setName("adicionar")
-        .setDescription("Adicionar um novo tutorando.")
+        .setDescription("Adicione um novo tutorando.")
         .addUserOption((option) =>
           option
             .setName("tutorando")
