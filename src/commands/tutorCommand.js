@@ -4,7 +4,6 @@ const {
   addDadoRow,
   updateDadosTutorRow,
   getTutores,
-  currentTutor,
 } = require("../utils/googleApi/rankApi");
 require("dotenv").config();
 const { emojis } = require("../utils/emotes.json");

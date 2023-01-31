@@ -55,7 +55,7 @@ const addDadoRow = async (sheetId, user, tutor) => {
         { raw: true }
       );
     }
-  });
+  }).catch(console.error);
 };
 
 const updateDadosUserRow = async (sheetId, oldUser, newUser) => {
@@ -78,7 +78,7 @@ const updateDadosUserRow = async (sheetId, oldUser, newUser) => {
           });
       });
     }
-  });
+  }).catch(console.error);
 };
 
 const updateDadosTutorRow = async (sheetId, user, newTutor) => {
@@ -97,22 +97,7 @@ const updateDadosTutorRow = async (sheetId, user, newTutor) => {
           });
       });
     }
-  });
-};
-
-const currentTutor = async (sheetId, user) => {
-  const doc = await getDoc().catch(console.error);
-  if (doc) {
-    const sheet = doc.sheetsById[sheetId];
-
-    if (sheet != undefined || sheet.getRows() != undefined) {
-      const rows = sheet.getRows();
-      if (rows) {
-        const dados = (await rows).find((row) => row.TutorandoId == user.id);
-        return dados.Tutor;
-      }
-    }
-  }
+  }).catch(console.error);
 };
 
 const hasTutorandoRow = async (sheetId, id) => {
@@ -178,7 +163,7 @@ const updateNicknameRow = async (sheetId, newMember) => {
           });
         });
     });
-  });
+  }).catch(console.error);
 };
 
 const updateUsernameRow = async (sheetId, oldUser, newUser) => {
@@ -201,7 +186,7 @@ const updateUsernameRow = async (sheetId, oldUser, newUser) => {
           });
         });
     });
-  });
+  }).catch(console.error);
 };
 
 let index = 0;
@@ -238,5 +223,4 @@ module.exports = {
   addUsersRow,
   updateDadosUserRow,
   updateDadosTutorRow,
-  currentTutor,
 };
