@@ -23,7 +23,7 @@ const getTutores = async (sheetId) => {
       (await rows)
         .filter((row) => row.CargoId != "-")
         .forEach((row) => {
-          array.push({ tutor: row.Tutores, roleId: row.CargoId });
+          array.push({ tutor: row.Tutores, roleId: row.CargoId, tutorId: row.TutorId });
         });
     }
     return array;

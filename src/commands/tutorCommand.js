@@ -23,7 +23,7 @@ module.exports = {
             .setDescription("O user do novo tutorando. Pode usar o id.")
             .setRequired(true)
         )
-        .addStringOption((option) =>
+        .addUserOption((option) =>
           option.setName("tutor").setDescription("O tutor do novo tutorando.")
         )
     )
@@ -37,7 +37,7 @@ module.exports = {
             .setDescription("O user do tutorando. Pode usar o id.")
             .setRequired(true)
         )
-        .addStringOption((option) =>
+        .addUserOption((option) =>
           option.setName("tutor").setDescription("O novo tutor do tutorando.")
         )
     )
@@ -76,7 +76,22 @@ module.exports = {
 
     let tutor = options.get("tutor");
     if (tutor) {
-      tutor = options.get("tutor").value;
+      let tutorId = options.get("tutor").value;
+      let founded = false
+      const tutores = await getTutores(429915779)
+      for (const row of tutores) {
+        if (tutorId == row.tutorId) {
+          tutor = row.tutor
+          founded = true
+          break
+        }
+      }
+      if (!founded) {
+        return interaction.reply({
+          content: `${emojis["error"]} <@${tutorId}> não é um tutor.`,
+          ephemeral: true,
+        })
+      }
     } else {
       tutor = "SemTutor";
     }
