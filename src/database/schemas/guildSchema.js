@@ -2,12 +2,17 @@ const { Schema, model, SchemaTypes } = require("mongoose");
 
 const GuildSchema = new Schema({
     guildId: {
-        type: SchemaTypes.String,
+        type: String,
         required: true,
     },
-    guildName: SchemaTypes.String,
-    coins: {
-        type: SchemaTypes.Array
+    guildName: String,
+    channels: {
+        type: Array,
+        default: [{ channelName: String, channelId: String }]
+    },
+    roles: {
+        type: Array,
+        default: [{ roleName: String, roleId: String }]
     },
 });
 
