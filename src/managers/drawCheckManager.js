@@ -1,4 +1,5 @@
 const { EmbedBuilder } = require("discord.js");
+const { getChannel } = require("../database/manager/guildManager");
 const {
   getWeek,
   getData,
@@ -28,12 +29,12 @@ const checkingDraw = async (guild) => {
   const currentDate = toMoment(Date.now());
 
   if (eventDate.dayOfYear() == currentDate.dayOfYear()) {
-    const drawChannelId = await getter(guild.id, "channel", "draw-week");
-    if (drawChannelId == undefined) console.log("DrawChannelId's undefined");
+    const drawChannelId = await getChannel(guild, {channelName:'draw-week'})
+    if (drawChannelId == undefined) return console.log("DrawChannelId's undefined");
     const drawChannel = guild.channels.cache.find(
       (chn) => chn.id === drawChannelId
     );
-    if (drawChannel == undefined) console.log("DrawChannel's undefined");
+    if (drawChannel == undefined) return console.log("DrawChannel's undefined");
     const list = await listDraws(week);
     let embeds = [];
     for (const userId of list) {
@@ -59,7 +60,7 @@ const checkingDraw = async (guild) => {
     }
 
     if (embeds.length) {
-      drawChannel.send({
+      await drawChannel.send({
         embeds: embeds,
       }).catch(console.log);
     }

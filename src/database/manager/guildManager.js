@@ -4,6 +4,7 @@ const getGuild = async (guildId) =>
   await GuildSchema.findOne({ guildId: guildId });
 
 const createGuild = async (guild) => {
+  if (guild == undefined) return
   const guildSchema = new GuildSchema({
     guildId: guild.id,
     guildName: guild.name,
@@ -77,17 +78,17 @@ const addRole = async (guild, { roleName, roleId }) => {
   ).clone();
 };
 
-const getChannel = async (guildId, { channelName, channelId }) => {
-  const guild = await getGuild(guildId);
-  if (guild) {
+const getChannel = async (guild, { channelName, channelId }) => {
+  const guildSchema = await getGuild(guild.id);
+  if (guildSchema) {
     if (channelName) {
-      const array = guild.channels.find(
+      const array = guildSchema.channels.find(
         (channel) => channel.channelName == channelName
       );
       return array ? array.channelId : undefined;
     }
     if (channelId) {
-      const array = guild.channels.find(
+      const array = guildSchema.channels.find(
         (channel) => channel.channelId == channelId
       );
       return array ? array.channelName : undefined;

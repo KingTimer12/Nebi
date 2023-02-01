@@ -1,7 +1,6 @@
-const { channel } = require("diagnostics_channel");
 const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
-const { addChannel } = require("../database/manager/guildManager");
-const { setter } = require("../utils/firebase/firebaseGuildApi");
+const { addChannel, addRole } = require("../database/manager/guildManager");
+
 require("dotenv").config();
 
 module.exports = {
@@ -45,9 +44,11 @@ module.exports = {
 
     if (type == 'channel') {
       await addChannel(guild, { channelName: name, channelId: genericId })
+    } else {
+      await addRole(guild, { roleName: name, roleId: genericId })
     }
 
-    await setter(guildId, type, name, genericId);
+    //await setter(guildId, type, name, genericId);
 
     let markResult = `<#${genericId}> foi`;
     if (type == "role") {
