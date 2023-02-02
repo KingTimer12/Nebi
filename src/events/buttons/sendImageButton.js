@@ -81,7 +81,7 @@ module.exports = {
                 .setStyle(ButtonStyle.Danger)
             );
 
-            int
+            await int
               .editReply({
                 content: msgFinal,
                 files: [{ attachment: url, name: `${drawName}.png` }],
@@ -104,7 +104,7 @@ module.exports = {
                 .setStyle(ButtonStyle.Danger)
             );
 
-            int.editReply({
+            await int.editReply({
               fetchReply: true,
               components: [row],
               ephemeral: true,
@@ -112,7 +112,7 @@ module.exports = {
           }
         } else {
           removeElement(obj);
-          int.editReply({
+          await int.editReply({
             content:
               emojis["error"] +
               " Você demorou demais para enviar o imagem! Use o comando `/enviar` novamente.",
