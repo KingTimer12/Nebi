@@ -38,12 +38,12 @@ module.exports = {
         else resultArray += `| ${rows.name} (${rows.id}) `
         index++
       }
-      return await interaction.reply({content:"Tags: " + resultArray,ephemeral: true});
+      return await interaction.reply({content:"Tags: " + resultArray,ephemeral: true}).catch(console.error);;
     } else if (args == "sheets") {
       console.log(checkSheetTitle());
-      return await interaction.reply({content:"Veja a logs do bot!",ephemeral: true});
+      return await interaction.reply({content:"Veja a logs do bot!",ephemeral: true}).catch(console.error);;
     } else {
-      return await interaction.reply({content:"Opa! Esse tipo não existe.",ephemeral: true});
+      return await interaction.reply({content:"Opa! Esse tipo não existe.",ephemeral: true}).catch(console.error);;
     }
   },
 };

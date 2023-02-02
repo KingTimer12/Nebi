@@ -8,6 +8,7 @@ const {
 require("dotenv").config();
 const { emojis } = require("../utils/emotes.json");
 const { getter } = require("../utils/firebase/firebaseGuildApi");
+const { getRole } = require("../database/manager/guildManager");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -16,14 +17,14 @@ module.exports = {
     .addSubcommand((subcommand) =>
       subcommand
         .setName("adicionar")
-        .setDescription("Adicionar um novo tutorando.")
+        .setDescription("Adicione um novo tutorando.")
         .addUserOption((option) =>
           option
             .setName("tutorando")
             .setDescription("O user do novo tutorando. Pode usar o id.")
             .setRequired(true)
         )
-        .addStringOption((option) =>
+        .addUserOption((option) =>
           option.setName("tutor").setDescription("O tutor do novo tutorando.")
         )
     )
@@ -37,7 +38,7 @@ module.exports = {
             .setDescription("O user do tutorando. Pode usar o id.")
             .setRequired(true)
         )
-        .addStringOption((option) =>
+        .addUserOption((option) =>
           option.setName("tutor").setDescription("O novo tutor do tutorando.")
         )
     )
@@ -57,7 +58,7 @@ module.exports = {
   dev: false,
 
   async execute(interaction) {
-    const { options, member, channel, guild } = interaction;
+    const { options, guild } = interaction;
     const int = interaction;
 
     const subcommand = options.data[0];
@@ -76,48 +77,78 @@ module.exports = {
 
     let tutor = options.get("tutor");
     if (tutor) {
-      tutor = options.get("tutor").value;
+      let tutorId = options.get("tutor").value;
+      let founded = false
+      const tutores = await getTutores(429915779)
+      for (const row of tutores) {
+        if (tutorId == row.tutorId) {
+          tutor = row.tutor
+          founded = true
+          break
+        }
+      }
+      if (!founded) {
+        return await interaction.reply({
+          content: `${emojis["error"]} <@${tutorId}> não é um tutor.`,
+          ephemeral: true,
+        })
+      }
     } else {
       tutor = "SemTutor";
     }
 
-    const genericId = await getter(guild.id, "role", "student");
-    if (genericId == undefined) return;
-    let studentRole = guild.roles.cache.find((role) => role.id == genericId);
+    const studentId = await getRole(guild, {roleName:'student'})
+    if (studentId == undefined) return;
+    let studentRole = guild.roles.cache.find((role) => role.id == studentId);
+    const hasStudent = targetMember.roles.cache.find((role) => role == studentRole);
 
     switch (subcommand.name) {
       case "adicionar":
-        interaction.deferReply({ ephemeral: true }).then(async () => {
-          targetMember.roles.add(studentRole);
 
+        if (hasStudent) {
+          return await interaction.reply({
+            content: `${emojis["error"]} <@${userIdTarget}> já faz parte da tutoria.`,
+            ephemeral: true,
+          });
+        }
+
+        await interaction.deferReply({ ephemeral: true }).then(async () => {
+
+          //Adicionando o cargo tutorando.
+          await targetMember.roles.add(studentRole);
+
+          //Adicionando as informações na planilha.
           await addTutorandoRow(755009417, userIdTarget, username, nickname);
           await addDadoRow(1365207529, targetMember.user, tutor);
 
+          //Adicionando o cargo do tutor.
           const tutores = await getTutores(429915779);
           for (const row of tutores) {
             if (row.tutor == tutor) {
               let role = guild.roles.cache.find(
                 (role) => role.id == row.roleId
               );
-              targetMember.roles.add(role);
+              await targetMember.roles.add(role);
               break;
             }
           }
 
+          //Remover a Classe ? e a possibilidade de outras classes.
           for (const role of targetMember.roles.cache.values()) {
             if (role.name.includes("Classe") && !role.name.includes("F")) {
-              targetMember.roles.remove(role);
+              await targetMember.roles.remove(role);
             }
           }
 
-          const classFId = await getter(guild.id, "role", "classF");
+          //Pegar o id da classe F que está salva no banco de dados
+          const classFId = await getRole(guild, {roleName:'classF'})
           if (classFId == undefined) return;
           let roleClassF = guild.roles.cache.find(
             (role) => role.id == classFId
           );
-          targetMember.roles.add(roleClassF);
+          await targetMember.roles.add(roleClassF);
 
-          int.editReply({
+          await int.editReply({
             content: `${emojis["ready"]} <@${userIdTarget}> foi adicionado à tutoria!`,
             ephemeral: true,
           });
@@ -125,25 +156,22 @@ module.exports = {
 
         break;
       case "alterar":
-        const hasStudent = targetMember.roles.cache.find(
-          (role) => role == studentRole
-        );
-
         if (!hasStudent) {
-          return interaction.reply({
-            content: `${emojis["error"]} <@${userIdTarget}> não faz parte da tutoria!`,
+          return await interaction.reply({
+            content: `${emojis["error"]} <@${userIdTarget}> não faz parte da tutoria.`,
             ephemeral: true,
           });
         }
 
-        interaction.deferReply({ ephemeral: true }).then(async () => {
+        await interaction.deferReply({ ephemeral: true }).then(async () => {
+          //Mudando o cargo do tutor.
           const tutores = await getTutores(429915779);
           for (const row of tutores) {
             let role = targetMember.roles.cache.find(
               (role) => role.id == row.roleId
             );
             if (role) {
-              targetMember.roles.remove(role);
+              await targetMember.roles.remove(role);
             }
             if (!role && row.tutor == tutor) {
               role = guild.roles.cache.find((role) => role.id == row.roleId);
@@ -152,9 +180,10 @@ module.exports = {
             }
           }
 
+          //Atualizando na planilha
           await updateDadosTutorRow(1365207529, targetMember.user, tutor);
 
-          int.editReply({
+          await int.editReply({
             content: `${emojis["ready"]} O tutor de <@${userIdTarget}> foi alterado para ${tutor}!`,
             ephemeral: true,
           });
@@ -162,36 +191,49 @@ module.exports = {
 
         break;
       case "remover":
-        interaction.deferReply({ ephemeral: true }).then(async () => {
+        if (!hasStudent) {
+          return await interaction.reply({
+            content: `${emojis["error"]} <@${userIdTarget}> não faz parte da tutoria.`,
+            ephemeral: true,
+          });
+        }
+
+        await interaction.deferReply({ ephemeral: true }).then(async () => {
+
+          //Removendo o cargo do tutor.
           const tutores = await getTutores(429915779);
           for (const row of tutores) {
             const role = targetMember.roles.cache.find(
               (role) => role.id == row.roleId
             );
             if (role) {
-              targetMember.roles.remove(role);
+              await targetMember.roles.remove(role);
               break;
             }
           }
 
+          //Removendo todos os cargos classe.
           for (const role of targetMember.roles.cache.values()) {
             if (role.name.includes("Classe") && !role.name.includes("?")) {
-              targetMember.roles.remove(role);
+              await targetMember.roles.remove(role);
             }
           }
 
-          await updateDadosTutorRow(1365207529, username, "Inativo");
+          //Atualizando na planilha.
+          await updateDadosTutorRow(1365207529, targetMember.user, "Inativo");
 
-          targetMember.roles.remove(studentRole);
+          //Removendo o cargo tutorando.
+          await targetMember.roles.remove(studentRole);
 
-          const classInId = await getter(guild.id, "role", "class?");
+          //Adicionando a Classe ?
+          const classInId = await getRole(guild, {roleName:'class?'});
           if (classInId == undefined) return;
           let roleClassIn = guild.roles.cache.find(
             (role) => role.id == classInId
           );
-          targetMember.roles.add(roleClassIn);
+          await targetMember.roles.add(roleClassIn);
 
-          int.editReply({
+          await int.editReply({
             content: `${emojis["ready"]} <@${userIdTarget}> foi retirado da tutoria!`,
             ephemeral: true,
           });

@@ -6,6 +6,8 @@ const { getError, setError } = require("../utils/googleApi/forumApi");
 const {
   addUsersRow,
 } = require("../utils/googleApi/rankApi.js");
+const { loadMongo } = require("../database/mongodb.js");
+const { getChannel, getRole } = require("../database/manager/guildManager.js");
 
 const activities = [
   { type: ActivityType.Playing, name: "meu jogo!" },
@@ -21,14 +23,17 @@ module.exports = {
   async createEvent(client) {
     console.log("Bot ready!");
 
-    for (const guild of client.guilds.cache.values()) {
+    //Conectar ao banco de dados
+    await loadMongo().then(() => console.log('Connected successfully'))
 
+    for (const guild of client.guilds.cache.values()) {
+      //Método para adicionar todos tutorando na planilha
       /*const role = guild.roles.cache.find(role => role.id == '846146794613243915')
       if (role) await addUsersRow(role)*/
 
-      const genericId = await getter(guild.id, "channel", "forum");
+      const forumId = await getChannel(guild, {channelName:'forum'})
       const forumChannel = guild.channels.cache.find(
-        (chn) => chn.id === genericId
+        (chn) => chn.id === forumId
       );
 
       if (forumChannel != undefined) {

@@ -8,10 +8,11 @@ const {
 require("dotenv").config();
 const { Modal, TextInputComponent, showModal } = require("discord-modals");
 const { add } = require("../managers/drawManager");
-const { getWeek, getData } = require("../utils/firebase/firabaseDraw");
+//const { getWeek, getData } = require("../utils/firebase/firabaseDraw");
 const { getNextSunday } = require("../utils/timerApi");
 const { createEvent } = require("../events/modalsEvent");
 const { emojis } = require("../utils/emotes.json");
+const { getWeek, getDataWeek } = require("../database/manager/guildManager");
 
 async function awaitImage(interaction) {
   const filter = (msg) =>
@@ -47,7 +48,7 @@ module.exports = {
   dev: false,
 
   async execute(interaction) {
-    const { options, client, user } = interaction;
+    const { guild, options, client, user } = interaction;
     const event = options.get("evento").value;
     const userId = user.id;
 
@@ -85,14 +86,7 @@ module.exports = {
           .setStyle(ButtonStyle.Danger)
       );
 
-      const week = await getWeek();
-      let data = undefined;
-      if (week > 0) {
-        data = await getData(week);
-      } else {
-        data = getNextSunday().getTime();
-        await createEvent(1, data);
-      }
+      let week = await getWeek(guild);
 
       add(
         week,

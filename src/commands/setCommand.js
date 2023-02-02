@@ -1,5 +1,6 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require("discord.js");
-const { setter } = require("../utils/firebase/firebaseGuildApi");
+const { addChannel, addRole } = require("../database/manager/guildManager");
+
 require("dotenv").config();
 
 module.exports = {
@@ -36,15 +37,24 @@ module.exports = {
   dev: false,
 
   async execute(interaction) {
-    const { options, guildId } = interaction;
+    const { options, guild, guildId } = interaction;
     const type = options.get("type").value;
     const name = options.get("id-name").value;
     const genericId = options.get("id").value;
-    await setter(guildId, type, name, genericId);
+
+    if (type == 'channel') {
+      await addChannel(guild, { channelName: name, channelId: genericId })
+    } else {
+      await addRole(guild, { roleName: name, roleId: genericId })
+    }
+
+    //await setter(guildId, type, name, genericId);
+
     let markResult = `<#${genericId}> foi`;
     if (type == "role") {
       markResult = `<@&${genericId}> foi`;
     }
+
     interaction.reply({
       content: `O ${markResult} adicionado no banco de dados!`,
       ephemeral: true,

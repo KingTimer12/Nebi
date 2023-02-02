@@ -1,19 +1,20 @@
+const { getRole } = require("../../database/manager/guildManager");
 const { emojis } = require("../../utils/emotes.json");
 const { getter } = require("../../utils/firebase/firebaseGuildApi");
 
-const addSelectedRole = (guild, member, id) => {
+const addSelectedRole = async (guild, member, id) => {
   const role = guild.roles.cache.find((role) => role.id === id);
   if (role != undefined && member.roles.cache.get(id) == undefined) {
-    member.roles.add(role).catch(console.log);
+    await member.roles.add(role).catch(console.log);
     return id;
   }
   return undefined;
 };
 
-const removeSelectedRole = (guild, member, id) => {
+const removeSelectedRole = async (guild, member, id) => {
   const role = guild.roles.cache.find((role) => role.id === id);
   if (role != undefined && member.roles.cache.get(id) != undefined) {
-    member.roles.remove(role).catch(console.log);
+    await member.roles.remove(role).catch(console.log);
     return id;
   }
   return undefined;
@@ -44,7 +45,7 @@ const messageFinalRole = (selecteds, removeds, welcome) => {
     }
     let agreementRemoved = removeds.length > 1 ? "os cargos" : "o cargo";
     let agreementSelected = selecteds.length > 1 ? "os cargos" : "o cargo";
-    messageFinal = `Foi removido ${agreementRemoved} ${messageRemoved} da sua conta e adicionado ${agreementSelected} ${messageSelected}`;
+    messageFinal = `${emojis["ready"]} Foi removido ${agreementRemoved} ${messageRemoved} da sua conta e adicionado ${agreementSelected} ${messageSelected}`;
   } else if (removeds.length) {
     let message = "";
     let index = 0;
@@ -53,7 +54,7 @@ const messageFinalRole = (selecteds, removeds, welcome) => {
       index++;
     }
     let agreement = removeds.length > 1 ? "os cargos" : "o cargo";
-    messageFinal = `Foi removido ${agreement} ${message} da sua conta.`;
+    messageFinal = `${emojis["ready"]} Foi removido ${agreement} ${message} da sua conta.`;
   } else if (selecteds.length) {
     let message = "";
     let index = 0;
@@ -65,9 +66,9 @@ const messageFinalRole = (selecteds, removeds, welcome) => {
     messageFinal =
       welcome == true
         ? `Seja bem-vindo ao servidor! Foi adicionado ${agreement} ${message} à sua conta.`
-        : `Foi adicionado ${agreement} ${message} à sua conta.`;
+        : `${emojis["ready"]} Foi adicionado ${agreement} ${message} à sua conta.`;
   } else {
-    messageFinal = `Você já tem os cargos selecionados.`;
+    messageFinal = `${emojis["error"]} Você já tem os cargos selecionados.`;
   }
 
   return messageFinal;
@@ -76,14 +77,14 @@ const messageFinalRole = (selecteds, removeds, welcome) => {
 module.exports = {
   customId: "select-roles-main",
   async execute(interaction, client) {
-    const { member, guildId, guild, values, user } = interaction;
+    const { member, guild, values } = interaction;
 
-    const registerId = await getter(guildId, "role", "register");
-    const rolesId = await getter(guildId, "role", "roles");
+    const registerId = await getRole(guild, {roleName:'register'})
+    const rolesId = await getRole(guild, {roleName:'roles'})
 
     if (registerId == undefined && rolesId == undefined) return;
 
-    const memberId = await getter(guildId, "role", "member");
+    const memberId = await getRole(guild, {roleName:'member'})
     if (memberId == undefined) return;
 
     const roleRegister = guild.roles.cache.find(
@@ -117,21 +118,21 @@ module.exports = {
     ];
 
     for (const value of valuesList) {
-      const roleId = await getter(guild.id, "role", value);
+      const roleId = await getRole(guild, {roleName:value})
       if (roleId == undefined) continue;
       if (values.includes(value)) {
-        const id = addSelectedRole(guild, member, roleId);
+        const id = await addSelectedRole(guild, member, roleId);
         if (id != undefined) selecteds.push(id);
       } else if (
         member.roles.cache.get(roleId) !== undefined &&
         !selecteds.includes(roleId)
       ) {
-        const id = removeSelectedRole(guild, member, roleId);
+        const id = await removeSelectedRole(guild, member, roleId);
         if (id != undefined) removeds.push(id);
       }
     }
 
-    interaction
+    await interaction
       .reply({
         content: messageFinalRole(selecteds, removeds, welcome),
         ephemeral: true,

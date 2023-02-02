@@ -23,7 +23,7 @@ const getTutores = async (sheetId) => {
       (await rows)
         .filter((row) => row.CargoId != "-")
         .forEach((row) => {
-          array.push({ tutor: row.Tutores, roleId: row.CargoId });
+          array.push({ tutor: row.Tutores, roleId: row.CargoId, tutorId: row.TutorId });
         });
     }
     return array;
@@ -142,7 +142,7 @@ const addTutorandoRow = async (sheetId, id, username, nickname) => {
     .catch(console.error);
 };
 
-const updateNicknameRow = async (sheetId, newMember) => {
+const updateNicknameRow = async (sheetId, oldMember, newMember) => {
   const id = newMember.id;
 
   let nickname = newMember.nickname;
@@ -155,7 +155,7 @@ const updateNicknameRow = async (sheetId, newMember) => {
     if (sheet == undefined || sheet.getRows() == undefined) return;
     sheet.getRows().then((rows) => {
       rows
-        .filter((row) => row.Id == id)
+        .filter((row) => row.Id == id && oldMember.nickname != newMember.nickname)
         .map((row) => {
           row.Nickname = nickname;
           row.save().then(() => {

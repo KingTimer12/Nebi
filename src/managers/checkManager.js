@@ -1,11 +1,5 @@
 require("dotenv").config();
 const { listValues } = require("../utils/googleApi/forumApi.js");
-const {
-  sendApp,
-  getData,
-  getMessagesId,
-  getTag,
-} = require("../utils/firebase/firebaseFormsApi");
 const { toCompare } = require("../utils/timerApi.js");
 const {
   mainMessagesForum,
@@ -14,6 +8,12 @@ const {
   lastMessagesForum,
   thirdMessagesForum,
 } = require("../messages/forumAppMessage.js");
+const {
+  getData,
+  getOldTag,
+  getMessagesId,
+  addOrUpdateForm,
+} = require("../database/manager/guildManager.js");
 let arrayTemporary = [];
 
 const createFormat = async (guild, row, forumChannel) => {
@@ -41,13 +41,13 @@ const createFormat = async (guild, row, forumChannel) => {
 
   let overwrite = topicThread != undefined || arrayTemporary.includes(user.id);
 
-  let dataOldValue = await getData(user.id);
+  let dataOldValue = await getData(guild, user.id);
   if (overwrite == true) {
     if (toCompare(dataOldValue, dataNowValue) == true) {
       overwrite = undefined;
     }
   } else {
-    const oldTag = await getTag(user.id);
+    const oldTag = await getOldTag(guild, user.id);
     if (oldTag != undefined) {
       topicThread = forumChannel.threads.cache.find(
         (thread) => thread.name == oldTag.replace("#", "")
@@ -100,7 +100,9 @@ const checking = async (guild, forumChannel) => {
   if (list == undefined) return;
   const questions = list[0];
 
-  const tagEmoji = [forumChannel.availableTags.find((r) => r.name == "Aberto").id];
+  const tagEmoji = [
+    forumChannel.availableTags.find((r) => r.name == "Aberto").id,
+  ];
 
   let answers = await checkForms(guild, list, forumChannel);
   if (answers.length) {
@@ -116,30 +118,36 @@ const checking = async (guild, forumChannel) => {
         );
         if (topicThread == undefined) continue;
 
-        const arrayMsgs = await getMessagesId(userId);
-        if (arrayMsgs == undefined) continue
-        if (arrayMsgs.at(0) == undefined) continue
+        const arrayMsgs = await getMessagesId(guild, userId);
+        if (arrayMsgs == undefined) continue;
 
+        if (arrayMsgs.at(0) == undefined) continue;
         await topicThread.messages.edit(arrayMsgs.at(0), {
           content: `<@!${userId}>`,
           embeds: mainMessagesForum(userId, row.answer, row.data, questions),
         });
 
-        if (arrayMsgs.at(1) == undefined) continue
+        if (arrayMsgs.at(1) == undefined) continue;
         await topicThread.messages.edit(arrayMsgs.at(1), {
           embeds: secondMessagesForum(row.answer, questions),
         });
 
-        if (arrayMsgs.at(2) == undefined) continue
+        if (arrayMsgs.at(2) == undefined) continue;
         await topicThread.messages.edit(arrayMsgs.at(2), {
           embeds: thirdMessagesForum(row.answer, questions),
         });
 
-        if (arrayMsgs.at(3) == undefined) continue
+        if (arrayMsgs.at(3) == undefined) continue;
         await topicThread.messages.edit(arrayMsgs.at(3), {
           embeds: lastMessagesForum(row.answer, questions),
         });
-        await sendApp(userId, row.data, row.answer[2], arrayMsgs);
+
+        await addOrUpdateForm(guild, {
+          userId: userId,
+          data: row.data,
+          oldTag: row.answer[2],
+          messagesId: arrayMsgs,
+        });
         continue;
       }
 
@@ -150,7 +158,9 @@ const checking = async (guild, forumChannel) => {
 
       //create new thread
       if (row.answer[5] == "Sim") {
-        tagEmoji.push(forumChannel.availableTags.find((r) => r.name == "Tutorando+").id);
+        tagEmoji.push(
+          forumChannel.availableTags.find((r) => r.name == "Tutorando+").id
+        );
       }
       await forumChannel.threads
         .create({
@@ -166,24 +176,37 @@ const checking = async (guild, forumChannel) => {
             .filter((msg) => msg.author.id === process.env.BOT_ID)
             .map((msg) => msg.url);
 
-          await threadChannel.send({
-            embeds: secondMessagesForum(row.answer, questions),
-          }).catch(console.log);
+          await threadChannel
+            .send({
+              embeds: secondMessagesForum(row.answer, questions),
+            })
+            .catch(console.log);
 
-          await threadChannel.send({
-            embeds: thirdMessagesForum(row.answer, questions),
-          }).catch(console.log);
+          await threadChannel
+            .send({
+              embeds: thirdMessagesForum(row.answer, questions),
+            })
+            .catch(console.log);
 
-          await threadChannel.send({
-            embeds: lastMessagesForum(row.answer, questions),
-            components: [buttonUpPageForum(`${msgURL.at(0)}`)],
-          }).catch(console.log);
+          await threadChannel
+            .send({
+              embeds: lastMessagesForum(row.answer, questions),
+              components: [buttonUpPageForum(`${msgURL.at(0)}`)],
+            })
+            .catch(console.log);
 
           const msgIds = threadChannel.messages.cache
             .filter((msg) => msg.author.id === process.env.BOT_ID)
             .map((msg) => msg.id);
 
-          await sendApp(userId, row.data, row.answer[2], msgIds);
+          await addOrUpdateForm(guild, {
+            userId: userId,
+            data: row.data,
+            oldTag: row.answer[2],
+            messagesId: msgIds,
+          });
+
+          //await sendApp(userId, row.data, row.answer[2], msgIds);
         })
         .catch(console.log);
     }
