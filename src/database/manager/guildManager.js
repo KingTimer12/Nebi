@@ -4,7 +4,7 @@ const getGuild = async (guildId) =>
   await GuildSchema.findOne({ guildId: guildId });
 
 const createGuild = async (guild) => {
-  if (guild == undefined) return
+  if (guild == undefined) return;
   const guildSchema = new GuildSchema({
     guildId: guild.id,
     guildName: guild.name,
@@ -32,8 +32,8 @@ const addChannel = async (guild, { channelName, channelId }) => {
   for (const channel of guildSchema.channels) {
     if (channel.channelName == channelName) {
       await GuildSchema.updateOne(
-        { 'channels.channelName': channelName },
-        { $set: { 'channels.$.channelId': channelId }},
+        { "channels.channelName": channelName },
+        { $set: { "channels.$.channelId": channelId } },
         done
       ).clone();
       return;
@@ -63,8 +63,8 @@ const addRole = async (guild, { roleName, roleId }) => {
   for (const role of guildSchema.roles) {
     if (role.roleName == roleName) {
       await GuildSchema.updateOne(
-        { 'roles.roleName': roleName },
-        { $set: { 'roles.$.roleId': roleId }},
+        { "roles.roleName": roleName },
+        { $set: { "roles.$.roleId": roleId } },
         done
       ).clone();
       return;
@@ -93,7 +93,7 @@ const getChannel = async (guild, { channelName, channelId }) => {
       );
       return array ? array.channelName : undefined;
     }
-  } else await createGuild(guild)
+  } else await createGuild(guild);
   return undefined;
 };
 
@@ -101,19 +101,95 @@ const getRole = async (guild, { roleName, roleId }) => {
   const guildSchema = await getGuild(guild.id);
   if (guildSchema) {
     if (roleName) {
-      const array = guildSchema.roles.find(
-        (role) => role.roleName == roleName
-      );
+      const array = guildSchema.roles.find((role) => role.roleName == roleName);
       return array ? array.roleId : undefined;
     }
     if (roleId) {
-      const array = guildSchema.roles.find(
-        (role) => role.roleId == roleId
-      );
+      const array = guildSchema.roles.find((role) => role.roleId == roleId);
       return array ? array.roleName : undefined;
     }
-  } else await createGuild(guild)
+  } else await createGuild(guild);
   return undefined;
 };
 
-module.exports = { addChannel, getChannel, addRole, getRole };
+const addOrUpdateForm = async (guild, { userId, data, oldTag, messagesId = [] }) => {
+  let guildSchema = await getGuild(guild.id);
+  if (!guildSchema) {
+    guildSchema = await createGuild(guild);
+  }
+
+  const value = {
+    userId: userId,
+    data: data,
+    oldTag: oldTag,
+    messagesId: messagesId,
+  };
+  const done = function (error, success) {
+    if (error) {
+      console.log(error);
+    }
+  };
+
+  for (const form of guildSchema.forms) {
+    if (form.userId == userId) {
+      await GuildSchema.updateOne(
+        { "forms.userId": userId },
+        {
+          $set: {
+            "forms.$.data": data,
+            "forms.$.oldTag": oldTag,
+            "forms.$.messagesId": messagesId,
+          },
+        },
+        done
+      ).clone();
+      return;
+    }
+  }
+
+  await GuildSchema.findOneAndUpdate(
+    { guildId: guild.id },
+    { $addToSet: { forms: value } },
+    done
+  ).clone();
+};
+
+const getData = async (guild, userId) => {
+  const guildSchema = await getGuild(guild.id);
+  if (guildSchema) {
+    const array = guildSchema.forms.find((form) => form.userId == userId);
+    return array ? array.data : undefined;
+  } else await createGuild(guild);
+  return undefined;
+};
+
+const getOldTag = async (guild, userId) => {
+  const guildSchema = await getGuild(guild.id);
+  if (guildSchema) {
+    const array = guildSchema.forms.find((form) => form.userId == userId);
+    return array ? array.oldTag : undefined;
+  } else await createGuild(guild);
+  return undefined;
+};
+
+const getMessagesId = async (guild, userId) => {
+  const guildSchema = await getGuild(guild.id);
+  if (guildSchema) {
+    const array = guildSchema.forms.find((form) => form.userId == userId);
+    return array ? array.messagesId : undefined;
+  } else await createGuild(guild);
+  return undefined;
+};
+
+module.exports = {
+  addChannel,
+  getChannel,
+  
+  addRole,
+  getRole,
+
+  addOrUpdateForm,
+  getData,
+  getOldTag,
+  getMessagesId,
+};
