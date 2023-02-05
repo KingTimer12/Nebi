@@ -109,13 +109,13 @@ module.exports = {
           return await interaction.reply({
             content: `${emojis["error"]} <@${userIdTarget}> já faz parte da tutoria.`,
             ephemeral: true,
-          });
+          }).catch(() => {});
         }
 
         await interaction.deferReply({ ephemeral: true }).then(async () => {
 
           //Adicionando o cargo tutorando.
-          await targetMember.roles.add(studentRole);
+          await targetMember.roles.add(studentRole).catch(() => {});
 
           //Adicionando as informações na planilha.
           await addTutorandoRow(755009417, userIdTarget, username, nickname);
@@ -128,7 +128,7 @@ module.exports = {
               let role = guild.roles.cache.find(
                 (role) => role.id == row.roleId
               );
-              await targetMember.roles.add(role);
+              await targetMember.roles.add(role).catch(() => {});
               break;
             }
           }
@@ -136,7 +136,7 @@ module.exports = {
           //Remover a Classe ? e a possibilidade de outras classes.
           for (const role of targetMember.roles.cache.values()) {
             if (role.name.includes("Classe") && !role.name.includes("F")) {
-              await targetMember.roles.remove(role);
+              await targetMember.roles.remove(role).catch(() => {});
             }
           }
 
@@ -151,8 +151,9 @@ module.exports = {
           await int.editReply({
             content: `${emojis["ready"]} <@${userIdTarget}> foi adicionado à tutoria!`,
             ephemeral: true,
-          });
-        });
+          }).catch(() => {});
+
+        }).catch(() => {});
 
         break;
       case "alterar":
@@ -160,7 +161,7 @@ module.exports = {
           return await interaction.reply({
             content: `${emojis["error"]} <@${userIdTarget}> não faz parte da tutoria.`,
             ephemeral: true,
-          });
+          }).catch(() => {});
         }
 
         await interaction.deferReply({ ephemeral: true }).then(async () => {
@@ -170,13 +171,12 @@ module.exports = {
             let role = targetMember.roles.cache.find(
               (role) => role.id == row.roleId
             );
-            if (role) {
-              await targetMember.roles.remove(role);
+            if (role && row.tutor != tutor) {
+              await targetMember.roles.remove(role).catch(() => {});
             }
             if (!role && row.tutor == tutor) {
               role = guild.roles.cache.find((role) => role.id == row.roleId);
-              targetMember.roles.add(role);
-              break;
+              targetMember.roles.add(role).catch(() => {});
             }
           }
 
@@ -186,8 +186,9 @@ module.exports = {
           await int.editReply({
             content: `${emojis["ready"]} O tutor de <@${userIdTarget}> foi alterado para ${tutor}!`,
             ephemeral: true,
-          });
-        });
+          }).catch(() => {});
+
+        }).catch(() => {});
 
         break;
       case "remover":
@@ -195,7 +196,7 @@ module.exports = {
           return await interaction.reply({
             content: `${emojis["error"]} <@${userIdTarget}> não faz parte da tutoria.`,
             ephemeral: true,
-          });
+          }).catch(() => {});
         }
 
         await interaction.deferReply({ ephemeral: true }).then(async () => {
@@ -207,7 +208,7 @@ module.exports = {
               (role) => role.id == row.roleId
             );
             if (role) {
-              await targetMember.roles.remove(role);
+              await targetMember.roles.remove(role).catch(() => {});
               break;
             }
           }
@@ -215,7 +216,7 @@ module.exports = {
           //Removendo todos os cargos classe.
           for (const role of targetMember.roles.cache.values()) {
             if (role.name.includes("Classe") && !role.name.includes("?")) {
-              await targetMember.roles.remove(role);
+              await targetMember.roles.remove(role).catch(() => {});
             }
           }
 
@@ -223,7 +224,7 @@ module.exports = {
           await updateDadosTutorRow(1365207529, targetMember.user, "Inativo");
 
           //Removendo o cargo tutorando.
-          await targetMember.roles.remove(studentRole);
+          await targetMember.roles.remove(studentRole).catch(() => {});
 
           //Adicionando a Classe ?
           const classInId = await getRole(guild, {roleName:'class?'});
@@ -231,12 +232,12 @@ module.exports = {
           let roleClassIn = guild.roles.cache.find(
             (role) => role.id == classInId
           );
-          await targetMember.roles.add(roleClassIn);
+          await targetMember.roles.add(roleClassIn).catch(() => {});
 
           await int.editReply({
             content: `${emojis["ready"]} <@${userIdTarget}> foi retirado da tutoria!`,
             ephemeral: true,
-          });
+          }).catch(() => {});
         });
 
         break;

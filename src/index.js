@@ -1,56 +1,93 @@
 require("dotenv").config();
-const { Client, Collection, GatewayIntentBits } = require("discord.js");
+const {
+  Client,
+  Collection,
+  GatewayIntentBits,
+  Partials,
+} = require("discord.js");
 const { loadEvents } = require("./handlers/eventHandler");
 const discordModals = require("discord-modals");
 const { loadButton } = require("./handlers/buttonHandler");
 const { loadSelect } = require("./handlers/selectHandler");
 
-const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent,
-    GatewayIntentBits.GuildVoiceStates,
-    GatewayIntentBits.GuildPresences,
-    GatewayIntentBits.GuildMembers,
-    GatewayIntentBits.DirectMessages
-  ],
-});
-
 const { DisTube } = require("distube");
 
-const { SpotifyPlugin } = require('@distube/spotify')
-const { SoundCloudPlugin } = require('@distube/soundcloud')
-const { YtDlpPlugin } = require('@distube/yt-dlp')
+const { SpotifyPlugin } = require("@distube/spotify");
+const { SoundCloudPlugin } = require("@distube/soundcloud");
+const { YtDlpPlugin } = require("@distube/yt-dlp");
 const { DeezerPlugin } = require("@distube/deezer");
 
-discordModals(client);
-module.exports = client;
+class Bot extends Client {
+  constructor() {
+    super({
+      allowedMentions: {
+        parse: ["users", "roles"],
+        repliedUser: true,
+      },
+      autoReconnect: true,
+      disabledEvents: ["TYPING_START"],
+      partials: [
+        Partials.Channel,
+        Partials.GuildMember,
+        Partials.Message,
+        Partials.Reaction,
+        Partials.User,
+        Partials.GuildScheduledEvent,
+      ],
+      intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildBans,
+        GatewayIntentBits.GuildEmojisAndStickers,
+        GatewayIntentBits.GuildIntegrations,
+        GatewayIntentBits.GuildWebhooks,
+        GatewayIntentBits.GuildInvites,
+        GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.GuildMessageReactions,
+        GatewayIntentBits.GuildMessageTyping,
+        GatewayIntentBits.DirectMessages,
+        GatewayIntentBits.DirectMessageReactions,
+        GatewayIntentBits.DirectMessageTyping,
+        GatewayIntentBits.GuildScheduledEvents,
+        GatewayIntentBits.MessageContent,
+      ],
+      restTimeOffset: 0,
+    });
 
-client.distube = new DisTube(client, {
-  leaveOnEmpty: true,
-  leaveOnStop: true,
-  emitNewSongOnly: true,
-  emitAddSongWhenCreatingQueue: false,
-  emitAddListWhenCreatingQueue: false,
-  plugins: [
-    new SpotifyPlugin({
-      emitEventsAfterFetching: true,
-    }),
-    new SoundCloudPlugin(),
-    new YtDlpPlugin(),
-    new DeezerPlugin(),
-  ],
-});
+    (async () => {
+      this.distube = new DisTube(this, {
+        leaveOnEmpty: true,
+        leaveOnStop: true,
+        emitNewSongOnly: true,
+        emitAddSongWhenCreatingQueue: false,
+        emitAddListWhenCreatingQueue: false,
+        plugins: [
+          new SpotifyPlugin({
+            emitEventsAfterFetching: true,
+          }),
+          new SoundCloudPlugin(),
+          new YtDlpPlugin(),
+          new DeezerPlugin(),
+        ],
+      });
 
-client.commands = new Collection();
-client.events = new Collection();
-client.buttons = new Collection();
-client.selects = new Collection();
+      //Configurar o sistema de modals
+      discordModals(this);
 
-require(`./handlers/commands`)(client);
-loadEvents(client);
-loadButton(client);
-loadSelect(client);
+      this.commands = new Collection();
+      this.events = new Collection();
+      this.buttons = new Collection();
+      this.selects = new Collection();
 
-client.login(process.env.BOT_TOKEN);
+      require(`./handlers/commands`)(this);
+      loadEvents(this);
+      loadButton(this);
+      loadSelect(this);
+
+      this.login(process.env.BOT_TOKEN);
+    })();
+  }
+}
+
+new Bot()

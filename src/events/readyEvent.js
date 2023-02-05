@@ -8,6 +8,7 @@ const {
 } = require("../utils/googleApi/rankApi.js");
 const { loadMongo } = require("../database/mongodb.js");
 const { getChannel, getRole } = require("../database/manager/guildManager.js");
+const { updateAllUsers } = require("../database/handler/userHandler.js");
 
 const activities = [
   { type: ActivityType.Playing, name: "meu jogo!" },
@@ -26,6 +27,9 @@ module.exports = {
     //Conectar ao banco de dados
     await loadMongo().then(() => console.log('Connected successfully'))
 
+    //Atualizar os usuários no banco de dados
+    setInterval(async () => await updateAllUsers(), 60 * 1000);
+
     for (const guild of client.guilds.cache.values()) {
       //Método para adicionar todos tutorando na planilha
       /*const role = guild.roles.cache.find(role => role.id == '846146794613243915')
@@ -38,10 +42,10 @@ module.exports = {
 
       if (forumChannel != undefined) {
         await checking(guild, forumChannel);
-        await checkingDraw(guild);
+        //await checkingDraw(guild);
 
         setInterval(async () => {
-          await checkingDraw(guild);
+          //await checkingDraw(guild);
           if (getError() == true) {
             setInterval(async () => {
               setError(false);

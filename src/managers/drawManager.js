@@ -1,4 +1,4 @@
-const { getData } = require("../utils/firebase/firabaseDraw");
+const { getDataWeek } = require("../database/manager/guildManager");
 const { toMoment } = require("../utils/timerApi");
 
 let drawsCache = [];
@@ -29,8 +29,8 @@ const removeElement = (obj) => {
   set(drawsCache);
 };
 
-const hasSend = async (week) => {
-  const data = await getData(week);
+const hasSend = async (guild, week) => {
+  const data = await getDataWeek(week);
   const eventDate = toMoment(data);
   const currentDate = toMoment(Date.now());
   return eventDate.dayOfYear() == currentDate.dayOfYear();
