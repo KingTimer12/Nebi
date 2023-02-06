@@ -1,36 +1,39 @@
 const { EmbedBuilder } = require("discord.js");
-const { getChannel, getDataWeek, getEnable, getInfo, setDisable, addOrUpdateDraw } = require("../database/manager/guildManager");
-const {
-} = require("../utils/firebase/firabaseDraw");
+const { getChannel, getDataWeek, getEnable, getInfo, setDisable, addOrUpdateDraw, getWeek, listDraws } = require("../database/manager/guildManager");
 const { toMoment, getNextSunday } = require("../utils/timerApi");
 
 const checkingDraw = async (guild) => {
   if (guild == undefined) return;
   const currentDate = toMoment(Date.now());
 
-  if (currentDate.weekday() == 7) {
+  if (currentDate.weekday() == 0) {
     console.log("CHECKING DRAW...");
 
-    let week = obj.week;
-    let date = await getDataWeek(guild, week);
+    let week = await getWeek(guild);
     if (week == 0) week = 1;
+    let date = await getDataWeek(guild, week);
     if (!date) date = getNextSunday().getTime();
 
     if (date == undefined) return console.log("date's undefined");
     const eventDate = toMoment(date);
-
+    
     if (eventDate.dayOfYear() == currentDate.dayOfYear()) {
       const drawChannelId = await getChannel(guild, {
         channelName: "draw-week",
       });
-      if (drawChannelId == undefined)
-        return console.log("DrawChannelId's undefined");
+      if (drawChannelId == undefined) {
+        console.log("DrawChannelId's undefined");
+        return
+      }
       const drawChannel = guild.channels.cache.find(
         (chn) => chn.id === drawChannelId
       );
-      if (drawChannel == undefined)
-        return console.log("DrawChannel's undefined");
-      const list = await listDraws(week);
+      if (drawChannel == undefined) {
+        console.log("DrawChannelId's undefined");
+        return
+      }
+      const list = await listDraws(guild, week);
+      console.log(list)
       let embeds = [];
       for (const userId of list) {
         if (userId == "data") continue;

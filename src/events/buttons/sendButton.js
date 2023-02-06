@@ -1,12 +1,10 @@
 const { array, removeElement, hasSend } = require("../../managers/drawManager");
-const { getData, sendDraw } = require("../../utils/firebase/firabaseDraw");
 const { uploadImg } = require("../../utils/imgurApi");
 const { emojis } = require("../../utils/emotes.json");
-const { toMoment, getNextSunday } = require("../../utils/timerApi");
+const { getNextSunday } = require("../../utils/timerApi");
 const {
   addOrUpdateDraw,
   getMembers,
-  getWeek,
   getDataWeek,
 } = require("../../database/manager/guildManager");
 
@@ -35,7 +33,7 @@ module.exports = {
 
       const dateInt = parseInt(date / 1000);
 
-      const hasBool = await hasSend(week);
+      const hasBool = await hasSend(guild, week);
       const dateString = hasBool ? ", hoje" : ` <t:${dateInt}:R>`;
 
       const draw = {

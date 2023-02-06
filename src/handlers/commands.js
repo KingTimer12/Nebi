@@ -19,7 +19,6 @@ module.exports = async (client) => {
     }
   }
   try {
-    console.log("Loading application commands...");
     if (publicCommand.length) {
       const data = await rest.put(Routes.applicationCommands(process.env.BOT_ID), {
         body: publicCommand,

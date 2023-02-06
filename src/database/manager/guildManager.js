@@ -227,11 +227,17 @@ const addOrUpdateDraw = async (guild, { week = 1, data, members = [] }) => {
 const setDisable = async (guild, week, userId) => {
   const guildSchema = await getGuild(guild.id);
   if (guildSchema) {
+    const done = function (error, success) {
+      if (error) {
+        console.log(error);
+      }
+    };
+    
     await GuildSchema.updateOne(
       { "drawEvent.week": week, "drawEvent.members.userId": userId },
       {
         $set: {
-          "drawEvent.members.$.enable": false,
+          "drawEvent.$.enable": false,
         },
       },
       done
@@ -239,6 +245,22 @@ const setDisable = async (guild, week, userId) => {
     return true;
   } else await createGuild(guild);
   return false;
+};
+
+const listDraws = async (guild, week) => {
+  const guildSchema = await getGuild(guild.id);
+  const result = []
+  if (guildSchema) {
+    for (const draw of guildSchema.drawEvent) {
+      if (draw.week == week) {
+        for (const member of draw.members) {
+          result.push(member.userId)
+        }
+        break;
+      }
+    }
+  } else await createGuild(guild);
+  return result;
 };
 
 const getEnable = async (guild, week, userId) => {
@@ -320,5 +342,6 @@ module.exports = {
   getMembers,
   getEnable,
   getInfo,
-  setDisable
+  setDisable,
+  listDraws
 };
