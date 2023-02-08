@@ -38,9 +38,7 @@ const saveUser = async (userModel) => {
   ).clone();
 };
 
-const hasUser = async (userId) => {
-  return (await getUser(userId)) != undefined;
-};
+const hasUser = async (userId) => (await getUser(userId)) != undefined;
 
 module.exports = {
   createUser,

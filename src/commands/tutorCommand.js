@@ -176,7 +176,7 @@ module.exports = {
             }
             if (!role && row.tutor == tutor) {
               role = guild.roles.cache.find((role) => role.id == row.roleId);
-              targetMember.roles.add(role).catch(() => {});
+              await targetMember.roles.add(role).catch(() => {});
             }
           }
 

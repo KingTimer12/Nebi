@@ -1,4 +1,4 @@
-const { getUser, addUser } = require("../database/handler/userHandler");
+const { getUser, addUser, hasCooldown, addCooldown } = require("../database/handler/userHandler");
 const { hasUser, saveUser } = require("../database/manager/userManager");
 
 module.exports = {
@@ -11,18 +11,26 @@ module.exports = {
     const { user } = message.member;
     const userId = user.id;
 
-    if (message.channelId == "820690824463515718") {
+    /*if (!hasCooldown(userId)) {
+      console.log('a')
+      addCooldown(userId)
+
       let userProfile = getUser(userId);
-      if (!userProfile) {
-        if (hasUser(userId)) {
-          userProfile = addUser(user);
-          await userProfile.load();
-        } else {
-          userProfile = addUser(user);
-        }
+      if (hasUser(userId)) {
+        userProfile = addUser(user);
+        await userProfile.load();
+      } else {
+        userProfile = addUser(user);
       }
 
-      //userProfile.addGlow(50)
-    }
+      const nextLevel = userProfile.level + 1;
+      const glowRequired = nextLevel * nextLevel * 100;
+      const glowsRandom = Math.floor(Math.random() * 9) + 1;
+      let glows = (userProfile.glows += glowsRandom);
+      if (glows >= glowRequired) {
+        userProfile.addLevel(1);
+      }
+      userProfile.setGlows(glows);
+    }*/
   },
 };

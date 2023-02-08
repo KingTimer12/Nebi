@@ -28,7 +28,7 @@ module.exports = {
     await loadMongo().then(() => console.log('Connected successfully'))
 
     //Atualizar os usuários no banco de dados
-    setInterval(async () => await updateAllUsers(), 60 * 1000);
+    //setInterval(async () => await updateAllUsers(), 60 * 1000);
 
     for (const guild of client.guilds.cache.values()) {
       //Método para adicionar todos tutorando na planilha
