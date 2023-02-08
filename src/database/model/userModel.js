@@ -10,8 +10,16 @@ module.exports = class UserModel {
     this.badges = new Map();
   }
 
-  addGlow = (glow) => {
-    this.glows += glow;
+  setGlows = (glows) => {
+    this.glows = glows;
+  };
+
+  addLevel = (level) => {
+    this.level+=level;
+  };
+
+  removeLevel = (level) => {
+    this.level-=level;
   };
 
   load = async () => {

@@ -1,7 +1,8 @@
 const { saveUser } = require("../manager/userManager")
 const UserModel = require("../model/userModel")
 
-const users = []
+let users = []
+let userCooldown = []
 
 const addUser = (user) => {
     const userModel = new UserModel(user.id, user.username, 1, 0)
@@ -9,15 +10,21 @@ const addUser = (user) => {
     return userModel
 }
 
-const getUser = (userId) => {
-    return users.find(user => user.userId == userId)
-}
+const getUser = (userId) => users.find(user => user.userId == userId)
 
 const updateAllUsers = async () => {
     for (const userModel of users) {
         await saveUser(userModel)
     }
-    delete users
+    users = []
+    userCooldown = []
+    console.log('update database')
 }
 
-module.exports = {addUser, getUser, updateAllUsers}
+const addCooldown = (userId) => {
+    userCooldown.push(userId)
+}
+
+const hasCooldown = (userId) => userCooldown.find(id => id == userId) != undefined
+
+module.exports = {addUser, getUser, updateAllUsers, addCooldown, hasCooldown}

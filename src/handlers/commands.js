@@ -11,6 +11,7 @@ module.exports = async (client) => {
   const rest = new REST({ version: "10" }).setToken(process.env.BOT_TOKEN);
   for (let file of slashFiles) {
     let commandSlash = require(`../commands/${file}`);
+    if (commandSlash.data == undefined) continue
     client.commands.set(commandSlash.data.name, commandSlash);
     if (commandSlash.dev == true) {
       privateCommand.push(commandSlash.data.toJSON());
