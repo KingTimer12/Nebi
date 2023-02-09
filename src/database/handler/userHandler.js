@@ -17,9 +17,9 @@ const updateAllUsers = async () => {
         await saveUser(userModel)
     }
     users = []
-    userCooldown = []
-    console.log('update database')
 }
+
+const removeCooldowns = () => userCooldown = []
 
 const addCooldown = (userId) => {
     userCooldown.push(userId)
@@ -27,4 +27,4 @@ const addCooldown = (userId) => {
 
 const hasCooldown = (userId) => userCooldown.find(id => id == userId) != undefined
 
-module.exports = {addUser, getUser, updateAllUsers, addCooldown, hasCooldown}
+module.exports = {addUser, getUser, updateAllUsers, addCooldown, hasCooldown, removeCooldowns}

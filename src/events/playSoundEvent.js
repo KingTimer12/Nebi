@@ -31,7 +31,7 @@ module.exports = {
     if (interaction != undefined)
       return interaction.editReply({
         embeds: [embed],
-      });
-    queue.textChannel.send({ embeds: [embed] });
+      }).catch(console.error);
+    queue.textChannel.send({ embeds: [embed] }).catch(console.error);
   },
 };
