@@ -114,9 +114,9 @@ module.exports = {
               components: [send],
               ephemeral: true,
             })
-            .catch((err) => {});
+            .catch(() => {});
         }
-      })
+      }).catch(() => {});
     }
     if (customId == "modal-md-edit") {
       const drawName = fields.getTextInputValue("draw-name");

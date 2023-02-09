@@ -1,4 +1,5 @@
 const { getUser } = require("../manager/userManager");
+const userSchema = require("../schemas/userSchema");
 
 module.exports = class UserModel {
   constructor(userId, username, level, glows) {
@@ -8,6 +9,7 @@ module.exports = class UserModel {
     this.glows = glows;
     this.wallpaper = "https://i.imgur.com/H1GXNG4.jpg";
     this.badges = new Map();
+    this.position = 1
   }
 
   setGlows = (glows) => {
@@ -21,6 +23,11 @@ module.exports = class UserModel {
   removeLevel = (level) => {
     this.level-=level;
   };
+
+  loadPosition = async () => {
+    const leaderboard = await userSchema.find({}).sort([['glows', 'descending']]).exec()
+    this.position = leaderboard.findIndex(i => i.userId === this.userId) + 1;
+  }
 
   load = async () => {
     const userSchema = await getUser(this.userId);

@@ -18,9 +18,6 @@ let arrayTemporary = [];
 
 const createFormat = async (guild, row, forumChannel) => {
   const dataNowValue = row[0];
-  if (toCompare(dataNowValue, "01/01/2023 00:00:00") != true) {
-    return undefined;
-  }
 
   const user = guild.members.cache
     .map((member) => member.user)

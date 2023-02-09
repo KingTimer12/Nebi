@@ -14,6 +14,8 @@ module.exports = {
       const command = client.commands.get(commandName)
       if (!command) return;
 
+      console.log(`{COMANDO} | ${interaction.user.tag} (${interaction.user.id}) usou o comando ${commandName} no canal ${interaction.channel.name}`)
+
       try {
         await command.execute(interaction);
       } catch (error) {

@@ -8,7 +8,7 @@ const {
 } = require("../utils/googleApi/rankApi.js");
 const { loadMongo } = require("../database/mongodb.js");
 const { getChannel, getRole } = require("../database/manager/guildManager.js");
-const { updateAllUsers } = require("../database/handler/userHandler.js");
+const { updateAllUsers, removeCooldowns } = require("../database/handler/userHandler.js");
 
 const activities = [
   { type: ActivityType.Playing, name: "meu jogo!" },
@@ -28,7 +28,8 @@ module.exports = {
     await loadMongo().then(() => console.log('Connected successfully'))
 
     //Atualizar os usuários no banco de dados
-    //setInterval(async () => await updateAllUsers(), 60 * 1000);
+    setInterval(async () => await updateAllUsers(), 60 * 1000);
+    setInterval(() => removeCooldowns(), 30 * 1000);
 
     for (const guild of client.guilds.cache.values()) {
       //Método para adicionar todos tutorando na planilha
