@@ -1,4 +1,9 @@
-const { getUser, addUser, hasCooldown, addCooldown } = require("../database/handler/userHandler");
+const {
+  getUser,
+  addUser,
+  hasCooldown,
+  addCooldown,
+} = require("../database/handler/userHandler");
 const { hasUser, saveUser } = require("../database/manager/userManager");
 
 module.exports = {
@@ -12,7 +17,7 @@ module.exports = {
     const userId = user.id;
 
     /*if (!hasCooldown(userId)) {
-      addCooldown(userId)
+      addCooldown(userId);
 
       let userProfile = getUser(userId);
       if (!userProfile) {
@@ -24,14 +29,10 @@ module.exports = {
         }
       }
 
-      const nextLevel = userProfile.level + 1;
-      const glowRequired = nextLevel * nextLevel * 100;
       const glowsRandom = Math.floor(Math.random() * 9) + 1;
       let glows = userProfile.glows + glowsRandom;
-      if (glows >= glowRequired) {
-        userProfile.addLevel(1);
-      }
       userProfile.setGlows(glows);
+      userProfile.readjustLevel();
     }*/
   },
 };

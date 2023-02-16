@@ -63,5 +63,4 @@ module.exports = {
       await interaction.reply({ files: [attachment] });
     });
   },
-};
-*/
+};*/
