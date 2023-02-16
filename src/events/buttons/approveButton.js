@@ -1,4 +1,5 @@
 const { ActionRowBuilder, StringSelectMenuBuilder } = require("discord.js");
+const { getRole } = require("../../database/manager/guildManager");
 const { array, removeElement } = require("../../managers/drawManager");
 const { emojis } = require("../../utils/emotes.json");
 const { getTutores } = require("../../utils/googleApi/rankApi");
@@ -6,12 +7,27 @@ const { getTutores } = require("../../utils/googleApi/rankApi");
 module.exports = {
   customId: "formAccept",
   async execute(interaction, client) {
-    const { user, channel, guild } = interaction;
-    const int = interaction;
+    const { channel, guild } = interaction;
 
     const targetMember = guild.members.cache.find(
       (member) => member.user.tag.replace("#", "") == channel.name
     );
+
+    const studentId = await getRole(guild, { roleName: "student" });
+    if (studentId == undefined) return;
+    let studentRole = guild.roles.cache.find((role) => role.id == studentId);
+    const hasStudent = targetMember.roles.cache.find(
+      (role) => role == studentRole
+    );
+
+    if (hasStudent) {
+      return await interaction
+        .reply({
+          content: `${emojis["error"]} <@${targetMember.id}> já faz parte da tutoria.`,
+          ephemeral: true,
+        })
+        .catch(() => {});
+    }
 
     const array = [];
     const tutores = await getTutores(429915779);

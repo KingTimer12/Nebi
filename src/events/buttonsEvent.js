@@ -7,9 +7,7 @@ module.exports = {
     if (!interaction.isButton()) return;
     const { customId } = interaction;
     var button = client.buttons.get(customId);
-    console.log(customId)
     if (!button) return
-
 
     try {
       await button.execute(interaction, client);
