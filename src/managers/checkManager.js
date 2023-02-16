@@ -3,10 +3,10 @@ const { listValues } = require("../utils/googleApi/forumApi.js");
 const { toCompare } = require("../utils/timerApi.js");
 const {
   mainMessagesForum,
-  buttonUpPageForum,
   secondMessagesForum,
   lastMessagesForum,
   thirdMessagesForum,
+  buttonsForum,
 } = require("../messages/forumAppMessage.js");
 const {
   getData,
@@ -18,6 +18,7 @@ let arrayTemporary = [];
 
 const createFormat = async (guild, row, forumChannel) => {
   const dataNowValue = row[0];
+  //NUNCA TIRAR ESSA PARTE DO CÓDIGO
   if (toCompare(dataNowValue, "01/01/2023 00:00:00") != true) {
     return undefined;
   }
@@ -191,7 +192,9 @@ const checking = async (guild, forumChannel) => {
           await threadChannel
             .send({
               embeds: lastMessagesForum(row.answer, questions),
-              components: [buttonUpPageForum(`${msgURL.at(0)}`)],
+              components: [
+                buttonsForum(`${msgURL.at(0)}`)
+              ],
             })
             .catch(console.log);
 

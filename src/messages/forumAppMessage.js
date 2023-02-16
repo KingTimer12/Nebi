@@ -1,4 +1,9 @@
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const {
+  EmbedBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+} = require("discord.js");
 const { transformTimestamp } = require("../utils/timerApi");
 
 let purpleHex = "#D000BA";
@@ -39,7 +44,7 @@ const secondMessagesForum = (answer, questions) => {
 
   const startIndex = 7;
   for (let i = startIndex; i < questions.length; i++) {
-    if (i == 15) break
+    if (i == 15) break;
     embeds.push(
       new EmbedBuilder()
         .setColor(purpleHex)
@@ -56,7 +61,7 @@ const thirdMessagesForum = (answer, questions) => {
 
   const startIndex = 15;
   for (let i = startIndex; i < questions.length; i++) {
-    if (i == 22) break
+    if (i == 22) break;
     embeds.push(
       new EmbedBuilder()
         .setColor(purpleHex)
@@ -73,7 +78,7 @@ const lastMessagesForum = (answer, questions) => {
 
   const startIndex = 22;
   for (let i = startIndex; i < questions.length; i++) {
-    if (i == 28) continue
+    if (i == 28) continue;
     if (i == 27) {
       embeds.push(
         new EmbedBuilder()
@@ -95,14 +100,25 @@ const lastMessagesForum = (answer, questions) => {
   return embeds;
 };
 
-const buttonUpPageForum = (url) => {
+const buttonsForum = (url) => {
   const row = new ActionRowBuilder().addComponents(
+    new ButtonBuilder()
+      .setCustomId(`formAccept`)
+      .setEmoji({ id: "1051884168977584139", name: "ready" })
+      .setLabel(`Aprovar`)
+      .setStyle(ButtonStyle.Success),
     new ButtonBuilder()
       .setURL(url)
       .setLabel("⬆ Clique para ir ao topo!")
       .setStyle(ButtonStyle.Link)
   );
-  return row
+  return row;
 };
 
-module.exports = { mainMessagesForum, secondMessagesForum, thirdMessagesForum, lastMessagesForum, buttonUpPageForum };
+module.exports = {
+  mainMessagesForum,
+  secondMessagesForum,
+  thirdMessagesForum,
+  lastMessagesForum,
+  buttonsForum,
+};

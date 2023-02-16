@@ -1,4 +1,4 @@
-const { getter } = require('../utils/firebase/firebaseGuildApi');
+const { getChannel } = require('../database/manager/guildManager');
 
 require('dotenv').config()
 
@@ -10,11 +10,11 @@ module.exports = {
   async createEvent(member) {
     if (member.bot) return;
     const guild = member.guild
-    const genericId = await getter(guild.id, "channel", "forum");
-    if (genericId == undefined) return
+    const forumId = await getChannel(guild, {channelName:'forum'})
+    if (forumId == undefined) return
 
     const forumChannel = guild.channels.cache.find(
-      (chn) => chn.id === genericId
+      (chn) => chn.id === forumId
     );
     if (forumChannel == undefined) return
 

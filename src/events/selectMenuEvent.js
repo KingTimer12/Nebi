@@ -46,10 +46,10 @@ module.exports = {
       await select.execute(interaction, client);
     } catch (error) {
       console.error(error);
-      return interaction.reply({
+      return await interaction.reply({
         content: "Ocorreu um erro ao executar esse selecionar!",
         ephemeral: true,
-      });
+      }).catch(() => {});
     }
   },
 };
