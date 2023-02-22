@@ -4,7 +4,7 @@ const {
   hasCooldown,
   addCooldown,
 } = require("../database/handler/userHandler");
-const { hasUser, saveUser } = require("../database/manager/userManager");
+const { fetchUser, saveUser } = require("../database/manager/userManager");
 
 module.exports = {
   name: "Message Create",
@@ -16,23 +16,20 @@ module.exports = {
     const { user } = message.member;
     const userId = user.id;
 
-    /*if (!hasCooldown(userId)) {
-      addCooldown(userId);
-
-      let userProfile = getUser(userId);
+    if (!hasCooldown(userId)) {
+      addCooldown(userId)
+      let userProfile = getUser(userId)
       if (!userProfile) {
-        if (hasUser(userId)) {
-          userProfile = addUser(user);
-          await userProfile.load();
-        } else {
-          userProfile = addUser(user);
+        userProfile = addUser(user)
+        const userSchema = await fetchUser(userId)
+        if (userSchema) {
+          await userProfile.load(userSchema);
         }
       }
 
-      const glowsRandom = Math.floor(Math.random() * 9) + 1;
-      let glows = userProfile.glows + glowsRandom;
-      userProfile.setGlows(glows);
-      userProfile.readjustLevel();
-    }*/
+      const xpRandom = Math.floor(Math.random() * 9) + 1;
+      userProfile.addXp(xpRandom)
+      userProfile.checkLevel()
+    }
   },
 };

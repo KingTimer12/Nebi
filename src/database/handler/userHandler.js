@@ -10,13 +10,14 @@ const addUser = (user) => {
     return userModel
 }
 
-const getUser = (userId) => users.find(user => user.userId == userId)
+const getUser = (userId = '') => users.find(user => user.userId == userId)
 
 const updateAllUsers = async () => {
     for (const userModel of users) {
         await saveUser(userModel)
     }
     users = []
+    console.log('{USER} | Atualizado todos os usuários em cache no banco de dados.')
 }
 
 const removeCooldowns = () => userCooldown = []

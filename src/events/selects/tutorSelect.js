@@ -18,19 +18,30 @@ module.exports = {
         const targetMember = guild.members.cache.find(
           (member) => member.user.tag.replace("#", "") == channel.name
         );
-    
+
         const forumId = await getChannel(guild, { channelName: "forum" });
         if (forumId == undefined) return;
-    
-        const forumChannel = guild.channels.cache.find((chn) => chn.id === forumId);
-    
+
+        const forumChannel = guild.channels.cache.find(
+          (chn) => chn.id === forumId
+        );
+
         const studentId = await getRole(guild, { roleName: "student" });
         if (studentId == undefined) return;
-        let studentRole = guild.roles.cache.find((role) => role.id == studentId);
+        let studentRole = guild.roles.cache.find(
+          (role) => role.id == studentId
+        );
+
+        const studentPlusId = await getRole(guild, { roleName: "student-plus" });
+        if (studentPlusId == undefined) return;
+        let studentPlusRole = guild.roles.cache.find(
+          (role) => role.id == studentPlusId
+        );
+
         const hasStudent = targetMember.roles.cache.find(
           (role) => role == studentRole
         );
-    
+
         if (hasStudent) {
           return await interaction
             .reply({
@@ -39,8 +50,6 @@ module.exports = {
             })
             .catch(() => {});
         }
-
-        targetMember.roles.add(studentRole).catch(console.error);
 
         const tutores = await getTutores(429915779);
         for (const row of tutores) {
@@ -82,7 +91,19 @@ module.exports = {
               ephemeral: true,
             })
             .catch(() => {});
-        channel.setAppliedTags([close.id]);
+
+        const tutorandoPlus = forumChannel.availableTags.find(
+          (r) => r.name == "Tutorando+"
+        );
+
+        if (tutorandoPlus) {
+          targetMember.roles.add(studentPlusRole).catch(console.error);
+          targetMember.roles.add(studentRole).catch(console.error);
+          channel.setAppliedTags([tutorandoPlus.id, close.id]);
+        } else {
+          targetMember.roles.add(studentRole).catch(console.error);
+          channel.setAppliedTags([close.id]);
+        }
 
         //Feature pro futuro
         /*const row = new ActionRowBuilder().addComponents(

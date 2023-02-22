@@ -1,69 +1,59 @@
-const { getUser } = require("../manager/userManager");
+const { fetchUser } = require("../manager/userManager");
 const userSchema = require("../schemas/userSchema");
+const ProfileData = require("./data/profileData");
+const RankData = require("./data/rankData");
 
 module.exports = class UserModel {
-  constructor(userId, username, level, glows) {
+  constructor(userId = "", username = "") {
     this.userId = userId;
     this.username = username;
-    this.level = level;
-    this.glows = glows;
-    this.wallpaper = "https://i.imgur.com/H1GXNG4.jpg";
-    this.badges = new Map();
+    this.profileData = new ProfileData();
+    this.rankData = new RankData();
     this.position = 1;
   }
 
   setGlows = (glows) => {
-    this.glows = glows;
+    this.profileData.setGlows(glows);
   };
 
-  addLevel = (level) => {
-    this.level += level;
+  addLevel = () => {
+    this.rankData.addLevel();
   };
 
-  removeLevel = (level) => {
-    this.level -= level;
-    if (this.level < 1) {
-      this.level = 1;
-    }
+  addXp = (xp) => {
+    this.rankData.addXp(xp);
   };
 
   loadPosition = async () => {
     const leaderboard = await userSchema
       .find({})
-      .sort([["glows", "descending"]])
+      .sort([["rank.xp", "descending"]])
       .exec();
     this.position = leaderboard.findIndex((i) => i.userId === this.userId) + 1;
   };
 
-  readjustLevel = () => {
-    while (true) {
-      const currentLevel = this.level;
-      const nextLevel = currentLevel + 1;
-      if (this.glows >= nextLevel * nextLevel * 100) {
-        this.addLevel(1);
-      } else {
-        if (this.glows >= currentLevel * currentLevel * 100) break;
-        if (currentLevel == 1) break;
-        this.removeLevel(1);
-      }
-    }
+  nextLevel = () => {
+    return (this.rankData.level + 1) * (this.rankData.level + 1) * 100;
   };
 
-  load = async () => {
-    const userSchema = await getUser(this.userId);
+  checkLevel = () => {
+    if (this.rankData.xp >= this.nextLevel()) this.addLevel();
+  };
+
+  load = async (userSchema) => {
     if (userSchema) {
-      this.userId = userSchema.userId;
-      this.username = userSchema.username;
-      this.level = userSchema.level;
-      this.glows = userSchema.glows;
-      this.wallpaper = userSchema.wallpaper;
-      this.badges = userSchema.badges;
+      const { profile, rank } = userSchema;
+      this.profileData = new ProfileData(
+        profile.aboutMe,
+        profile.birthday,
+        profile.glows,
+        profile.badges,
+        profile.wallpaper
+      );
+      this.rankData = new RankData(rank.xp, rank.level, rank.wallpaper);
+      this.position = await this.loadPosition();
       return this;
     }
     return undefined;
-  };
-
-  calculateGlows = (level) => {
-    return level * level * 100;
   };
 };

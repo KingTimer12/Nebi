@@ -24,7 +24,7 @@ module.exports = {
     await loadMongo().then(() => console.log('Connected successfully'))
 
     //Atualizar os usuários no banco de dados
-    setInterval(async () => await updateAllUsers(), 60 * 1000);
+    setInterval(async () => await updateAllUsers(), 10 * 1000);
     setInterval(() => removeCooldowns(), 20 * 1000);
 
     for (const guild of client.guilds.cache.values()) {

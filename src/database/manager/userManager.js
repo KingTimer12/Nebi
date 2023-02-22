@@ -1,48 +1,66 @@
+const UserModel = require("../model/userModel");
 const UserSchema = require("../schemas/userSchema");
 
-const getUser = async (userId) => await UserSchema.findOne({ userId: userId });
+const fetchUser = async (userId) => await UserSchema.findOne({ userId: userId });
 
 const createUser = async (userModel) => {
   if (userModel == undefined) return;
+  const {userId, username, profileData, rankData} = userModel
   const userSchema = new UserSchema({
-    userId: userModel.userId,
-    username: userModel.username,
-    level: userModel.level,
-    glows: userModel.glows,
-    wallpaper: userModel.wallpaper,
-    badges: userModel.badges,
+    userId: userId,
+    username: username,
+    profile: {
+      aboutMe: profileData.aboutMe,
+      birthday: profileData.birthday,
+      glows: profileData.glows,
+      wallpaper: profileData.wallpaper,
+      badges: profileData.badges
+    },
+    rank: {
+      level: rankData.level,
+      wallpaper: rankData.wallpaper,
+      xp: rankData.xp
+    }
   });
   await userSchema.save();
 };
 
-const saveUser = async (userModel) => {
-  const userProfile = await getUser(userModel.userId);
-  if (!userProfile) return createUser(userModel);
+const saveUser = async (userModel = new UserModel()) => {
+  const userProfile = await fetchUser(userModel.userId);
+  if (!userProfile) return await createUser(userModel);
+
+  const {userId, username, profileData, rankData} = userModel
+
   const done = function (error, success) {
     if (error) {
       console.log(error);
     }
   };
   await UserSchema.updateOne(
-    { userId: userModel.userId },
+    { userId: userId },
     {
       $set: {
-        username: userModel.username,
-        level: userModel.level,
-        glows: userModel.glows,
-        wallpaper: userModel.wallpaper,
-        badges: userModel.badges,
+        username: username,
+        profile: {
+          aboutMe: profileData.aboutMe,
+          birthday: profileData.birthday,
+          glows: profileData.glows,
+          wallpaper: profileData.wallpaper,
+          badges: profileData.badges
+        },
+        rank: {
+          level: rankData.level,
+          wallpaper: rankData.wallpaper,
+          xp: rankData.xp
+        }
       },
     },
     done
   ).clone();
 };
 
-const hasUser = async (userId) => (await getUser(userId)) != undefined;
-
 module.exports = {
   createUser,
   saveUser,
-  hasUser,
-  getUser,
+  fetchUser,
 };
