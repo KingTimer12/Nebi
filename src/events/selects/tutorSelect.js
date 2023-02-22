@@ -40,7 +40,7 @@ module.exports = {
             .catch(() => {});
         }
 
-        targetMember.roles.add(studentRole).catch(() => {});
+        targetMember.roles.add(studentRole).catch(console.error);
 
         const tutores = await getTutores(429915779);
         for (const row of tutores) {

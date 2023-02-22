@@ -9,6 +9,8 @@ module.exports = {
     var button = client.buttons.get(customId);
     if (!button) return
 
+    console.log(`{BUTTON} | ${interaction.user.tag} (${interaction.user.id}) clicou no botão ${customId} no canal ${interaction.channel.name}`)
+
     try {
       await button.execute(interaction, client);
     } catch (error) {

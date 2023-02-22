@@ -5,7 +5,7 @@ const { getter } = require("../../utils/firebase/firebaseGuildApi");
 const addSelectedRole = async (guild, member, id) => {
   const role = guild.roles.cache.find((role) => role.id === id);
   if (role != undefined && member.roles.cache.get(id) == undefined) {
-    await member.roles.add(role).catch(console.log);
+    member.roles.add(role).catch(console.log);
     return id;
   }
   return undefined;
@@ -14,7 +14,7 @@ const addSelectedRole = async (guild, member, id) => {
 const removeSelectedRole = async (guild, member, id) => {
   const role = guild.roles.cache.find((role) => role.id === id);
   if (role != undefined && member.roles.cache.get(id) != undefined) {
-    await member.roles.remove(role).catch(console.log);
+    member.roles.remove(role).catch(console.log);
     return id;
   }
   return undefined;

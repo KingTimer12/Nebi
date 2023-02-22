@@ -1,13 +1,9 @@
 const { ActivityType } = require("discord.js");
 const { checking } = require("../managers/checkManager.js");
-const { checkingDraw } = require("../managers/drawCheckManager.js");
-const { getter } = require("../utils/firebase/firebaseGuildApi.js");
+
 const { getError, setError } = require("../utils/googleApi/forumApi");
-const {
-  addUsersRow,
-} = require("../utils/googleApi/rankApi.js");
 const { loadMongo } = require("../database/mongodb.js");
-const { getChannel, getRole } = require("../database/manager/guildManager.js");
+const { getChannel } = require("../database/manager/guildManager.js");
 const { updateAllUsers, removeCooldowns } = require("../database/handler/userHandler.js");
 
 const activities = [
@@ -55,7 +51,7 @@ module.exports = {
           } else {
             await checking(guild, forumChannel);
           }
-        }, 60 * 1000);
+        }, 60 * 60 * 1000);
       }
     }
 

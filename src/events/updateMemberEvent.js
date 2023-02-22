@@ -1,4 +1,4 @@
-const { getter } = require("../utils/firebase/firebaseGuildApi");
+const { getRole } = require("../database/manager/guildManager");
 const { updateNicknameRow } = require("../utils/googleApi/rankApi");
 
 module.exports = {
@@ -13,15 +13,14 @@ module.exports = {
     if (oldMember.pending && !newMember.pending) {
       const {guild, roles} = newMember
 
-      const genericId = await getter(guild.id, "role", "register");
-      if (genericId == undefined) return
-
+      const registerId = await getRole(guild, {roleName: 'register'})
+      if (registerId == undefined) return
       let role = guild.roles.cache.find(
-        (role) => role.id == genericId
+        (role) => role.id == registerId
       );
       if (role == undefined) return
 
-      roles.add(role);
+      await roles.add(role).catch(console.error);
     }
 
     
