@@ -1,3 +1,4 @@
+const { getDraw, removeDraw } = require("../../database/handler/drawHandler");
 const { array, removeElement } = require("../../managers/drawManager");
 const { emojis } = require("../../utils/emotes.json");
 
@@ -7,12 +8,11 @@ module.exports = {
     const { user } = interaction;
     const userId = user.id;
 
-    const list = array();
-    const obj = list.find((l) => l.userId == userId);
-    if (obj == undefined) return;
-    const int = obj.interaction;
-    removeElement(obj);
-    int.editReply({
+    const drawObj = getDraw(userId)
+    if (drawObj == undefined) return;
+    const int = drawObj.interaction;
+    removeDraw(userId)
+    await int.editReply({
       content: `${emojis["error"]} O envio foi cancelado com sucesso!`,
       components: [],
       files: [],

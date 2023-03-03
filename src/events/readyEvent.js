@@ -10,6 +10,8 @@ const {
 const { load } = require("../handlers/emojiHandler.js");
 const { geral1, geral2 } = require("../utils/json/topicChannel.json");
 const { convertStringToEmoji } = require("../utils/convertEmoji.js");
+const { createDrawEvent } = require("../database/manager/drawManager.js");
+const { checkingDraw } = require("../managers/drawCheckManager.js");
 
 const activities = [
   { type: ActivityType.Playing, name: "meu jogo!" },
@@ -87,10 +89,10 @@ module.exports = {
 
       if (forumChannel != undefined) {
         await checking(guild, forumChannel);
-        //await checkingDraw(guild);
+        await checkingDraw(guild);
 
         setInterval(async () => {
-          //await checkingDraw(guild);
+          await checkingDraw(guild);
           if (getError() == true) {
             setInterval(async () => {
               setError(false);

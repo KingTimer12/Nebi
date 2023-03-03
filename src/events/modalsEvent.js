@@ -1,17 +1,7 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
-const { add, removeElement, array } = require("../managers/drawManager");
+const { getDraw, updateDraw } = require("../database/handler/drawHandler");
+const DrawModel = require("../database/model/drawModel");
 const { emojis } = require("../utils/emotes.json");
-const {
-  getWeek,
-  createEvent,
-  getData,
-} = require("../utils/firebase/firabaseDraw");
-const { getNextSunday } = require("../utils/timerApi");
-
-const find = (userId) => {
-  const list = array();
-  return list.find((l) => l.userId == userId);
-};
 
 async function awaitImage(interaction) {
   const filter = (msg) =>
@@ -40,101 +30,93 @@ module.exports = {
     if (!interaction.isModalSubmit()) return;
     const { user, customId, fields } = interaction;
     const userId = user.id;
-    if (customId == "modal-li") {
-      const textName = fields.getTextInputValue("text-name");
-      const link = fields.getTextInputValue("link");
-      console.log(textName, link);
-      return;
-    }
     if (customId == "modal-md") {
       const drawName = fields.getTextInputValue("draw-name");
       const type = fields.getTextInputValue("type");
       let comments = fields.getTextInputValue("comments");
 
-      const obj = find(userId);
-      if (obj == undefined) return;
-      const int = obj.interaction;
+      const draw = getDraw(userId);
+      if (draw == undefined) return;
+      const int = draw.interaction;
 
-      const url = obj.url;
-      const week = obj.week;
+      const url = draw.link;
 
-      removeElement(obj);
-      add(week, userId, drawName, type, comments, url, int);
+      updateDraw(userId, new DrawModel(int, drawName, type, url, comments));
 
-      return await interaction.deferUpdate().then(() => {
-        if (url == undefined) {
-          const row = new ActionRowBuilder().addComponents(
-            new ButtonBuilder()
-              .setCustomId("send-img")
-              .setEmoji({ id: "1051884167782219776", name: "error" })
-              .setLabel("Enviar imagem")
-              .setStyle(ButtonStyle.Danger),
-            new ButtonBuilder()
-              .setCustomId("send-info")
-              .setEmoji({ id: "1051884168977584139", name: "ready" })
-              .setLabel("Enviar informações")
-              .setDisabled(true)
-              .setStyle(ButtonStyle.Success)
-          );
-  
-          int.editReply({
-            fetchReply: true,
-            components: [row],
-            ephemeral: true,
-          });
-        } else {
-          const msgComments = comments != undefined ? `${comments}` : "~~vazio~~";
-          let msgFinal =
-            `Veja se todas as informações estão corretas. Caso estejam, clique no botão **enviar**.\n` +
-            `Houve algum erro? Clique em **editar** para corrigir.\n\n` +
-            `Título: ${drawName}\nTipo: ${type}\nComentário: ${msgComments}\nImagem:`;
-  
-          const send = new ActionRowBuilder().addComponents(
-            new ButtonBuilder()
-              .setCustomId("send")
-              .setEmoji({ id: "1051884166276460604", name: "send" })
-              .setLabel("Enviar")
-              .setStyle(ButtonStyle.Success),
-            new ButtonBuilder()
-              .setCustomId("edit")
-              .setEmoji("✏️")
-              .setLabel("Editar")
-              .setStyle(ButtonStyle.Primary),
-            new ButtonBuilder()
-              .setCustomId("cancel")
-              .setEmoji({ id: "1051884167782219776", name: "error" })
-              .setLabel("Cancelar")
-              .setStyle(ButtonStyle.Danger)
-          );
-  
-          int
-            .editReply({
-              content: msgFinal,
-              files: [{ attachment: url, name: `${drawName}.png` }],
-              components: [send],
-              ephemeral: true,
-            })
-            .catch(() => {});
-        }
-      }).catch(() => {});
+      return await interaction
+        .deferUpdate()
+        .then(async () => {
+          if (url == undefined) {
+            const row = new ActionRowBuilder().addComponents(
+              new ButtonBuilder()
+                .setCustomId("send-img")
+                .setEmoji({ id: "1051884167782219776", name: "error" })
+                .setLabel("Enviar imagem")
+                .setStyle(ButtonStyle.Danger),
+              new ButtonBuilder()
+                .setCustomId("send-info")
+                .setEmoji({ id: "1051884168977584139", name: "ready" })
+                .setLabel("Enviar informações")
+                .setDisabled(true)
+                .setStyle(ButtonStyle.Success)
+            );
+
+            await int
+              .editReply({
+                fetchReply: true,
+                components: [row],
+                ephemeral: true,
+              })
+              .catch(console.error);
+          } else {
+            const msgComments =
+              comments != undefined ? `${comments}` : "~~vazio~~";
+            let msgFinal =
+              `Veja se todas as informações estão corretas. Caso estejam, clique no botão **enviar**.\n` +
+              `Houve algum erro? Clique em **editar** para corrigir.\n\n` +
+              `Título: ${drawName}\nTipo: ${type}\nComentário: ${msgComments}\nImagem:`;
+
+            const send = new ActionRowBuilder().addComponents(
+              new ButtonBuilder()
+                .setCustomId("send")
+                .setEmoji({ id: "1051884166276460604", name: "send" })
+                .setLabel("Enviar")
+                .setStyle(ButtonStyle.Success),
+              new ButtonBuilder()
+                .setCustomId("edit")
+                .setEmoji("✏️")
+                .setLabel("Editar")
+                .setStyle(ButtonStyle.Primary),
+              new ButtonBuilder()
+                .setCustomId("cancel")
+                .setEmoji({ id: "1051884167782219776", name: "error" })
+                .setLabel("Cancelar")
+                .setStyle(ButtonStyle.Danger)
+            );
+
+            await int
+              .editReply({
+                content: msgFinal,
+                files: [{ attachment: url, name: `${drawName}.png` }],
+                components: [send],
+                ephemeral: true,
+              })
+              .catch(console.error);
+          }
+        })
+        .catch(console.error);
     }
     if (customId == "modal-md-edit") {
       const drawName = fields.getTextInputValue("draw-name");
       const type = fields.getTextInputValue("type");
       let comments = fields.getTextInputValue("comments");
 
-      if (comments.length > 1000) {
-        comments = comments.slice(0, 1000);
-      }
+      const draw = getDraw(userId);
+      if (draw == undefined) return;
+      const int = draw.interaction;
 
-      const list = array();
-      const obj = list.find((l) => l.userId == userId);
-      if (obj == undefined) return;
-      const int = obj.interaction;
-      const week = obj.week;
-
-      await interaction.deferUpdate().then(() => {
-        int
+      await interaction.deferUpdate().then(async () => {
+        await int
           .editReply({
             content: `${emojis["send"]} Envie a imagem que será enviada para o mural.`,
             fetchReply: true,
@@ -149,17 +131,13 @@ module.exports = {
                 async () => await responseCollected.message.delete(),
                 90
               );
-              let data = undefined;
-              if (week > 0) {
-                data = await getData(week);
-              } else {
-                data = getNextSunday().getTime();
-                await createEvent(1, data);
-              }
+
               const url = responseCollected.url;
 
-              removeElement(obj);
-              add(week, userId, drawName, type, comments, url, int);
+              updateDraw(
+                userId,
+                new DrawModel(int, drawName, type, url, comments)
+              );
 
               const msgComments =
                 comments != undefined ? `${comments}` : "~~vazio~~";
@@ -186,23 +164,26 @@ module.exports = {
                   .setStyle(ButtonStyle.Danger)
               );
 
-              int
+              await int
                 .editReply({
                   content: msgFinal,
                   files: [{ attachment: url, name: `${drawName}.png` }],
                   components: [send],
                   ephemeral: true,
                 })
-                .catch((err) => {});
+                .catch(console.error);
             } else {
-              int.editReply({
-                content:
-                  emojis["error"] +
-                  " Você demorou demais para enviar o imagem! Use o comando `/enviar` novamente.",
-                ephemeral: true,
-              });
+              await int
+                .editReply({
+                  content:
+                    emojis["error"] +
+                    " Você demorou demais para enviar o imagem! Use o comando `/enviar` novamente.",
+                  ephemeral: true,
+                })
+                .catch(console.error);
             }
-          });
+          })
+          .catch(console.error);
       });
     }
   },

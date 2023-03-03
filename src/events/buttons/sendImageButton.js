@@ -1,5 +1,6 @@
 const { ButtonBuilder, ButtonStyle, ActionRowBuilder } = require("discord.js");
-const { array, removeElement, add } = require("../../managers/drawManager");
+const { getDraw, updateDraw, removeDraw } = require("../../database/handler/drawHandler");
+const DrawModel = require("../../database/model/drawModel");
 const { emojis } = require("../../utils/emotes.json");
 
 async function awaitImage(interaction) {
@@ -22,21 +23,20 @@ async function awaitImage(interaction) {
 
 module.exports = {
   customId: "send-img",
-  async execute(interaction, client) {
+  async execute(interaction) {
     const { user } = interaction;
     const userId = user.id;
 
-    const list = array();
-    const obj = list.find((l) => l.userId == userId);
-    if (obj == undefined) return;
-    const int = obj.interaction;
+    const draw = getDraw(userId)
+    if (draw == undefined) return;
+    const int = draw.interaction;
 
-    const drawName = obj.drawName;
-    const type = obj.type;
-    const comments = obj.comments;
+    const drawName = draw.name;
+    const type = draw.type;
+    const comments = draw.description;
 
-    return await interaction.deferUpdate().then(() => {
-      int
+    return await interaction.deferUpdate().then(async () => {
+      await int
       .editReply({
         content: `${emojis["send"]} Envie a imagem que será enviada para o mural.`,
         fetchReply: true,
@@ -50,10 +50,8 @@ module.exports = {
           setTimeout(async () => await responseCollected.message.delete().catch(console.log), 90);
 
           const url = responseCollected.url;
-          const week = obj.week;
 
-          removeElement(obj);
-          add(week, userId, drawName, type, comments, url, int);
+          updateDraw(userId, new DrawModel(int, drawName, type, url, comments))
 
           if (drawName != undefined && type != undefined) {
             const msgComments =
@@ -108,16 +106,16 @@ module.exports = {
               fetchReply: true,
               components: [row],
               ephemeral: true,
-            });
+            }).catch(console.error);
           }
         } else {
-          removeElement(obj);
+          removeDraw(userId)
           await int.editReply({
             content:
               emojis["error"] +
               " Você demorou demais para enviar o imagem! Use o comando `/enviar` novamente.",
             ephemeral: true,
-          });
+          }).catch(console.error);
         }
       });
     })

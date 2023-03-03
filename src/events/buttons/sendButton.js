@@ -1,82 +1,57 @@
-const { array, removeElement, hasSend } = require("../../managers/drawManager");
 const { uploadImg } = require("../../utils/imgurApi");
 const { emojis } = require("../../utils/emotes.json");
-const { getNextSunday } = require("../../utils/timerApi");
+const { getNextSunday, toMoment, sundayTimestamp } = require("../../utils/timerApi");
+const { getDraw, removeDraw } = require("../../database/handler/drawHandler");
 const {
-  addOrUpdateDraw,
-  getMembers,
-  getDataWeek,
-} = require("../../database/manager/guildManager");
+  fetchUserDraw,
+  createAndSaveUserDraw,
+} = require("../../database/manager/drawManager");
 
 module.exports = {
   customId: "send",
-  async execute(interaction, client) {
-    const { user, guild } = interaction;
+  async execute(interaction) {
+    const { user } = interaction;
     const userId = user.id;
 
-    const list = array();
-    const obj = list.find((l) => l.userId == userId);
-    if (obj == undefined) return;
-    const int = obj.interaction;
+    let drawsCurrent = [];
 
-    removeElement(obj);
+    const draw = getDraw(userId);
+    if (draw == undefined) return;
+    removeDraw(userId); //Limpar cache
 
-    let comments = obj.comments == null ? "no" : obj.comments;
-    if (comments.length > 10) {
-      comments = comments.slice(0, 10);
+    const userDraw = await fetchUserDraw(userId);
+    if (userDraw && userDraw.draws) drawsCurrent = userDraw.draws;
+
+    const int = draw.interaction;
+
+    let description = draw.description == null ? "no" : draw.description;
+    if (description.length > 10) {
+      description = description.slice(0, 10);
     }
-    await uploadImg(obj.url, obj.drawName, comments).then(async (dataImg) => {
-      let week = obj.week;
-      let date = await getDataWeek(guild, week);
-      if (week == 0) week = 1;
-      if (!date) date = getNextSunday().getTime();
+    await uploadImg(draw.link, draw.name, description).then(async (dataImg) => {
 
-      const dateInt = parseInt(date / 1000);
+      const dateInt = sundayTimestamp()
+      const dateString = toMoment(Date.now()).weekday() == 0 ? ", hoje" : ` <t:${parseInt(dateInt)}:R>`;
 
-      const hasBool = await hasSend(guild, week);
-      const dateString = hasBool ? ", hoje" : ` <t:${dateInt}:R>`;
-
-      const draw = {
-        drawName: obj.drawName,
-        type: obj.type,
-        comments: obj.comments,
-        url: dataImg.link,
+      const drawResult = {
+        name: draw.name,
+        type: draw.type,
+        link: dataImg.link,
+        description: draw.description,
       };
 
-      let draws = [];
+      drawsCurrent.push(drawResult);
 
-      let members = await getMembers(guild, week);
-      if (members) {
-        for (const member of members) {
-          if (member.userId == obj.userId) {
-            draws = member.draws;
-            break;
-          }
-        }
-        draws.push(draw);
-
-        members.push();
-      } else {
-        members = [
-          {
-            userId: userId,
-            enable: true,
-            draws: [draw],
-          },
-        ];
-      }
-
-      await addOrUpdateDraw(guild, { week: week, data: date, members: members })
-        .then(() =>
-          int
-            .editReply({
+      await createAndSaveUserDraw(user, drawsCurrent)
+        .then(async () => {
+          await int.editReply({
               content: `${emojis["ready"]} A imagem foi salva e será enviada no mural${dateString}!`,
               components: [],
               files: [],
               ephemeral: true,
             })
-            .catch(console.log)
-        )
+            .catch(console.log);
+        })
         .catch(console.log);
     });
   },

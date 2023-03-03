@@ -1,22 +1,22 @@
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const { getDraw } = require("../../database/handler/drawHandler");
 const { array } = require("../../managers/drawManager");
 
 module.exports = {
   customId: "back",
-  async execute(interaction, client) {
+  async execute(interaction) {
     const { user } = interaction;
     const userId = user.id;
     
-    const list = array();
-    const obj = list.find((l) => l.userId == userId);
-    if (obj == undefined) return;
+    const drawObj = getDraw(userId)
+    if (drawObj == undefined) return;
 
-    const comments = obj.comments;
-    const drawName = obj.drawName;
-    const type = obj.type;
-    const url = obj.url;
+    const comments = drawObj.description;
+    const drawName = drawObj.name;
+    const type = drawObj.type;
+    const url = drawObj.link;
 
-    const int = obj.interaction;
+    const int = drawObj.interaction;
 
     const msgComments = comments != undefined ? `${comments}` : "~~vazio~~";
     let msgFinal =
@@ -41,8 +41,8 @@ module.exports = {
         .setLabel("Cancelar")
         .setStyle(ButtonStyle.Danger)
     );
-    return await interaction.deferUpdate().then(() => {
-      int
+    return await interaction.deferUpdate().then(async () => {
+      await int
         .editReply({
           content: msgFinal,
           files: [{ attachment: url, name: `${drawName}.png` }],

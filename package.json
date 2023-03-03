@@ -38,6 +38,7 @@
     "moment": "^2.29.4",
     "mongoose": "^6.9.0",
     "simple-youtube-api": "^5.2.1",
+    "snowflake-id": "^1.1.0",
     "ytdl-core": "^4.11.2"
   }
 }

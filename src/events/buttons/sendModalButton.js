@@ -31,6 +31,6 @@ module.exports = {
           .setMaxLength(1000)
           .setRequired(false)
       );
-    showModal(modal, {interaction: interaction, client:client}).catch(console.log);
+    return await showModal(modal, {interaction: interaction, client:client}).catch(console.log);
   },
 };
