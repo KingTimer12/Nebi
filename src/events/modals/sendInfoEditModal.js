@@ -1,5 +1,5 @@
-const { ButtonBuilder, ButtonStyle, ActionRowBuilder } = require("discord.js");
-const { getDraw, updateDraw, removeDraw } = require("../../database/handler/drawHandler");
+const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const { getDraw, updateDraw } = require("../../database/handler/drawHandler");
 const DrawModel = require("../../database/model/drawModel");
 const { emojis } = require("../../utils/emotes.json");
 
@@ -22,38 +22,43 @@ async function awaitImage(interaction) {
 }
 
 module.exports = {
-  customId: "send-img",
+  customId: "modal-md-edit",
   async execute(interaction) {
-    const { user } = interaction;
+    const { user, fields } = interaction;
     const userId = user.id;
 
-    const draw = getDraw(userId)
+    const drawName = fields.getTextInputValue("draw-name");
+    const type = fields.getTextInputValue("type");
+    let comments = fields.getTextInputValue("comments");
+
+    const draw = getDraw(userId);
     if (draw == undefined) return;
     const int = draw.interaction;
 
-    const drawName = draw.name;
-    const type = draw.type;
-    const comments = draw.description;
-
-    return await interaction.deferUpdate().then(async () => {
+    await interaction.deferUpdate().then(async () => {
       await int
-      .editReply({
-        content: `${emojis["send"]} Envie a imagem que será enviada para o mural. Não use links, envie como arquivo de imagem.`,
-        fetchReply: true,
-        components: [],
-        files: [],
-        ephemeral: true,
-      })
-      .then(async () => {
-        const responseCollected = await awaitImage(int);
-        if (responseCollected != undefined) {
-          setTimeout(async () => await responseCollected.message.delete().catch(console.log), 90);
+        .editReply({
+          content: `${emojis["send"]} Envie a imagem que será enviada para o mural.`,
+          fetchReply: true,
+          components: [],
+          files: [],
+          ephemeral: true,
+        })
+        .then(async () => {
+          const responseCollected = await awaitImage(int);
+          if (responseCollected != undefined) {
+            setTimeout(
+              async () => await responseCollected.message.delete(),
+              90
+            );
 
-          const url = responseCollected.url;
+            const url = responseCollected.url;
 
-          updateDraw(userId, new DrawModel(int, drawName, type, url, comments))
+            updateDraw(
+              userId,
+              new DrawModel(int, drawName, type, url, comments)
+            );
 
-          if (drawName != undefined && type != undefined) {
             const msgComments =
               comments != undefined ? `${comments}` : "~~vazio~~";
             let msgFinal =
@@ -86,38 +91,19 @@ module.exports = {
                 components: [send],
                 ephemeral: true,
               })
-              .catch(console.log);
+              .catch(console.error);
           } else {
-            const row = new ActionRowBuilder().addComponents(
-              new ButtonBuilder()
-                .setCustomId("send-img")
-                .setEmoji({ id: "1051884168977584139", name: "ready" })
-                .setLabel("Enviar imagem")
-                .setDisabled(true)
-                .setStyle(ButtonStyle.Success),
-              new ButtonBuilder()
-                .setCustomId("send-info")
-                .setEmoji({ id: "1051884167782219776", name: "error" })
-                .setLabel("Enviar informações")
-                .setStyle(ButtonStyle.Danger)
-            );
-
-            await int.editReply({
-              fetchReply: true,
-              components: [row],
-              ephemeral: true,
-            }).catch(console.error);
+            await int
+              .editReply({
+                content:
+                  emojis["error"] +
+                  " Você demorou demais para enviar o imagem! Use o comando `/enviar` novamente.",
+                ephemeral: true,
+              })
+              .catch(console.error);
           }
-        } else {
-          removeDraw(userId)
-          await int.editReply({
-            content:
-              emojis["error"] +
-              " Você demorou demais para enviar o imagem! Use o comando `/mural enviar` novamente.",
-            ephemeral: true,
-          }).catch(console.error);
-        }
-      });
-    })
+        })
+        .catch(console.error);
+    });
   },
 };

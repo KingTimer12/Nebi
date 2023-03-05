@@ -6,7 +6,7 @@ module.exports = {
   async createEvent(interaction, client) {
     if (!interaction.isButton()) return;
     const { customId } = interaction;
-    var button = client.buttons.get(customId);
+    let button = client.buttons.get(customId);
     if (!button) return
 
     try {

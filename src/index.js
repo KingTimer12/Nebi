@@ -16,6 +16,7 @@ const { SpotifyPlugin } = require("@distube/spotify");
 const { SoundCloudPlugin } = require("@distube/soundcloud");
 const { YtDlpPlugin } = require("@distube/yt-dlp");
 const { DeezerPlugin } = require("@distube/deezer");
+const { loadModal } = require("./handlers/modalHandler");
 
 class Bot extends Client {
   constructor() {
@@ -80,11 +81,13 @@ class Bot extends Client {
       this.events = new Collection();
       this.buttons = new Collection();
       this.selects = new Collection();
+      this.modals = new Collection();
 
       require(`./handlers/commands`)(this);
       loadEvents(this);
       loadButton(this);
       loadSelect(this);
+      loadModal(this)
 
       this.login(process.env.BOT_TOKEN);
     })();

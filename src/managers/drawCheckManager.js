@@ -33,6 +33,7 @@ const checkingDraw = async (guild) => {
     let embeds = [];
     for (const obj of list) {
       for (const draw of obj.draws) {
+        if (!draw.link.startsWith("https://i.imgur.com")) continue;
         const msgComments =
           draw.description != undefined
             ? `Comentário: ${draw.description}`

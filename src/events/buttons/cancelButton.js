@@ -1,5 +1,4 @@
 const { getDraw, removeDraw } = require("../../database/handler/drawHandler");
-const { array, removeElement } = require("../../managers/drawManager");
 const { emojis } = require("../../utils/emotes.json");
 
 module.exports = {
