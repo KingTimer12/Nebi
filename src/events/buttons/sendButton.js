@@ -5,7 +5,11 @@ const {
   toMoment,
   sundayTimestamp,
 } = require("../../utils/timerApi");
-const { getDraw, removeDraw } = require("../../database/handler/drawHandler");
+const {
+  getDraw,
+  removeDraw,
+  cacheDraw,
+} = require("../../database/handler/drawHandler");
 const {
   fetchUserDraw,
   createAndSaveUserDraw,
@@ -32,7 +36,7 @@ module.exports = {
         .catch(console.log);
     }
 
-    const int = draw.interaction
+    const int = draw.interaction;
 
     await int
       .editReply({
@@ -54,9 +58,7 @@ module.exports = {
 
     await int
       .editReply({
-        content: `${getEmoji(
-          "loading"
-        )} ┃ Fazendo upload do desenho... (2/3)`,
+        content: `${getEmoji("loading")} ┃ Fazendo upload do desenho... (2/3)`,
         components: [],
         files: [],
         ephemeral: true,
@@ -85,21 +87,32 @@ module.exports = {
         ? ", hoje"
         : ` <t:${parseInt(dateInt)}:R>`;
 
-    const link = `${dataImg.link}`
+    const link = `${dataImg.link}`;
 
-    console.log(link)
+    console.log(link);
 
-    if (!link.startsWith('https://i.imgur.com')) {
-      return await int
-        .editReply({
-          content: `${emojis["error"]} A API de upload de imagem atingiu o limite! Envie novamente seu desenho daqui algumas horas.`,
-          components: [],
-          files: [],
-          ephemeral: true,
-        })
-        .catch(console.log);
+    if (!link.startsWith("https://i.imgur.com")) {
+      if (toMoment(Date.now()).weekday != 0) {
+        return await int
+          .editReply({
+            content: `${emojis["error"]} A API de upload de imagem atingiu o limite! Espere para mandar novamente. O sistema de repescagem só acontece no domingo.`,
+            components: [],
+            files: [],
+            ephemeral: true,
+          })
+          .catch(console.log);
+      } else {
+        cacheDraw(userId, draw);
+        return await int
+          .editReply({
+            content: `${emojis["entendo"]} A API de upload de imagem atingiu o limite! Seu desenho foi colocado na cache de repescagem! Não se preocupe, pois será enviado mesmo depois das 00:00.`,
+            components: [],
+            files: [],
+            ephemeral: true,
+          })
+          .catch(console.log);
+      }
     }
-
 
     const drawResult = {
       name: draw.name,
@@ -112,9 +125,7 @@ module.exports = {
 
     await int
       .editReply({
-        content: `${getEmoji(
-          "loading"
-        )} ┃ Salvando no banco de dados... (3/3)`,
+        content: `${getEmoji("loading")} ┃ Salvando no banco de dados... (3/3)`,
         components: [],
         files: [],
         ephemeral: true,
@@ -140,9 +151,7 @@ module.exports = {
 
     await int
       .editReply({
-        content: `${getEmoji(
-          "loading"
-        )} ┃ Finalizando o processo...`,
+        content: `${getEmoji("loading")} ┃ Finalizando o processo...`,
         components: [],
         files: [],
         ephemeral: true,

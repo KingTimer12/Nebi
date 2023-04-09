@@ -1,20 +1,19 @@
-const { getRole } = require("../../database/manager/guildManager");
+const { getRole, addMember } = require("../../database/manager/guildManager");
 const { emojis } = require("../../utils/emotes.json");
 const { getter } = require("../../utils/firebase/firebaseGuildApi");
+const { toMoment } = require("../../utils/timerApi");
 
-const addSelectedRole = async (guild, member, id) => {
+const addSelectedRole = (guild, member, id) => {
   const role = guild.roles.cache.find((role) => role.id === id);
   if (role != undefined && member.roles.cache.get(id) == undefined) {
-    await member.roles.add(role).catch(console.log);
     return id;
   }
   return undefined;
 };
 
-const removeSelectedRole = async (guild, member, id) => {
+const removeSelectedRole = (guild, member, id) => {
   const role = guild.roles.cache.find((role) => role.id === id);
   if (role != undefined && member.roles.cache.get(id) != undefined) {
-    await member.roles.remove(role).catch(console.log);
     return id;
   }
   return undefined;
@@ -76,23 +75,21 @@ const messageFinalRole = (selecteds, removeds, welcome) => {
 
 module.exports = {
   customId: "select-roles-main",
-  async execute(interaction, client) {
+  async execute(interaction) {
     const { member, guild, values } = interaction;
 
     const registerId = await getRole(guild, {roleName:'register'})
     const rolesId = await getRole(guild, {roleName:'roles'})
+    const rookieId = await getRole(guild, {roleName:'rookie'})
 
-    if (registerId == undefined && rolesId == undefined) return;
-
-    const memberId = await getRole(guild, {roleName:'member'})
-    if (memberId == undefined) return;
+    if (registerId == undefined && rolesId == undefined && rookieId == undefined) return;
 
     const roleRegister = guild.roles.cache.find(
       (role) => role.id === registerId
     );
     const roleRoles = guild.roles.cache.find((role) => role.id === rolesId);
 
-    const roleMember = guild.roles.cache.find((role) => role.id === memberId);
+    const roleRookie = guild.roles.cache.find((role) => role.id === rookieId);
 
     let welcome = false;
 
@@ -100,8 +97,9 @@ module.exports = {
       member.roles.cache.get(rolesId) !== undefined &&
       member.roles.cache.get(registerId) !== undefined
     ) {
-      await member.roles.remove([roleRegister, roleRoles]);
-      await member.roles.add([roleMember]);
+      await member.roles.remove([roleRegister, roleRoles]).catch(console.error);
+      await member.roles.add([roleRookie]).catch(console.error);
+      await addMember(guild, {userId: member.id, timestamp: toMoment(Date.now()).day(toMoment(Date.now()).day()+7)})
       welcome = true;
     }
 
@@ -121,22 +119,31 @@ module.exports = {
       const roleId = await getRole(guild, {roleName:value})
       if (roleId == undefined) continue;
       if (values.includes(value)) {
-        const id = await addSelectedRole(guild, member, roleId);
+        const id = addSelectedRole(guild, member, roleId);
         if (id != undefined) selecteds.push(id);
       } else if (
         member.roles.cache.get(roleId) !== undefined &&
         !selecteds.includes(roleId)
       ) {
-        const id = await removeSelectedRole(guild, member, roleId);
+        const id = removeSelectedRole(guild, member, roleId);
         if (id != undefined) removeds.push(id);
       }
     }
 
-    await interaction
+    if (selecteds.length) {
+      const result = selecteds.map(id => guild.roles.cache.find((role) => role.id === id))
+      await member.roles.add(result).catch(console.error);
+    }
+    if (removeds.length) {
+      const result = removeds.map(id => guild.roles.cache.find((role) => role.id === id))
+      await member.roles.remove(result).catch(console.error);
+    }
+
+    return await interaction
       .reply({
         content: messageFinalRole(selecteds, removeds, welcome),
         ephemeral: true,
       })
-      .catch(console.log);
+      .catch(console.error);
   },
 };

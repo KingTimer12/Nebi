@@ -184,16 +184,15 @@ const getMessagesId = async (guild, userId) => {
   return undefined;
 };
 
-const addOrUpdateDraw = async (guild, { week = 1, data, members = [] }) => {
+const addMember = async (guild, { userId, timestamp }) => {
   let guildSchema = await getGuild(guild.id);
   if (!guildSchema) {
     guildSchema = await createGuild(guild);
   }
 
   const value = {
-    week: week,
-    data: data,
-    members: members,
+    userId: userId,
+    timestamp: timestamp
   };
   const done = function (error, success) {
     if (error) {
@@ -201,130 +200,43 @@ const addOrUpdateDraw = async (guild, { week = 1, data, members = [] }) => {
     }
   };
 
-  for (const draw of guildSchema.drawEvent) {
-    if (draw.week == week) {
-      await GuildSchema.updateOne(
-        { "drawEvent.week": week },
-        {
-          $set: {
-            "drawEvent.$.data": data,
-            "drawEvent.$.members": members,
-          },
-        },
-        done
-      ).clone();
+  for (const member of guildSchema.newMember) {
+    if (member.userId == userId) {
       return;
     }
   }
 
   await GuildSchema.findOneAndUpdate(
     { guildId: guild.id },
-    { $addToSet: { drawEvent: value } },
+    { $addToSet: { newMember: value } },
     done
   ).clone();
 };
 
-const setDisable = async (guild, week, userId) => {
+const getTimestamp = async (guild, userId) => {
   const guildSchema = await getGuild(guild.id);
   if (guildSchema) {
-    const done = function (error, success) {
-      if (error) {
-        console.log(error);
-      }
-    };
-    
-    await GuildSchema.updateOne(
-      { "drawEvent.week": week, "drawEvent.members.userId": userId },
-      {
-        $set: {
-          "drawEvent.$.enable": false,
-        },
-      },
-      done
-    ).clone();
-    return true;
-  } else await createGuild(guild);
-  return false;
-};
-
-const listDraws = async (guild, week) => {
-  const guildSchema = await getGuild(guild.id);
-  const result = []
-  if (guildSchema) {
-    for (const draw of guildSchema.drawEvent) {
-      if (draw.week == week) {
-        for (const member of draw.members) {
-          result.push(member.userId)
-        }
-        break;
-      }
-    }
-  } else await createGuild(guild);
-  return result;
-};
-
-const getEnable = async (guild, week, userId) => {
-  const guildSchema = await getGuild(guild.id);
-  if (guildSchema) {
-    for (const draw of guildSchema.drawEvent) {
-      if (draw.week == week) {
-        for (const member of draw.members) {
-          if (member.userId == userId) {
-            return member.enable;
-          }
-        }
-        break;
-      }
-    }
-  } else await createGuild(guild);
-  return false;
-};
-
-const getInfo = async (guild, week, userId) => {
-  const guildSchema = await getGuild(guild.id);
-  if (guildSchema) {
-    for (const draw of guildSchema.drawEvent) {
-      if (draw.week == week) {
-        for (const member of draw.members) {
-          if (member.userId == userId) {
-            return member.draws;
-          }
-        }
-        break;
-      }
-    }
+    const array = guildSchema.newMember.find((member) => member.userId == userId);
+    return array ? array.timestamp : undefined;
   } else await createGuild(guild);
   return undefined;
 };
 
-const getWeek = async (guild) => {
-  const guildSchema = await getGuild(guild.id);
-  if (guildSchema) {
-    const week = guildSchema.drawEvent.length;
-    return week >= 1 ? week : 0;
-  } else await createGuild(guild);
-  return undefined;
-};
+const saveMembers = async (guildId, newMember = []) => {
 
-const getDataWeek = async (guild, week) => {
-  const guildSchema = await getGuild(guild.id);
-  if (guildSchema) {
-    const array = guildSchema.drawEvent.find((event) => event.week == week);
-    return array ? array.data : undefined;
-  } else await createGuild(guild);
-  return undefined;
-};
+  const filter = { guildId: guildId };
+  const update = { $set: {newMember: newMember} };
 
-const getMembers = async (guild, week) => {
-  const guildSchema = await getGuild(guild.id);
-  if (guildSchema) {
-    const array = guildSchema.drawEvent.find((event) => event.week == week);
-    return array ? array.members : undefined;
-  } else await createGuild(guild);
-  return undefined;
+  const updateOne = await GuildSchema.findOneAndUpdate(
+    filter, update, { new: true }
+  );
+  return updateOne
 };
 
 module.exports = {
+
+  getGuild,
+
   addChannel,
   getChannel,
 
@@ -336,12 +248,7 @@ module.exports = {
   getOldTag,
   getMessagesId,
 
-  addOrUpdateDraw,
-  getWeek,
-  getDataWeek,
-  getMembers,
-  getEnable,
-  getInfo,
-  setDisable,
-  listDraws
+  addMember,
+  getTimestamp,
+  saveMembers
 };

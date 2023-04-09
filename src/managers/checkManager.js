@@ -19,7 +19,7 @@ let arrayTemporary = [];
 const createFormat = async (guild, row, forumChannel) => {
   const dataNowValue = row[0];
   //NUNCA TIRAR ESSA PARTE DO CÓDIGO
-  if (toCompare(dataNowValue, "01/01/2023 00:00:00") != true) {
+  if (toCompare(dataNowValue, "01/04/2023 00:00:00") != true && row[3] != '98wer#2273') {
     return undefined;
   }
 
@@ -39,6 +39,15 @@ const createFormat = async (guild, row, forumChannel) => {
   let topicThread = forumChannel.threads.cache.find(
     (thread) => thread.name == user.tag.replace("#", "")
   );
+
+  if (
+    topicThread &&
+    topicThread.appliedTags.includes(
+      forumChannel.availableTags.find((r) => r.name == "Fechado").id
+    )
+  ) {
+    return undefined;
+  }
 
   let overwrite = topicThread != undefined || arrayTemporary.includes(user.id);
 
@@ -192,9 +201,7 @@ const checking = async (guild, forumChannel) => {
           await threadChannel
             .send({
               embeds: lastMessagesForum(row.answer, questions),
-              components: [
-                buttonsForum(`${msgURL.at(0)}`)
-              ],
+              components: [buttonsForum(`${msgURL.at(0)}`)],
             })
             .catch(console.log);
 

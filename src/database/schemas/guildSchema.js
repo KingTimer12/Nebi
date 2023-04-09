@@ -20,29 +20,10 @@ const GuildSchema = new Schema({
       { userId: String, data: String, oldTag: String, messagesId: [String] },
     ],
   },
-  drawEvent: {
-    type: Array,
-    default: [
-      {
-        week: { type: Number, default: 1 },
-        data: Number,
-        members: [
-          {
-            userId: String,
-            enable: Boolean,
-            draws: [
-              {
-                drawName: String,
-                type: String,
-                comments: String,
-                url: String,
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  },
+  newMember: [{
+    userId: String,
+    timestamp: Number
+  }]
 });
 
 module.exports = model("Guild", GuildSchema);

@@ -13,10 +13,11 @@ module.exports = {
 
   async createEvent(message) {
     if (message.author.bot) return;
-    const { user } = message.member;
-    const userId = user.id;
 
-    /*if (!hasCooldown(userId)) {
+    /*const { user } = message.member;
+    const userId = user.id;
+    
+    if (!hasCooldown(userId)) {
       addCooldown(userId);
 
       let userProfile = getUser(userId);
