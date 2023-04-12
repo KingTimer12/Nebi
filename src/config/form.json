@@ -1,0 +1,144 @@
+[
+  {
+    "classification": "data",
+    "question": "Qual sua idade?",
+    "type": "writer"
+  },
+  {
+    "classification": "data",
+    "question": "Quais são os melhores horários para você ter tutoria? (Considere que cada uma dura uns 50 minutos)",
+    "type": "writer"
+  },
+  {
+    "classification": "data",
+    "question": "Como conheceu o servidor?",
+    "type": "select",
+    "values": [
+      "Por um parceiro (Novel Mania, Kiniga, Vulcan, Reaper Scan, Mangá Livre, Saikai)",
+      "Pelo nosso canal no Youtube",
+      "Pelo nosso site",
+      "Indicação de amigo",
+      "Outro"
+    ]
+  },
+  {
+    "classification": "data",
+    "question": "Posta em algum site de novel?",
+    "type": "select",
+    "values": [
+      "Novel Mania",
+      "Kiniga",
+      "Vulcan",
+      "Reaper Scan",
+      "Mangá Livre",
+      "Saikai",
+      "Ainda não postei"
+    ]
+  },
+  {
+    "classification": "knowledge",
+    "question": "Quais obras e/ou autores te inspiraram para começar a escrever ou foram motivo para escrever o seu atual projeto?",
+    "type": "writer"
+  },
+  {
+    "classification": "knowledge",
+    "question": "O que você escreve e que tipos gêneros pretende escrever?",
+    "type": "writer"
+  },
+  {
+    "classification": "knowledge",
+    "question": "Você sabe o que é webnovel ou light novel e como escreve um desses dois? Se souber, explique.",
+    "type": "writer"
+  },
+  {
+    "classification": "knowledge",
+    "question": "Quais formas existem de compor um capítulo? Explique.",
+    "type": "writer"
+  },
+  {
+    "classification": "knowledge",
+    "question": "Consegue explicar a diferença de um narrador de primeira pessoa e um de terceira pessoa?",
+    "type": "writer"
+  },
+  {
+    "classification": "knowledge",
+    "question": "Um parágrafo é estruturado como?",
+    "type": "writer"
+  },
+  {
+    "classification": "knowledge",
+    "question": "Quais as diferenças existem em frase, oração e período?",
+    "type": "writer"
+  },
+
+  {
+    "classification": "knowledge",
+    "question": "Que tipo de funções o travessão, itálico e aspas devem exercer no texto?",
+    "type": "writer"
+  },
+  {
+    "classification": "knowledge",
+    "question": "Quando se deve colocar as palavras em letra maiúscula?",
+    "type": "writer"
+  },
+  {
+    "classification": "knowledge",
+    "question": "Erra palavras com escrita e/ou som parecidos? (Exemplos simples: acender/ascender,  acento/assento, acidente/incidente, sob/sobre)",
+    "type": "writer"
+  },
+  {
+    "classification": "knowledge",
+    "question": "O que são substantivos, adjetivos e pronomes?",
+    "type": "writer"
+  },
+  {
+    "classification": "knowledge",
+    "question": "Reconhece que sua escrita possui vícios de internet?",
+    "type": "writer"
+  },
+  {
+    "classification": "knowledge",
+    "question": "A vírgula é usada para o que no texto?",
+    "type": "writer"
+  },
+  {
+    "classification": "knowledge",
+    "question": "Quando deve usar exclamação, interrogação e reticências?",
+    "type": "writer"
+  },
+  {
+    "classification": "knowledge",
+    "question": "Elipse é o quê?",
+    "type": "writer"
+  },
+  {
+    "classification": "knowledge",
+    "question": "Se souber, como se deve usar o dicendi?",
+    "type": "writer"
+  },
+  {
+    "classification": "knowledge",
+    "question": "O que faz um diálogo ser bom e útil na história?",
+    "type": "writer"
+  },
+  {
+    "classification": "knowledge",
+    "question": "Um personagem deve ser criado de que forma?",
+    "type": "writer"
+  },
+  {
+    "classification": "knowledge",
+    "question": "O que gostaria de passar, no caso, a mensagem, com a sua história para os leitores?",
+    "type": "writer"
+  },
+  {
+    "classification": "knowledge",
+    "question": "Qual o tipo de público que você quer alcançar com o seu projeto?",
+    "type": "writer"
+  },
+  {
+    "classification": "knowledge",
+    "question": "Seu objetivo como autor é qual?",
+    "type": "writer"
+  }
+]
