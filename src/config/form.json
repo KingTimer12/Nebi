@@ -13,26 +13,60 @@
     "classification": "data",
     "question": "Como conheceu o servidor?",
     "type": "select",
-    "values": [
-      "Por um parceiro (Novel Mania, Kiniga, Vulcan, Reaper Scan, Mangá Livre, Saikai)",
-      "Pelo nosso canal no Youtube",
-      "Pelo nosso site",
-      "Indicação de amigo",
-      "Outro"
+    "customId": "knowServer",
+    "options": [
+      {
+        "label": "Por um parceiro (Novel Mania, Kiniga, Vulcan, Reaper Scan, Mangá Livre, Saikai)",
+        "value": "partner"
+      },
+      {
+        "label": "Pelo nosso canal no Youtube",
+        "value": "youtube"
+      },
+      {
+        "label": "Pelo nosso site",
+        "value": "site"
+      },
+      {
+        "label": "Indicação de amigo",
+        "value": "friend"
+      }
     ]
   },
   {
     "classification": "data",
     "question": "Posta em algum site de novel?",
     "type": "select",
-    "values": [
-      "Novel Mania",
-      "Kiniga",
-      "Vulcan",
-      "Reaper Scan",
-      "Mangá Livre",
-      "Saikai",
-      "Ainda não postei"
+    "customId": "anySite",
+    "options": [
+      {
+        "label": "Novel Mania",
+        "value": "novelmania"
+      },
+      {
+        "label": "Kiniga",
+        "value": "kiniga"
+      },
+      {
+        "label": "Vulcan",
+        "value": "vulcan"
+      },
+      {
+        "label": "Reaper Scan",
+        "value": "reaperScan"
+      },
+      {
+        "label": "Mangá Livre",
+        "value": "mangaLivre"
+      },
+      {
+        "label": "Saikai",
+        "value": "saikai"
+      },
+      {
+        "label": "Ainda não postei",
+        "value": "notPost"
+      }
     ]
   },
   {
