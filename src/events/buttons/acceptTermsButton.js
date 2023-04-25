@@ -164,6 +164,13 @@ module.exports = {
       interaction.user.send({ embeds: [embed] });
       await whileResponses(interaction, userId, "knowledge");
 
+      embed = new EmbedBuilder()
+        .setColor(purpleHex)
+        .setTitle("Matrícula finalizada!")
+        .setDescription("Agradecemos por responder todas as perguntas. Sua matrícula foi env")
+      interaction.user.send({ embeds: [embed] });
+
+      //TODO: Enviar formulário
       
     });
   },

@@ -5,10 +5,12 @@ const {
   ButtonStyle,
 } = require("discord.js");
 const { transformTimestamp } = require("../utils/timerApi");
+const { getResponse } = require("../managers/formManager");
+const form = require("../config/form.json");
 
 let purpleHex = "#D000BA";
 
-const mainMessagesForum = (userId, answer, data, questions) => {
+const mainMessagesForum = (userId) => {
   let embeds = [];
 
   embeds.push(
@@ -16,58 +18,40 @@ const mainMessagesForum = (userId, answer, data, questions) => {
       .setColor(purpleHex)
       .setTitle("Dados do Tutorando")
       .setDescription(
-        `**Data da Matrícula**: ${data}\n**User ID**: ${userId}\n**Idade**: ${answer[1]}\n**Melhores horários**: ${answer[27]}`
+        `**User ID**: ${userId}\n**Idade**: ${getResponse(userId, 1)}\n**Melhores horários**: ${getResponse(userId, 2)}`
       ),
     new EmbedBuilder().setColor(purpleHex).setTitle("Perguntas Essenciais")
   );
 
-  const startIndex = 6;
-  for (let i = startIndex; i < questions.length; i++) {
-    if (!(i == 7 || i == 8 || i == 25 || i == 26 || i == 27)) continue;
+  const startIndex = 4;
+  for (let i = startIndex; i < form.length; i++) {
+    if (!(i == 4 || i == 5 || i == 22 || i == 23 || i == 24)) continue;
+    const response = getResponse(userId, i+1)
     embeds.push(
       new EmbedBuilder()
         .setColor(purpleHex)
-        .setTitle(questions[i])
-        .setDescription(`R: ${answer[i - 1]}`)
+        .setTitle(form[i].question)
+        .setDescription(`R: ${response}`)
     );
   }
 
   return embeds;
 };
 
-const secondMessagesForum = (answer, questions) => {
+const allQuestionsMessagesForum = (userId) => {
   let embeds = [];
 
-  embeds.push(
-    new EmbedBuilder().setColor(purpleHex).setTitle("Todas as perguntas")
-  );
-
-  const startIndex = 7;
-  for (let i = startIndex; i < questions.length; i++) {
-    if (i == 15) break;
+  const index = 6
+  for (const f of form) {
+    if (f.type != "knowledge") continue
+    const answer = getResponse(userId, index)
     embeds.push(
       new EmbedBuilder()
         .setColor(purpleHex)
-        .setTitle(questions[i])
-        .setDescription(`R: ${answer[i - 1]}`)
+        .setTitle(`${index-5} - ${f.question}`)
+        .setDescription(`R: ${answer}`)
     );
-  }
-
-  return embeds;
-};
-
-const thirdMessagesForum = (answer, questions) => {
-  let embeds = [];
-
-  const startIndex = 15;
-  for (let i = startIndex; i < questions.length; i++) {
-    if (i == 22) break;
-    embeds.push(
-      new EmbedBuilder()
-        .setColor(purpleHex)
-        .setTitle(questions[i])
-        .setDescription(`R: ${answer[i - 1]}`)
-    );
+    index++
   }
 
   return embeds;
