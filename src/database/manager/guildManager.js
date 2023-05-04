@@ -114,7 +114,7 @@ const getRole = async (guild, { roleName, roleId }) => {
 
 const addOrUpdateForm = async (
   guild,
-  { userId, data, oldTag, messagesId = [] }
+  { userId, oldTag, messagesId = [] }
 ) => {
   let guildSchema = await getGuild(guild.id);
   if (!guildSchema) {
@@ -123,7 +123,6 @@ const addOrUpdateForm = async (
 
   const value = {
     userId: userId,
-    data: data,
     oldTag: oldTag,
     messagesId: messagesId,
   };
@@ -139,7 +138,6 @@ const addOrUpdateForm = async (
         { "forms.userId": userId },
         {
           $set: {
-            "forms.$.data": data,
             "forms.$.oldTag": oldTag,
             "forms.$.messagesId": messagesId,
           },

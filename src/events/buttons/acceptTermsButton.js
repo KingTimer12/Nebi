@@ -6,9 +6,9 @@ const {
   ButtonBuilder,
   ButtonStyle,
 } = require("discord.js");
-const { emojis } = require("../../utils/emotes.json");
 const form = require("../../config/form.json");
-const { addResponse, getResponses } = require("../../managers/formManager.js");
+const { addResponse, getResponses, sendForm } = require("../../managers/formManager.js");
+require("dotenv").config();
 
 let purpleHex = "#D000BA";
 
@@ -113,13 +113,19 @@ const whileResponses = async (interaction, userId, classification) => {
 module.exports = {
   customId: "acceptTerms",
   async execute(interaction, client) {
-    const { userId } = interaction;
+    const user = interaction.user
+    const userId = user.id
+
+    const guild = client.guilds.cache.find(guild => guild.id == "726290600332230686")
+
     await interaction.deferUpdate().then(async () => {
+
       let embed = new EmbedBuilder()
         .setColor(purpleHex)
         .setTitle("Dados do Tutorando")
       interaction.user.send({ embeds: [embed] });
 
+      console.log(userId)
       await whileResponses(interaction, userId, "data");
 
       const tutoriaPlus = new EmbedBuilder()
@@ -164,13 +170,10 @@ module.exports = {
       interaction.user.send({ embeds: [embed] });
       await whileResponses(interaction, userId, "knowledge");
 
-      embed = new EmbedBuilder()
-        .setColor(purpleHex)
-        .setTitle("Matrícula finalizada!")
-        .setDescription("Agradecemos por responder todas as perguntas. Sua matrícula foi env")
-      interaction.user.send({ embeds: [embed] });
-
       //TODO: Enviar formulário
+
+      console.log(userId)
+      await sendForm(userId, guild)
       
     });
   },
