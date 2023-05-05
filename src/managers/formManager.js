@@ -1,14 +1,9 @@
-const { EmbedBuilder } = require("discord.js");
+const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
 const {
   getChannel,
   addOrUpdateForm,
 } = require("../database/manager/guildManager");
-const {
-  allQuestionsMessagesForum,
-  buttonsForum,
-  messagesForm,
-  test,
-} = require("../messages/forumAppMessage");
+
 require("dotenv").config();
 const form = require("../config/form.json");
 
@@ -33,12 +28,13 @@ const getResponse = (userId, question) => getResponses(userId)[question - 1];
 const getResponses = (userId) => responsesMap.get(userId);
 
 const sendForm = async (userId, guild) => {
-  test()
   const forumId = await getChannel(guild, { channelName: "forum" });
   const forumChannel = guild.channels.cache.find((chn) => chn.id === forumId);
   if (forumChannel == undefined) {
     return console.log("Forum Channel is undefined!");
   }
+
+  const purpleHex = "#D000BA";
 
   const user = guild.members.cache
     .map((member) => member.user)
@@ -78,9 +74,9 @@ const sendForm = async (userId, guild) => {
     new EmbedBuilder().setColor(purpleHex).setTitle("Perguntas Essenciais")
   );
 
-  const startIndex = 4;
+  const startIndex = 5;
   for (let i = startIndex; i < form.length; i++) {
-    if (!(i == 4 || i == 5 || i == 22 || i == 23 || i == 24)) continue;
+    if (!(i == 5 || i == 6 || i == 23 || i == 24 || i == 25)) continue;
     const response = getResponse(userId, i + 1);
     mainMessagesEmbeds.push(
       new EmbedBuilder()
@@ -104,13 +100,42 @@ const sendForm = async (userId, guild) => {
         .filter((msg) => msg.author.id === process.env.BOT_ID)
         .map((msg) => msg.url);
 
-      const index = 0;
-      for (const questionEmbed of allQuestionsMessagesForum(userId)) {
-        if (index == 21) {
+      let embeds = [];
+
+      let index = 6;
+      for (const f of form) {
+        if (f.classification != "knowledge") continue;
+        const answer = getResponse(userId, index);
+        embeds.push(
+          new EmbedBuilder()
+            .setColor(purpleHex)
+            .setTitle(`${index - 5} - ${f.question}`)
+            .setDescription(`R: ${answer}`)
+        );
+        index++;
+      }
+    
+      index = 0
+
+      for (const questionEmbed of embeds) {
+        if (index == 20) {
+
+          const row = new ActionRowBuilder().addComponents(
+            new ButtonBuilder()
+              .setCustomId(`formAccept`)
+              .setEmoji({ id: "1051884168977584139", name: "ready" })
+              .setLabel(`Aprovar`)
+              .setStyle(ButtonStyle.Success),
+            new ButtonBuilder()
+              .setURL(`${msgURL.at(0)}`)
+              .setLabel("⬆ Clique para ir ao topo!")
+              .setStyle(ButtonStyle.Link)
+          );
+
           await threadChannel
             .send({
               embeds: [questionEmbed],
-              components: [buttonsForum(`${msgURL.at(0)}`)],
+              components: [row],
             })
 
             .catch(console.log);
