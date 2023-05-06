@@ -7,7 +7,6 @@ const {
 } = require("../utils/googleApi/rankApi");
 require("dotenv").config();
 const { emojis } = require("../utils/emotes.json");
-const { getter } = require("../utils/firebase/firebaseGuildApi");
 const { getRole } = require("../database/manager/guildManager");
 
 module.exports = {

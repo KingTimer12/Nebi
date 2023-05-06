@@ -1,4 +1,3 @@
-const { getter } = require("../utils/firebase/firebaseGuildApi");
 const { updateNicknameRow } = require("../utils/googleApi/rankApi");
 
 module.exports = {
