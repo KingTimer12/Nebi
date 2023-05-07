@@ -16,7 +16,6 @@ const getTutores = async (sheetId) => {
   const doc = await getDoc().catch(console.error);
   if (doc) {
     const array = [];
-    console.log(doc.sheetsById)
     const sheet = doc.sheetsById[sheetId];
     const rows = sheet.getRows().catch(console.error);
     if (sheet == undefined) return undefined;
