@@ -74,9 +74,9 @@ const sendForm = async (userId, guild) => {
     new EmbedBuilder().setColor(purpleHex).setTitle("Perguntas Essenciais")
   );
 
-  const startIndex = 5;
+  const startIndex = 4;
   for (let i = startIndex; i < form.length; i++) {
-    if (!(i == 5 || i == 6 || i == 23 || i == 24 || i == 25)) continue;
+    if (!(i == 4 || i == 5 || i == 22 || i == 23 || i == 24)) continue;
     const response = getResponse(userId, i + 1);
     mainMessagesEmbeds.push(
       new EmbedBuilder()

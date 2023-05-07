@@ -93,9 +93,10 @@ const whileResponses = async (interaction, userId, classification) => {
       options: f.options,
     });
 
+    let responseCache = "";
+
     if (response == undefined) return undefined;
 
-    let responseCache = "";
     if (response instanceof StringSelectMenuInteraction) {
       await response.update({ fetchReply: true });
       const value = response.values[0];
@@ -108,6 +109,7 @@ const whileResponses = async (interaction, userId, classification) => {
 
     index++;
   }
+  return false
 };
 
 module.exports = {
