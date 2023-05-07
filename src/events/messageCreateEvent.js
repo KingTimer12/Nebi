@@ -24,13 +24,12 @@ module.exports = {
     if (message.author.bot) return;
 
     if (
-      message.channel.id === "1046080830075834392" &&
-      message.content.startsWith("!")
+      message.content.startsWith("Nebi,") || message.content.endsWith(", Nebi") || message.content.endsWith(", Nebi?")
     ) {
 
       await message.channel.sendTyping()
 
-      const prompt = message.content.substring(1);
+      const prompt = message.content.replace('Nebi,', '').replace(', Nebi', '').replace(', Nebi?', '');
       const answer = await ask(prompt);
       message.reply(answer)
     }
