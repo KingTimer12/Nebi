@@ -93,7 +93,7 @@ const whileResponses = async (interaction, userId, classification) => {
       options: f.options,
     });
 
-    if (response == undefined) break;
+    if (response == undefined) return undefined;
 
     let responseCache = "";
     if (response instanceof StringSelectMenuInteraction) {
@@ -126,7 +126,10 @@ module.exports = {
       interaction.user.send({ embeds: [embed] });
 
       console.log(userId)
-      await whileResponses(interaction, userId, "data");
+      let whileRes = await whileResponses(interaction, userId, "data");
+      if (whileRes == undefined) {
+        return interaction.user.send('Você demorou muito para responder! Sua matrícula foi cancelada.');
+      }
 
       const tutoriaPlus = new EmbedBuilder()
         .setColor(purpleHex)
@@ -168,7 +171,10 @@ module.exports = {
         .setColor(purpleHex)
         .setTitle("Perguntas para avaliação de conhecimento")
       interaction.user.send({ embeds: [embed] });
-      await whileResponses(interaction, userId, "knowledge");
+      whileRes = await whileResponses(interaction, userId, "knowledge");
+      if (whileRes == undefined) {
+        return interaction.user.send('Você demorou muito para responder! Sua matrícula foi cancelada.');
+      }
 
       //TODO: Enviar formulário
 
