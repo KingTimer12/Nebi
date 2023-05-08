@@ -77,7 +77,7 @@ const sendForm = async (userId, guild) => {
   const startIndex = 4;
   for (let i = startIndex; i < form.length; i++) {
     if (!(i == 4 || i == 5 || i == 22 || i == 23 || i == 24)) continue;
-    const response = getResponse(userId, i + 1);
+    const response = getResponse(userId, i + 2);
     mainMessagesEmbeds.push(
       new EmbedBuilder()
         .setColor(purpleHex)
