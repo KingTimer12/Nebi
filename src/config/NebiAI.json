@@ -9,6 +9,13 @@
             "frequency_penalty": 1,
             "presence_penalty": 1
         }
+    ],
+    "OAI_personality": {
+        "like": [
 
-    ]
+        ],
+        "hate": [
+            
+        ]
+    }
 }
