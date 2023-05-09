@@ -9,10 +9,10 @@ const configuration = new Configuration({
 const openai = new OpenAIApi(configuration);
 async function ask(prompt) {
 
-  
+  const personality = nebi.OAI_data[0].prompts.join(' ')
 
   const response = await openai.createCompletion({
-    prompt: nebi.OAI_data[0].prompt + "\n\n#########\n" + prompt + "\n#########\n",
+    prompt: personality + "\n\n#########\n" + prompt + "\n#########\n",
     model: nebi.OAI_data[0].model,
     max_tokens: nebi.OAI_data[0].max_tokens,
     temperature: nebi.OAI_data[0].temperature,
