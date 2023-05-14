@@ -2,7 +2,7 @@
   "name": "nebi",
   "version": "1.0.0",
   "description": "Bot desenvolvido em JS para a comunidade de autores brasileiros: Novel Brasil.",
-  "main": "dist/index.js",
+  "main": "build/index.js",
   "scripts": {
     "dev": "ts-node src/index.ts",
     "build": "tsc",

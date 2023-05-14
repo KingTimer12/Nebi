@@ -2,7 +2,7 @@
   "compilerOptions": {
     "lib": ["ESNext"],
     "rootDir": "src",
-    "outDir": "dist",
+    "outDir": "build",
     "target": "ESNext",
     "module": "CommonJS",
     "moduleResolution": "Node",
@@ -20,5 +20,5 @@
     "experimentalDecorators": true,
   },
   "include": ["src"],
-  "exclude": ["node_modules", "**/*.spec.ts", "dist"]
+  "exclude": ["node_modules", "**/*.spec.ts", "build"]
 }

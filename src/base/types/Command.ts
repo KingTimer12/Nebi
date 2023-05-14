@@ -5,7 +5,7 @@ import {
   CommandInteraction,
   CommandInteractionOptionResolver,
   ModalSubmitInteraction,
-  StringSelectMenuBuilder,
+  StringSelectMenuInteraction,
 } from "discord.js";
 import { NebiClient } from "../Nebi";
 
@@ -22,7 +22,7 @@ export type ComponentsButton = Collection<
 
 export type ComponentsSelect = Collection<
   string,
-  (interaction: StringSelectMenuBuilder) => any
+  (interaction: StringSelectMenuInteraction) => any
 >;
 
 export type ComponentsModal = Collection<
