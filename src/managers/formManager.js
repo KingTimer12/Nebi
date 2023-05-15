@@ -1,4 +1,9 @@
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
+const {
+  EmbedBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+} = require("discord.js");
 const {
   getChannel,
   addOrUpdateForm,
@@ -23,7 +28,13 @@ const clearResponse = (userId) => {
   responsesMap.delete(userId);
 };
 
-const getResponse = (userId, question) => getResponses(userId)[question - 1];
+const removeResponse = (userId, index) => {
+  const array = getResponses(userId);
+  array.splice(index, 1);
+  responsesMap.set(userId, array);
+};
+
+const getResponse = (userId, question) => getResponses(userId)[question];
 
 const getResponses = (userId) => responsesMap.get(userId);
 
@@ -40,7 +51,7 @@ const sendForm = async (userId, guild) => {
     .map((member) => member.user)
     .find((user) => user.id == userId);
 
-  if (user == undefined) return console.log('User is undefined!');
+  if (user == undefined) return console.log("User is undefined!");
 
   const tagEmoji = [
     forumChannel.availableTags.find((r) => r.name == "Aberto").id,
@@ -53,11 +64,12 @@ const sendForm = async (userId, guild) => {
 
   const nickname = user.tag.replace("#", "");
 
-  if (getResponse(userId, 5) == "Sim") {
+  if (getResponse(userId, 4) == "Sim") {
     tagEmoji.push(
       forumChannel.availableTags.find((r) => r.name == "Tutorando+").id
     );
   }
+  removeResponse(userId, 4);
 
   let mainMessagesEmbeds = [];
 
@@ -66,10 +78,9 @@ const sendForm = async (userId, guild) => {
       .setColor(purpleHex)
       .setTitle("Dados do Tutorando")
       .setDescription(
-        `**User ID**: ${userId}\n**Idade**: ${getResponse(
-          userId,
-          1
-        )}\n**Melhores horários**: ${getResponse(userId, 2)}`
+        `**User ID**: ${userId}
+        **Idade**: ${getResponse(userId, 0)}
+        **Melhores horários**: ${getResponse(userId, 1)}`
       ),
     new EmbedBuilder().setColor(purpleHex).setTitle("Perguntas Essenciais")
   );
@@ -77,7 +88,11 @@ const sendForm = async (userId, guild) => {
   const startIndex = 4;
   for (let i = startIndex; i < form.length; i++) {
     if (!(i == 4 || i == 5 || i == 22 || i == 23 || i == 24)) continue;
-    const response = getResponse(userId, i + 2);
+    const response = getResponse(userId, i);
+    if (response == undefined)
+      return user.send({
+        content: "Falha ao enviar uma das respostas.",
+      });
     mainMessagesEmbeds.push(
       new EmbedBuilder()
         .setColor(purpleHex)
@@ -106,6 +121,10 @@ const sendForm = async (userId, guild) => {
       for (const f of form) {
         if (f.classification != "knowledge") continue;
         const answer = getResponse(userId, index);
+        if (answer == undefined)
+          return user.send({
+            content: "Falha ao enviar uma das respostas.",
+          });
         embeds.push(
           new EmbedBuilder()
             .setColor(purpleHex)
@@ -114,12 +133,11 @@ const sendForm = async (userId, guild) => {
         );
         index++;
       }
-    
-      index = 0
+
+      index = 0;
 
       for (const questionEmbed of embeds) {
         if (index == 20) {
-
           const row = new ActionRowBuilder().addComponents(
             new ButtonBuilder()
               .setCustomId(`formAccept`)
@@ -164,4 +182,10 @@ const sendForm = async (userId, guild) => {
     });
 };
 
-module.exports = { addResponse, clearResponse, getResponse, getResponses, sendForm };
+module.exports = {
+  addResponse,
+  clearResponse,
+  getResponse,
+  getResponses,
+  sendForm,
+};
