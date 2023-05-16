@@ -1,7 +1,6 @@
 const { array, add, removeElement } = require("../../managers/drawManager");
 const { emojis } = require("../../utils/emotes.json");
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
-const { getData, createEvent } = require("../../utils/firebase/firabaseDraw");
 const { getNextSunday } = require("../../utils/timerApi");
 
 const find = (userId) => {
