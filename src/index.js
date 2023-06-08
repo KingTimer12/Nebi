@@ -6,7 +6,6 @@ const {
   Partials,
 } = require("discord.js");
 const { loadEvents } = require("./handlers/eventHandler");
-const discordModals = require("discord-modals");
 const { loadButton } = require("./handlers/buttonHandler");
 const { loadSelect } = require("./handlers/selectHandler");
 
@@ -73,9 +72,6 @@ class Bot extends Client {
           new DeezerPlugin(),
         ],
       });
-
-      //Configurar o sistema de modals
-      discordModals(this);
 
       this.commands = new Collection();
       this.events = new Collection();

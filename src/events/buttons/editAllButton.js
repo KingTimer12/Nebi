@@ -1,20 +1,19 @@
-const { Modal, TextInputComponent, showModal } = require("discord-modals");
-
+const { ModalBuilder, TextInputBuilder, TextInputStyle } = require("discord.js");
 
 module.exports = {
   customId: "edit-all",
   async execute(interaction, client) {
-    const modal = new Modal()
+    const modal = new ModalBuilder()
       .setCustomId("modal-md-edit")
       .setTitle("Mural dos Desenhos da Semana")
       .addComponents(
-        new TextInputComponent()
+        new TextInputBuilder()
           .setCustomId("draw-name")
           .setStyle("SHORT")
           .setLabel("Título/nome do desenho:")
           .setPlaceholder("")
           .setRequired(true),
-        new TextInputComponent()
+        new TextInputBuilder()
           .setCustomId("type")
           .setStyle("SHORT")
           .setLabel("Tipo:")
@@ -22,13 +21,13 @@ module.exports = {
             "Exemplos de tipo: original, fanart, releitura, cópia, etc..."
           )
           .setRequired(true),
-        new TextInputComponent()
+        new TextInputBuilder()
           .setCustomId("comments")
-          .setStyle("LONG")
+          .setStyle(TextInputStyle.Paragraph)
           .setLabel("Comentário:")
           .setMaxLength(1000)
           .setRequired(false)
       );
-    return await showModal(modal, { client: client, interaction: interaction }).catch(console.log);
+    return await interaction.showModal(modal).catch(console.log);
   },
 };
