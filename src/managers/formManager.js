@@ -59,7 +59,7 @@ const sendForm = async (userId, guild) => {
 
   const responses = getResponses(userId);
   if (responses == undefined || !responses.length) {
-    return user.send({ content: "Ocorreu um erro ao enviar as respostas!" });
+    return user.send({ content: "Ocorreu um erro ao enviar as respostas! Id do erro: #9A0Db12" });
   }
 
   const nickname = user.tag.replace("#", "");
@@ -91,7 +91,7 @@ const sendForm = async (userId, guild) => {
     const response = getResponse(userId, i);
     if (response == undefined)
       return user.send({
-        content: "Falha ao enviar uma das respostas.",
+        content: "Falha ao enviar uma das respostas. Id do erro: #ab94b12",
       });
     mainMessagesEmbeds.push(
       new EmbedBuilder()
@@ -117,18 +117,18 @@ const sendForm = async (userId, guild) => {
 
       let embeds = [];
 
-      let index = 6;
+      let index = 4;
       for (const f of form) {
         if (f.classification != "knowledge") continue;
         const answer = getResponse(userId, index);
         if (answer == undefined)
           return user.send({
-            content: "Falha ao enviar uma das respostas.",
+            content: "Falha ao enviar uma das respostas. Id do erro: #0ffDb12",
           });
         embeds.push(
           new EmbedBuilder()
             .setColor(purpleHex)
-            .setTitle(`${index - 5} - ${f.question}`)
+            .setTitle(`${index - 3} - ${f.question}`)
             .setDescription(`R: ${answer}`)
         );
         index++;

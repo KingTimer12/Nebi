@@ -33,7 +33,7 @@ module.exports = {
         interaction.reply({
           content: 'Sua DM não está habilitada para o bot iniciar a matrícula! Habilite durante esse tempo de perguntas e repostas.',
           ephemeral: true
-        })
+        }).catch(console.error)
       });
 
     });

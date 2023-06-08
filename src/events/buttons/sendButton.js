@@ -15,11 +15,12 @@ const {
   createAndSaveUserDraw,
 } = require("../../database/manager/drawManager");
 const { getEmoji } = require("../../handlers/emojiHandler");
+const { getChannel } = require("../../database/manager/guildManager");
 
 module.exports = {
   customId: "send",
   async execute(interaction) {
-    const { user } = interaction;
+    const { user, client } = interaction;
     const userId = user.id;
 
     let drawsCurrent = [];
@@ -65,13 +66,25 @@ module.exports = {
       })
       .catch(console.log);
 
-    let dataImg = undefined;
-    try {
-      dataImg = await uploadImg(draw.link, draw.name, description);
-    } catch (error) {
-      console.error(error);
+    const guild = client.guilds.cache.find(guild => guild.id=='1046080828716896297')
+    const imagensDBId = await getChannel(guild, { channelName: "image" });
+    const imagesChannel = guild.channels.cache.find(
+      (chn) => chn.id === imagensDBId
+    );
+    if (imagesChannel == undefined) {
+      return console.log("Images channel is undefined")
     }
-    if (!dataImg) {
+    
+    const message = await imagesChannel.send({
+      files: [{
+        attachment: draw.link,
+        name: `${draw.name}.jpg`,
+        description: description
+      }]
+    })
+    
+    const url = message.attachments.at(0).url
+    if (url == undefined) {
       return await int
         .editReply({
           content: `${emojis["error"]} Os dados da imagem não foram identificados.`,
@@ -81,38 +94,14 @@ module.exports = {
         })
         .catch(console.log);
     }
+    
     const dateInt = sundayTimestamp();
     const dateString =
       toMoment(Date.now()).weekday() == 0
         ? ", hoje"
         : ` <t:${parseInt(dateInt)}:R>`;
 
-    const link = `${dataImg.link}`;
-
-    console.log(link);
-
-    if (!link.startsWith("https://i.imgur.com")) {
-      if (toMoment(Date.now()).weekday != 0) {
-        return await int
-          .editReply({
-            content: `${emojis["error"]} A API de upload de imagem atingiu o limite! Espere para mandar novamente. O sistema de repescagem só acontece no domingo.`,
-            components: [],
-            files: [],
-            ephemeral: true,
-          })
-          .catch(console.log);
-      } else {
-        cacheDraw(userId, draw);
-        return await int
-          .editReply({
-            content: `${emojis["entendo"]} A API de upload de imagem atingiu o limite! Seu desenho foi colocado na cache de repescagem! Não se preocupe, pois será enviado mesmo depois das 00:00.`,
-            components: [],
-            files: [],
-            ephemeral: true,
-          })
-          .catch(console.log);
-      }
-    }
+    const link = `${url}`;
 
     const drawResult = {
       name: draw.name,
