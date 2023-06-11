@@ -1,4 +1,3 @@
-require("dotenv").config();
 const {
   Client,
   Collection,
@@ -6,14 +5,12 @@ const {
   Partials,
 } = require("discord.js");
 
-const { DisTube } = require("distube");
+/**
+ * Customização do Client para a Nebi
+ * @extends {Client}
+ */
 
-const { SpotifyPlugin } = require("@distube/spotify");
-const { SoundCloudPlugin } = require("@distube/soundcloud");
-const { YtDlpPlugin } = require("@distube/yt-dlp");
-const { DeezerPlugin } = require("@distube/deezer");
-
-class Bot extends Client {
+class Nebi extends Client {
   constructor() {
     super({
       allowedMentions: {
@@ -52,38 +49,10 @@ class Bot extends Client {
       restTimeOffset: 0,
     });
 
-    (async () => {
-      this.distube = new DisTube(this, {
-        leaveOnEmpty: true,
-        leaveOnStop: true,
-        emitNewSongOnly: true,
-        emitAddSongWhenCreatingQueue: false,
-        emitAddListWhenCreatingQueue: false,
-        plugins: [
-          new SpotifyPlugin({
-            emitEventsAfterFetching: true,
-          }),
-          new SoundCloudPlugin(),
-          new YtDlpPlugin(),
-          new DeezerPlugin(),
-        ],
-      });
-
-      this.commands = new Collection();
-      this.events = new Collection();
-      this.buttons = new Collection();
-      this.selects = new Collection();
-      this.modals = new Collection();
-
-      require(`./handlers/commands`)(this);
-      loadEvents(this);
-      loadButton(this);
-      loadSelect(this);
-      loadModal(this)
-
-      this.login(process.env.BOT_TOKEN);
-    })();
+    this.commands = new Collection();
+    this.events = new Collection();
+    this.buttons = new Collection();
+    this.selects = new Collection();
+    this.modals = new Collection();
   }
 }
-
-new Bot()
