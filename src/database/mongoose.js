@@ -1,7 +1,6 @@
 const mongoose = require('mongoose');
 require("dotenv").config();
 
-
 module.exports = {
     init: () => {
 		const dbOptions = {

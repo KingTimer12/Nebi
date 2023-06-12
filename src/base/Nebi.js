@@ -49,10 +49,35 @@ class Nebi extends Client {
       restTimeOffset: 0,
     });
 
-    this.commands = new Collection();
+    /**
+		 * Collection para eventos registrados
+		 * @type {Collection}
+		*/
     this.events = new Collection();
+
+    /**
+		 * Collection para as interações registradas
+		 * @type {Collection}
+     * @type {Collection}
+     * @type {Collection}
+     * @type {Collection}
+		*/
+    this.commands = new Collection();
     this.buttons = new Collection();
     this.selects = new Collection();
     this.modals = new Collection();
+
+    /**
+		 * Permitir acesso ao mongo
+		 * @type {function}
+		*/
+		this.mongoose = require('../database/mongoose');
+
+    /**
+		 * Função para criar delay
+		 * @param {number} ms O tempo do delay
+		 * @type {function}
+		*/
+		this.delay = ms => new Promise(res => setTimeout(res, ms));
   }
 }
