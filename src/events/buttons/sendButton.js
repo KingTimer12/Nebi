@@ -1,14 +1,11 @@
-const { uploadImg } = require("../../utils/imgurApi");
 const { emojis } = require("../../utils/emotes.json");
 const {
-  getNextSunday,
   toMoment,
   sundayTimestamp,
 } = require("../../utils/timerApi");
 const {
   getDraw,
-  removeDraw,
-  cacheDraw,
+  removeDraw
 } = require("../../database/handler/drawHandler");
 const {
   fetchUserDraw,

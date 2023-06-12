@@ -11,7 +11,6 @@ const {
   fetchUserDraw,
 } = require("../database/manager/drawManager");
 const { getChannel } = require("../database/manager/guildManager");
-const { uploadImg } = require("../utils/imgurApi");
 const { toMoment } = require("../utils/timerApi");
 
 const checkingDraw = async (guild) => {
@@ -40,8 +39,8 @@ const checkingDraw = async (guild) => {
     await sendDraws(drawChannel)
   } else if (
     currentDate.weekday() == 1 &&
-    currentDate.hours() == 00 &&
-    currentDate.minutes() == 00
+    currentDate.hours() == 0 &&
+    currentDate.minutes() == 0
   ) {
     await resetUserDraw();
     console.log("[DrawEvent] Update event for next sunday.");

@@ -10,8 +10,8 @@ const { Worker } = require("snowflake-uuid");
 const { toMoment } = require("../utils/timerApi");
 require("dotenv").config();
 
-const DIADEUSO = 7; //Dia que isso funcionará
-const DIALIMITE = 15; //Dia que parará de funcionar
+const DIADEUSO = 12; //Dia que isso funcionará
+const DIALIMITE = 19; //Dia que parará de funcionar
 const MESDEUSO = 6; //Mês que isso funcionará
 
 module.exports = {

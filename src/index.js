@@ -13,6 +13,11 @@ const { SoundCloudPlugin } = require("@distube/soundcloud");
 const { YtDlpPlugin } = require("@distube/yt-dlp");
 const { DeezerPlugin } = require("@distube/deezer");
 
+const { loadEvents } = require("./handlers/eventHandler");
+const { loadButton } = require("./handlers/buttonHandler");
+const { loadSelect } = require("./handlers/selectHandler");
+const { loadModal } = require("./handlers/modalHandler");
+
 class Bot extends Client {
   constructor() {
     super({
@@ -79,11 +84,11 @@ class Bot extends Client {
       loadEvents(this);
       loadButton(this);
       loadSelect(this);
-      loadModal(this)
+      loadModal(this);
 
       this.login(process.env.BOT_TOKEN);
     })();
   }
 }
 
-new Bot()
+new Bot();
