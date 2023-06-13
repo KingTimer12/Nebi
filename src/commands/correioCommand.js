@@ -10,7 +10,7 @@ const { set } = require("../utils/correioCached");
 require("dotenv").config();
 
 const DIADEUSO = 12; //Dia que isso funcionará
-const DIALIMITE = 19; //Dia que parará de funcionar
+const DIALIMITE = 12; //Dia que parará de funcionar
 const MESDEUSO = 6; //Mês que isso funcionará
 
 module.exports = {
