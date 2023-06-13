@@ -32,11 +32,7 @@ module.exports = {
     const userId = user.id;
 
     //Verificando se ainda tá tendo evento.
-    if (
-      currentDate.date() < DIADEUSO &&
-      currentDate.date() >= DIALIMITE &&
-      currentDate.month() != MESDEUSO
-    ) {
+    if (currentDate.date() >= DIALIMITE) {
       return await interaction
         .reply({
           content:
