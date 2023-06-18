@@ -1,4 +1,4 @@
-const {
+/*const {
   SlashCommandBuilder,
   ModalBuilder,
   TextInputBuilder,
@@ -32,13 +32,22 @@ module.exports = {
     const userId = user.id;
 
     //Verificando se ainda tá tendo evento.
-    if (currentDate.date() >= DIALIMITE) {
+    if (currentDate.date() >= DIALIMITE || currentDate.month() != MESDEUSO) {
       return await interaction
         .reply({
-          content:
-            currentDate.date() < DIADEUSO
-              ? "O evento ainda não foi iniciado."
-              : "O evento já passou.",
+          content: "O evento já passou.",
+          ephemeral: true,
+        })
+        .catch(console.error);
+    }
+
+    if (
+      currentDate.date() < DIADEUSO &&
+      currentDate.month() == MESDEUSO
+    ) {
+      return await interaction
+        .reply({
+          content: "O evento ainda não foi iniciado.",
           ephemeral: true,
         })
         .catch(console.error);
@@ -97,3 +106,4 @@ module.exports = {
     await interaction.showModal(modal).catch(console.log); //Mostrando o modal
   },
 };
+*/
