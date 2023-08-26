@@ -1,6 +1,4 @@
 const { ActivityType } = require("discord.js");
-const { checking } = require("../managers/checkManager.js");
-const { getError, setError } = require("../utils/googleApi/forumApi");
 const { loadMongo } = require("../database/mongodb.js");
 const { getChannel } = require("../database/manager/guildManager.js");
 const {
@@ -8,8 +6,10 @@ const {
   removeCooldowns,
 } = require("../database/handler/userHandler.js");
 const { load } = require("../handlers/emojiHandler.js");
-const { geral1, geral2 } = require("../utils/json/topicChannel.json");
+const { geral1, geral2 } = require("../config/topicChannel.json");
 const { convertStringToEmoji } = require("../utils/convertEmoji.js");
+const { checkingDraw } = require("../managers/drawCheckManager.js");
+const { checkingMember } = require("../managers/newMemberCheckManager.js");
 
 const activities = [
   { type: ActivityType.Playing, name: "meu jogo!" },

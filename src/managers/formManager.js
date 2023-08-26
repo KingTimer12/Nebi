@@ -6,7 +6,6 @@ const {
 } = require("discord.js");
 const {
   getChannel,
-  addOrUpdateForm,
 } = require("../database/manager/guildManager");
 
 require("dotenv").config();
@@ -62,7 +61,7 @@ const sendForm = async (userId, guild) => {
     return user.send({ content: "Ocorreu um erro ao enviar as respostas! Id do erro: #9A0Db12" });
   }
 
-  const nickname = user.tag.replace("#", "");
+  const nickname = user.username;
 
   if (getResponse(userId, 4) == "Sim") {
     tagEmoji.push(
@@ -164,16 +163,6 @@ const sendForm = async (userId, guild) => {
         }
         index++;
       }
-
-      const msgIds = threadChannel.messages.cache
-        .filter((msg) => msg.author.id === process.env.BOT_ID)
-        .map((msg) => msg.id);
-
-      await addOrUpdateForm(guild, {
-        userId: userId,
-        oldTag: user.tag,
-        messagesId: msgIds,
-      });
 
       await user.send({
         content:
