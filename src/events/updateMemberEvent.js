@@ -8,7 +8,8 @@ module.exports = {
   
   async createEvent(oldMember, newMember) {
 
-    await updateNicknameRow(755009417, oldMember, newMember)
+    const sheetId = 755009417;
+    await updateNicknameRow(sheetId, oldMember, newMember)
 
     if (oldMember.pending && !newMember.pending) {
       const {guild, roles} = newMember
