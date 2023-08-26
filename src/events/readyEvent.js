@@ -1,15 +1,9 @@
 const { ActivityType } = require("discord.js");
 const { loadMongo } = require("../database/mongodb.js");
 const { getChannel } = require("../database/manager/guildManager.js");
-const {
-  updateAllUsers,
-  removeCooldowns,
-} = require("../database/handler/userHandler.js");
 const { load } = require("../handlers/emojiHandler.js");
 const { geral1, geral2 } = require("../config/topicChannel.json");
 const { convertStringToEmoji } = require("../utils/convertEmoji.js");
-const { checkingDraw } = require("../managers/drawCheckManager.js");
-const { checkingMember } = require("../managers/newMemberCheckManager.js");
 
 const activities = [
   { type: ActivityType.Playing, name: "meu jogo!" },
@@ -63,10 +57,6 @@ module.exports = {
 
     //Conectar ao banco de dados
     await loadMongo().then(() => console.log("Connected successfully"));
-
-    //Atualizar os usuários no banco de dados
-    setInterval(async () => await updateAllUsers(), 10 * 1000);
-    setInterval(() => removeCooldowns(), 10 * 1000);
 
     for (const guild of client.guilds.cache.values()) {
       //Método para adicionar todos tutorando na planilha

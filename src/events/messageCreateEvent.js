@@ -1,4 +1,6 @@
-const {
+//Vou colocar o desenvolvimento logo na master e criar uma branch só pro rank pq assim n tá dando
+
+/*const {
   getUser,
   addUser,
   hasCooldown,
@@ -32,4 +34,4 @@ module.exports = {
       userProfile.checkLevel()
     }
   },
-};
+};*/

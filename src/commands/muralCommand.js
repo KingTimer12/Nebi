@@ -6,7 +6,6 @@ const {
 } = require("discord.js");
 require("dotenv").config();
 const { emojis } = require("../utils/emotes.json");
-const { createUserDraw } = require("../database/handler/drawHandler");
 
 module.exports = {
   data: new SlashCommandBuilder()

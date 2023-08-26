@@ -1,8 +1,11 @@
 const { Schema, model } = require("mongoose");
 
-const DrawSchema = Schema({
-  userId: String,
-  draw: [
+const DrawSchema = new Schema({
+  userId: {
+    type: String,
+    required: true,
+  },
+  draws: [
     {
       name: {
         type: String,
@@ -21,4 +24,4 @@ const DrawSchema = Schema({
   ],
 });
 
-module.exports = model("draws", DrawSchema);
+module.exports = model("Draw", DrawSchema);

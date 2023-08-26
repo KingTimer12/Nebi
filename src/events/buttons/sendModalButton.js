@@ -1,36 +1,54 @@
-const { TextInputComponent, showModal, Modal } = require("discord-modals");
-const { ButtonBuilder, ButtonStyle, ActionRowBuilder } = require("discord.js");
-const { array, removeElement, add } = require("../../managers/drawManager");
-const { emojis } = require("../../utils/emotes.json");
+const {
+  ModalBuilder,
+  TextInputStyle,
+  TextInputBuilder,
+  ActionRowBuilder,
+} = require("discord.js");
 
 module.exports = {
   customId: "send-info",
-  async execute(interaction, client) {
-    const modal = new Modal()
+  async execute(interaction) {
+    //Exemplos de tipo: original, fanart, releitura, cópia, etc...
+    const modal = new ModalBuilder()
       .setCustomId("modal-md")
-      .setTitle("Mural dos Desenhos da Semana")
-      .addComponents(
-        new TextInputComponent()
-          .setCustomId("draw-name")
-          .setStyle("SHORT")
-          .setLabel("Título/nome do desenho:")
-          .setPlaceholder("")
-          .setRequired(true),
-        new TextInputComponent()
-          .setCustomId("type")
-          .setStyle("SHORT")
-          .setLabel("Tipo:")
-          .setPlaceholder(
-            "Exemplos de tipo: original, fanart, releitura, cópia, etc..."
-          )
-          .setRequired(true),
-        new TextInputComponent()
-          .setCustomId("comments")
-          .setStyle("LONG")
-          .setLabel("Comentário:")
-          .setMaxLength(1000)
-          .setRequired(false)
-      );
-    showModal(modal, {interaction: interaction, client:client}).catch(console.log);
+      .setTitle("Mural de Desenhos");
+    const drawName = new TextInputBuilder()
+      .setCustomId("drawName")
+      .setLabel("Qual nome/título do desenho?")
+      .setMaxLength(100)
+      .setStyle(TextInputStyle.Short);
+
+    const type = new TextInputBuilder()
+      .setCustomId("drawType")
+      .setLabel("Qual tipo?")
+      .setMaxLength(100)
+      .setPlaceholder(
+        "Exemplos de tipo: original, fanart, releitura, cópia, etc..."
+      )
+      .setStyle(TextInputStyle.Short);
+
+    const description = new TextInputBuilder()
+      .setCustomId("drawDescription")
+      .setLabel("Qual comentário?")
+      .setValue("Sem comentários")
+      .setRequired(false)
+      .setMaxLength(1000)
+      .setStyle(TextInputStyle.Paragraph);
+
+    const drawNameActionRow = new ActionRowBuilder().addComponents(
+      drawName
+    );
+
+    const drawTypeActionRow = new ActionRowBuilder().addComponents(
+      type
+    );
+
+    const drawDescriptionActionRow = new ActionRowBuilder().addComponents(
+      description
+    );
+
+    modal.addComponents(drawNameActionRow, drawTypeActionRow, drawDescriptionActionRow);
+
+    await interaction.showModal(modal).catch(console.error);
   },
 };

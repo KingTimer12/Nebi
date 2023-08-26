@@ -1,4 +1,6 @@
-const { SlashCommandBuilder, AttachmentBuilder } = require("discord.js");
+//Vou colocar o desenvolvimento logo na master e criar uma branch só pro rank pq assim n tá dando
+
+/*const { SlashCommandBuilder, AttachmentBuilder } = require("discord.js");
 const { emojis } = require("../utils/emotes.json");
 const Canvacord = require("canvacord");
 const { getUser, addUser } = require("../database/handler/userHandler");
@@ -68,3 +70,4 @@ module.exports = {
     });
   },
 };
+*/
