@@ -1,0 +1,86 @@
+[
+    {
+        "id": "cfN-1",
+        "level": "facil",
+        "question": "Quais das opções é um termo acessório?",
+        "answers": [
+            {
+                "id": "A",
+                "answer": "Sujeito, Objeto Direto e Predicado."
+            },
+            {
+                "id": "B",
+                "answer": "Objeto Direto, Complemento Verbal e Aposto."
+            },
+            {
+                "id": "C",
+                "answer": "Complemento Nominal, Advérbio e Aposto."
+            },
+            {
+                "id": "D",
+                "answer": "Substantivo, Verbo e Numeral."
+            },
+            {
+                "id": "E",
+                "answer": "Adjunto Adnominal, Adjunto Adverbial e Aposto."
+            }
+        ],
+        "correct": "E"
+    },
+    {
+        "id": "cfN-2",
+        "level": "facil",
+        "question": "Qual diferença entre frase, oração e período?",
+        "answers": [
+            {
+                "id": "A",
+                "answer": "Nenhuma."
+            },
+            {
+                "id": "B",
+                "answer": "Oração e período são frases que contenham só um verbo; e frase é sentido completo e formada por uma ou mais palavras;"
+            },
+            {
+                "id": "C",
+                "answer": "Frase é o sentido completo e formada por uma ou mais palavras; oração é uma frase que tem um verbo; e período frase formada por uma ou mais orações."
+            },
+            {
+                "id": "D",
+                "answer": "Oração é o sentido completo e formada por uma ou mais palavras; período é uma frase que tem um verbo; e frase é formada por uma ou mais orações."
+            },
+            {
+                "id": "E",
+                "answer": "Período é o sentido completo e formada por uma ou mais palavras; frase precisa de um verbo; e oração é uma frase formada por um ou mais períodos."
+            }
+        ],
+        "correct": "C"
+    },
+    {
+        "id": "cfN-3",
+        "level": "facil",
+        "question": "O que é uma concordância e quais seus tipos?",
+        "answers": [
+            {
+                "id": "A",
+                "answer": "Concordância é quando ocorre correspondência de flexão entre dois termos. Tipos: nominal e verbal."
+            },
+            {
+                "id": "B",
+                "answer": "Concordância é quando ocorre correspondência de flexão entre dois termos acessórios. Tipos: adverbial e adnominal."
+            },
+            {
+                "id": "C",
+                "answer": "Concordância é quando ocorre correspondência semântica entre dois termos. Tipos: adverbial e adnominal."
+            },
+            {
+                "id": "D",
+                "answer": "Concordância é quando concorda semanticamente entre dois termos. Tipos: adverbial e adnominal."
+            },
+            {
+                "id": "E",
+                "answer": "Nenhuma das alternativas."
+            }
+        ],
+        "correct": "A"
+    }
+]

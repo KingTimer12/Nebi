@@ -34,6 +34,7 @@
     "leekslazylogger": "^5.0.0",
     "libsodium-wrappers": "^0.7.10",
     "moment": "^2.29.4",
+    "mongodb": "^5.7.0",
     "mongoose": "^6.9.0",
     "simple-youtube-api": "^5.2.1",
     "snowflake-uuid": "^1.0.0",

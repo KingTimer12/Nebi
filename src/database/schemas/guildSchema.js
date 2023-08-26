@@ -19,11 +19,7 @@ const GuildSchema = new Schema({
     default: [
       { userId: String, data: String, oldTag: String, messagesId: [String] },
     ],
-  },
-  newMember: [{
-    userId: String,
-    timestamp: Number
-  }]
+  }
 });
 
 module.exports = model("Guild", GuildSchema);
