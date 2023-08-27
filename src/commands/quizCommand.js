@@ -452,15 +452,13 @@ module.exports = {
             .setColor("#2273D6")
             .setTitle(messageFinal)
             .setDescription(
-              `Você terminou o quiz, meus parabéns!\n\n> Estatísticas:\n\n\`\`\`\nAcertos: ${corrects}/${
-                answers.length
-              } (${percent}%)\nDuração: ${minutes > 0 ? `${minutes}min ` : ""}${
-                seconds > 0 ? `${seconds}s` : ""
+              `Você terminou o quiz, meus parabéns!\n\n> Estatísticas:\n\n\`\`\`\nAcertos: ${corrects}/${answers.length
+              } (${percent}%)\nDuração: ${minutes > 0 ? `${minutes}min ` : ""}${seconds > 0 ? `${seconds}s` : ""
               }\`\`\`\n${messageNext}`
             )
             .setTimestamp();
-          
-          interaction.editReply({embeds: [embed], components: []})
+
+          interaction.editReply({ embeds: [embed], components: [] })
           //TODO: Salvar informações
         }
 
