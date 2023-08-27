@@ -1,5 +1,5 @@
-const { RepeatMode } = require("discord-music-player");
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const { hasMusicCooldown, removeMusicCooldown } = require("../managers/musicManager");
 const { emojis } = require("../utils/emotes.json");
 
 module.exports = {
@@ -79,6 +79,7 @@ module.exports = {
             textChannel: channel,
             metadata: int,
           });
+          if (hasMusicCooldown()) removeMusicCooldown()
         });
         break;
       case "pular":
@@ -108,6 +109,8 @@ module.exports = {
             .catch(console.log);
         await queue.stop();
 
+        if (hasMusicCooldown()) removeMusicCooldown()
+
         interaction
           .reply(
             `${emojis["ready"]} Todas as músicas da lista foram canceladas.`
@@ -116,6 +119,8 @@ module.exports = {
         break;
       case "sair":
         client.distube.voices.leave(interaction)
+
+        if (hasMusicCooldown()) removeMusicCooldown()
 
         interaction
           .reply(
