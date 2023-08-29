@@ -80,7 +80,7 @@ async function awaitComponent(message, customId) {
   return interactionResult;
 }
 
-const addCacheAndNextQuestion = async (userId, responseCache) => {
+const addCacheAndNextQuestion = (userId, responseCache) => {
   addResponse(userId, responseCache);
 };
 

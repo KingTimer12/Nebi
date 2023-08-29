@@ -117,11 +117,15 @@ module.exports = {
           await targetMember.roles.add(studentRole).catch(() => {});
 
           //Adicionando as informações na planilha.
-          await addTutorandoRow(755009417, userIdTarget, username, nickname);
-          await addDadoRow(1365207529, targetMember.user, tutor);
+          const sheetIdTutorando = 755009417
+          const sheetIdData = 1365207529
+          const sheetIdTutores = 429915779
+
+          await addTutorandoRow(sheetIdTutorando, userIdTarget, username, nickname);
+          await addDadoRow(sheetIdData, targetMember.user, tutor);
 
           //Adicionando o cargo do tutor.
-          const tutores = await getTutores(429915779);
+          const tutores = await getTutores(sheetIdTutores);
           for (const row of tutores) {
             if (row.tutor == tutor) {
               let role = guild.roles.cache.find(
@@ -151,6 +155,8 @@ module.exports = {
             content: `${emojis["ready"]} <@${userIdTarget}> foi adicionado à tutoria!`,
             ephemeral: true,
           }).catch(() => {});
+
+
 
         }).catch(() => {});
 
