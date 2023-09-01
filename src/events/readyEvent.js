@@ -4,6 +4,7 @@ const { getChannel } = require("../database/manager/guildManager.js");
 const { load } = require("../handlers/emojiHandler.js");
 const { geral1, geral2 } = require("../config/topicChannel.json");
 const { convertStringToEmoji } = require("../utils/convertEmoji.js");
+const { checkingDraw, sendTheme, sendThemeChoose } = require("../managers/drawCheckManager.js");
 
 const activities = [
   { type: ActivityType.Playing, name: "meu jogo!" },
@@ -70,26 +71,19 @@ module.exports = {
         await setTopicChannel(guild, 'geral-2', geral2)
       }, 10 * 60 * 1000);
 
-      const forumId = await getChannel(guild, { channelName: "forum" });
-      const forumChannel = guild.channels.cache.find(
-        (chn) => chn.id === forumId
+      const drawChannelId = await getChannel(guild, {
+        channelName: "draw-week",
+      });
+      const drawChannel = guild.channels.cache.find(
+        (chn) => chn.id === drawChannelId
       );
 
-      if (forumChannel != undefined) {
-        await checking(guild, forumChannel);
-        //await checkingDraw(guild);
+      if (drawChannel != undefined) {
+        await checkingDraw(guild, drawChannel);
 
         setInterval(async () => {
-          //await checkingDraw(guild);
-          if (getError() == true) {
-            setInterval(async () => {
-              setError(false);
-              await checking(guild, forumChannel);
-            }, 10 * 60 * 1000);
-          } else {
-            await checking(guild, forumChannel);
-          }
-        }, 60 * 60 * 1000);
+          await checkingDraw(guild, drawChannel);
+        }, 60 * 1000);
       }
     }
 

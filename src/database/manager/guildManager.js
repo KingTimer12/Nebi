@@ -112,6 +112,25 @@ const getRole = async (guild, { roleName, roleId }) => {
   return undefined;
 };
 
+const getThemes = async (guild) => {
+  const guildSchema = await getGuild(guild.id);
+  if (guildSchema) {
+    return guildSchema.themes
+  } else await createGuild(guild);
+  return undefined;
+};
+
+const setThemes = async (guildId, themes = []) => {
+
+  const filter = { guildId: guildId };
+  const update = { $set: {themes: themes} };
+
+  const updateOne = await GuildSchema.findOneAndUpdate(
+    filter, update, { new: true }
+  );
+  return updateOne
+};
+
 module.exports = {
 
   getGuild,
@@ -120,5 +139,8 @@ module.exports = {
   getChannel,
 
   addRole,
-  getRole
+  getRole,
+
+  getThemes,
+  setThemes
 };
