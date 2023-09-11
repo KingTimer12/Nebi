@@ -18,7 +18,7 @@ const checkingDraw = async (guild, drawChannel) => {
   } else if (
     currentDate.weekday() == 1 &&
     currentDate.hours() == 0 &&
-    currentDate.minutes() == 17
+    currentDate.minutes() == 20
   ) {
     await resetUserDraw();
     console.log("[DrawEvent] Update event for next sunday.");
