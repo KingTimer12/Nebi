@@ -83,7 +83,7 @@ module.exports = {
 
         setInterval(async () => {
           await checkingDraw(guild, drawChannel);
-        }, 60 * 1000);
+        }, 30 * 1000);
       }
     }
 
