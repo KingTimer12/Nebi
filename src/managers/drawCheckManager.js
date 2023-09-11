@@ -7,22 +7,27 @@ const {
 const { getThemes, setThemes } = require("../database/manager/guildManager");
 const { toMoment } = require("../utils/timerApi");
 const data = require("../config/themes.json")
+let reset = false
 
 const checkingDraw = async (guild, drawChannel) => {
   if (!guild) return;
   const currentDate = toMoment(Date.now());
 
   if (currentDate.weekday() == 0) {
+    reset = false
     console.log("CHECKING DRAW...");
     await sendDraws(drawChannel)
   } else if (
     currentDate.weekday() == 1 &&
     currentDate.hours() == 0 &&
-    currentDate.minutes() == 20
+    currentDate.minutes() == 0
   ) {
-    await resetUserDraw();
     console.log("[DrawEvent] Update event for next sunday.");
-    await sendThemeChoose(guild, drawChannel)
+    if (!reset) {
+      await resetUserDraw();
+      await sendThemeChoose(guild, drawChannel)
+      reset = true
+    }
   } else if (
     currentDate.weekday() == 2 &&
     currentDate.hours() == 0 &&
