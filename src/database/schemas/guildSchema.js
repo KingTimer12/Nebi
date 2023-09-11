@@ -19,7 +19,11 @@ const GuildSchema = new Schema({
     default: [
       { userId: String, data: String, oldTag: String, messagesId: [String] },
     ],
-  }
+  },
+  themes: {
+    type: Array,
+    default: [],
+  },
 });
 
 module.exports = model("Guild", GuildSchema);
