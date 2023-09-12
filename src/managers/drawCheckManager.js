@@ -7,7 +7,7 @@ const {
 const { getThemes, setThemes } = require("../database/manager/guildManager");
 const { toMoment } = require("../utils/timerApi");
 const data = require("../config/themes.json")
-let reset = false
+let reset = true
 
 const checkingDraw = async (guild, drawChannel) => {
   if (!guild) return;
@@ -29,19 +29,21 @@ const checkingDraw = async (guild, drawChannel) => {
       reset = true
     }
   } else if (
-    currentDate.weekday() == 2 &&
-    currentDate.hours() == 14 &&
-    currentDate.minutes() == 0
+    currentDate.weekday() == 1 &&
+    currentDate.hours() == 23 &&
+    currentDate.minutes() == 30
   ) {
-    console.log('PINTO')
-    await sendTheme(drawChannel)
+    if (reset) {
+      await sendTheme(drawChannel)
+      reset = false
+    }
   }
 };
 
 const sendTheme = async (drawChannel) => {
   const lastMessageId = drawChannel.lastMessageId
   console.log(lastMessageId)
-  const lastMessage = await drawChannel.messages.fetch(lastMessageId)
+  const lastMessage = await drawChannel.messages.fetch(lastMessageId).catch(console.error)
 
   let result = ""
   let resultCache = []
@@ -66,7 +68,7 @@ const sendTheme = async (drawChannel) => {
 
   // Extraia os emojis e os temas
   const temas = matches.map(match => `${match[1]}-${match[2]}`);
-  const tema1 = temas.find(t => t.split("-")[0] == resultCache[0].name).split("-")[1].replace("\n" , "")
+  const tema1 = temas.find(t => t.split("-")[0] == resultCache[0].name).split("-")[1].replace("\n", "")
   const tema2 = temas.find(t => t.split("-")[0] == resultCache[1].name).split("-")[1].replace("\n", "")
 
   result = `${tema1} e/ou ${tema2}`
