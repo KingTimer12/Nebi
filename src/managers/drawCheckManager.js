@@ -19,8 +19,8 @@ const checkingDraw = async (guild, drawChannel) => {
     await sendDraws(drawChannel)
   } else if (
     currentDate.weekday() == 1 &&
-    currentDate.hours() == 0 &&
-    currentDate.minutes() == 0
+    currentDate.hours() == 12 &&
+    currentDate.minutes() == 30
   ) {
     console.log("[DrawEvent] Update event for next sunday.");
     if (!reset) {
@@ -30,9 +30,10 @@ const checkingDraw = async (guild, drawChannel) => {
     }
   } else if (
     currentDate.weekday() == 2 &&
-    currentDate.hours() == 0 &&
+    currentDate.hours() == 14 &&
     currentDate.minutes() == 0
   ) {
+    console.log('PINTO')
     await sendTheme(drawChannel)
   }
 };
