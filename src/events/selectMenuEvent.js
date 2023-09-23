@@ -10,6 +10,8 @@ module.exports = {
     var select = client.selects.get(customId);
     if (!select) return;
 
+    console.log(`{SELECT} | ${interaction.user.tag} (${interaction.user.id}) usou o select ${customId} no canal ${interaction.channel.name}`)
+
     try {
       await select.execute(interaction, client);
     } catch (error) {
@@ -17,7 +19,7 @@ module.exports = {
       return await interaction.reply({
         content: "Ocorreu um erro ao executar esse selecionar!",
         ephemeral: true,
-      }).catch(() => {});
+      }).catch(console.error);
     }
   },
 };

@@ -16,10 +16,6 @@ const transformTimestamp = (dateString) => {
     return moment.parseZone(dateString, 'DD/MM/yyyy hh:mm:ss').toDate().getTime()
 }
 
-const sundayTimestamp = () => {
-    return moment().day(7).hour(0).minute(0).second(0).unix()
-}
-
 const toCompare = (old, now) => {
 
     //'28/12/2022 09:06:59'
@@ -30,4 +26,4 @@ const toCompare = (old, now) => {
     return timestampNow <= timestampOld
 }
 
-module.exports = {toCompare, transformTimestamp, getNextSunday, toMoment, unix, sundayTimestamp}
+module.exports = {toCompare, transformTimestamp, getNextSunday, toMoment, unix}

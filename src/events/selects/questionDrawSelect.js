@@ -1,8 +1,12 @@
 const { array, add, removeElement } = require("../../managers/drawManager");
 const { emojis } = require("../../utils/emotes.json");
 const { ActionRowBuilder, ButtonBuilder, ButtonStyle } = require("discord.js");
-const { updateDraw, getDraw } = require("../../database/handler/drawHandler");
-const DrawModel = require("../../database/model/drawModel");
+const { getNextSunday } = require("../../utils/timerApi");
+
+const find = (userId) => {
+  const list = array();
+  return list.find((l) => l.userId == userId);
+};
 
 async function awaitMessage(interaction, filter) {
   //const filter = (msg) => interaction.user.id == msg.author.id;
@@ -30,15 +34,24 @@ async function awaitMessage(interaction, filter) {
 }
 
 const updateAndSend = async (
+  week,
   userId,
   drawName,
   type,
   comments,
   url,
-  int
+  int,
+  obj
 ) => {
-
-  updateDraw(userId, new DrawModel(int, drawName, type, url, comments))
+  let data = undefined;
+  if (week > 0) {
+    data = await getData(week);
+  } else {
+    data = getNextSunday().getTime();
+    await createEvent(1, data);
+  }
+  removeElement(obj);
+  add(week, userId, drawName, type, comments, url, int);
 
   const msgComments = comments != undefined ? `${comments}` : "~~vazio~~";
   let msgFinal =
@@ -64,7 +77,7 @@ const updateAndSend = async (
       .setStyle(ButtonStyle.Danger)
   );
 
-  await int
+  int
     .editReply({
       content: msgFinal,
       files: [{ attachment: url, name: `${drawName}.png` }],
@@ -75,35 +88,36 @@ const updateAndSend = async (
 };
 
 const editMessage = async (interaction, int, content) => {
-  await interaction.deferUpdate().then(async () => {
-    await int.editReply({
+  await interaction.deferUpdate().then(() => {
+    int.editReply({
       content: `${emojis["send"]} ${content}`,
       files: [],
       components: [],
       ephemeral: true,
-    }).catch(console.error);
-  }).catch(console.error);
+    });
+  });
 };
 
 module.exports = {
   customId: "select-question",
-  async execute(interaction) {
-    const { values, user } = interaction;
+  async execute(interaction, client) {
+    const { member, guildId, guild, values, user } = interaction;
     const userId = user.id;
 
     const selected = values[0];
-    const drawObj = getDraw(userId)
-    if (drawObj == undefined) return;
-    const int = drawObj.interaction;
+    const obj = find(userId);
+    if (obj == undefined) return;
+    const int = obj.interaction;
+    const week = obj.week;
 
-    const drawName = drawObj.name;
-    const type = drawObj.type;
-    const comments = drawObj.description;
-    const url = drawObj.link;
+    const drawName = obj.drawName;
+    const type = obj.type;
+    const comments = obj.comments;
+    const url = obj.url;
 
     switch (selected) {
       case "title":
-        await editMessage(interaction, int, "Digite qual será o novo título.").then(
+        editMessage(interaction, int, "Digite qual será o novo título.").then(
           async () => {
             const collectedMessage = await awaitMessage(
               int,
@@ -115,13 +129,13 @@ module.exports = {
                 90
               );
               const text = collectedMessage.content;
-              updateAndSend(userId, text, type, comments, url, int);
+              updateAndSend(week, userId, text, type, comments, url, int);
             }
           }
         );
         break;
       case "type":
-        await editMessage(interaction, int, "Digite qual será o novo tipo.").then(
+        editMessage(interaction, int, "Digite qual será o novo tipo.").then(
           async () => {
             const collectedMessage = await awaitMessage(
               int,
@@ -133,13 +147,13 @@ module.exports = {
                 90
               );
               const text = collectedMessage.content;
-              updateAndSend(userId, drawName, text, comments, url, int);
+              updateAndSend(week, userId, drawName, text, comments, url, int);
             }
           }
         );
         break;
       case "comment":
-        await editMessage(interaction, int, "Digite qual será o novo comentário.").then(
+        editMessage(interaction, int, "Digite qual será o novo comentário.").then(
           async () => {
             const collectedMessage = await awaitMessage(
               int,
@@ -156,13 +170,13 @@ module.exports = {
                 text = text.slice(0, 1000);
               }
 
-              updateAndSend(userId, drawName, type, text, url, int);
+              updateAndSend(week, userId, drawName, type, text, url, int);
             }
           }
         );
         break;
       case "image":
-        await editMessage(interaction, int, "Envie qual será a nova imagem.").then(
+        editMessage(interaction, int, "Envie qual será a nova imagem.").then(
           async () => {
             const collectedMessage = await awaitMessage(
               int,
@@ -176,7 +190,7 @@ module.exports = {
 
               let text = collectedMessage.url;
 
-              updateAndSend(userId, drawName, type, comments, text, int);
+              updateAndSend(week, userId, drawName, type, comments, text, int, obj);
             }
           }
         );

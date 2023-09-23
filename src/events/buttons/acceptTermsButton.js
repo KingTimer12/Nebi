@@ -7,13 +7,16 @@ const {
   ButtonStyle,
 } = require("discord.js");
 const form = require("../../config/form.json");
-const { addResponse, getResponses, sendForm } = require("../../managers/formManager.js");
+const {
+  addResponse,
+  getResponses,
+  sendForm,
+} = require("../../managers/formManager.js");
 require("dotenv").config();
 
 let purpleHex = "#D000BA";
 
 async function sendMessage(interaction, question, { type, customId, options }) {
-  
   let msg = undefined;
   let check = undefined;
   if (type == "writer") {
@@ -39,7 +42,10 @@ async function sendMessage(interaction, question, { type, customId, options }) {
         .setPlaceholder("Selecione só uma opção")
         .setOptions(optionsWithEmoji)
     );
-    msg = await interaction.user.send({ content: `**${question}**`, components: [row] });
+    msg = await interaction.user.send({
+      content: `**${question}**`,
+      components: [row],
+    });
     check = await awaitComponent(msg, customId);
   }
   return check;
@@ -93,9 +99,10 @@ const whileResponses = async (interaction, userId, classification) => {
       options: f.options,
     });
 
+    let responseCache = "";
+
     if (response == undefined) return undefined;
 
-    let responseCache = "";
     if (response instanceof StringSelectMenuInteraction) {
       await response.update({ fetchReply: true });
       const value = response.values[0];
@@ -108,27 +115,31 @@ const whileResponses = async (interaction, userId, classification) => {
 
     index++;
   }
+  return false;
 };
 
 module.exports = {
   customId: "acceptTerms",
   async execute(interaction, client) {
-    const user = interaction.user
-    const userId = user.id
+    const user = interaction.user;
+    const userId = user.id;
 
-    const guild = client.guilds.cache.find(guild => guild.id == "726290600332230686")
+    const guild = client.guilds.cache.find(
+      (guild) => guild.id == "726290600332230686"
+    );
 
     await interaction.deferUpdate().then(async () => {
-
       let embed = new EmbedBuilder()
         .setColor(purpleHex)
-        .setTitle("Dados do Tutorando")
+        .setTitle("Dados do Tutorando");
       interaction.user.send({ embeds: [embed] });
 
-      console.log(userId)
+      console.log(userId);
       let whileRes = await whileResponses(interaction, userId, "data");
       if (whileRes == undefined) {
-        return interaction.user.send('Você demorou muito para responder! Sua matrícula foi cancelada.');
+        return interaction.user.send(
+          "Você demorou muito para responder! Sua matrícula foi cancelada."
+        );
       }
 
       const tutoriaPlus = new EmbedBuilder()
@@ -162,25 +173,29 @@ module.exports = {
           errors: ["time"],
         })
         .catch(console.error);
-      if (interactionResult == undefined) return;
-      await interactionResult.update({fetchReply: true})
+      if (interactionResult == undefined)
+        return interaction.user.send(
+          "Você demorou muito para responder! Sua matrícula foi cancelada."
+        );
+      await interactionResult.update({ fetchReply: true });
       const responseStepTwoForm = interactionResult.customId.split("-")[1];
       addResponse(userId, responseStepTwoForm === "yes" ? "Sim" : "Não");
 
       embed = new EmbedBuilder()
         .setColor(purpleHex)
-        .setTitle("Perguntas para avaliação de conhecimento")
+        .setTitle("Perguntas para avaliação de conhecimento");
       interaction.user.send({ embeds: [embed] });
       whileRes = await whileResponses(interaction, userId, "knowledge");
       if (whileRes == undefined) {
-        return interaction.user.send('Você demorou muito para responder! Sua matrícula foi cancelada.');
+        return interaction.user.send(
+          "Você demorou muito para responder! Sua matrícula foi cancelada."
+        );
       }
 
       //TODO: Enviar formulário
 
-      console.log(userId)
-      await sendForm(userId, guild)
-      
+      console.log(userId);
+      await sendForm(userId, guild);
     });
   },
 };

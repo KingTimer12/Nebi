@@ -1,11 +1,11 @@
 const { Configuration, OpenAIApi } = require("openai");
-const {
+/*const {
   getUser,
   addUser,
   hasCooldown,
   addCooldown,
 } = require("../database/handler/userHandler");
-const { hasUser, saveUser } = require("../database/manager/userManager");
+const { hasUser, saveUser } = require("../database/manager/userManager");*/
 const { ask } = require("../utils/aiApi");
 
 require("dotenv").config();

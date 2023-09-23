@@ -7,23 +7,17 @@ module.exports = {
     .setDescription(
       "Crie um embed no nome da Nebi!"
     )
-    .addChannelOption((option) =>
+    .addStringOption((option) =>
       option
         .setName("channel")
-        .setDescription("O canal que vai enviar o embed. O bot precisa ter permissão lá.")
+        .setDescription("O id do canal que queria enviar o embed. O bot precisa estar lá.")
         .setRequired(true)
     )
     .addStringOption((option) =>
       option
-        .setName("embeds")
-        .setDescription("O json do embed. (Pode conter mensagem)")
+        .setName("json")
+        .setDescription("O json do embed. (Pode conter mensagem) (Não recomendo colocar botão)")
         .setRequired(true)
-    )
-    .addStringOption((option) =>
-      option
-        .setName("components")
-        .setDescription("O json para botões, seletores, etc.")
-        .setRequired(false)
     )
     .addStringOption((option) =>
       option
@@ -37,15 +31,13 @@ module.exports = {
   async execute(interaction) {
     const { options, guild } = interaction;
     const channelId = options.get("channel").value;
-    const jsonEmbedString = options.get("embeds").value;
+    const jsonString = options.get("json").value;
     const imageGet = options.get("image")
 
     let imageUrl = ''
-    let jsonComponent = undefined
-    if (options.get("components")) jsonComponent = JSON.parse(options.get("components").value)
-    if (imageGet) imageUrl = imageGet.value
+    if (imageGet != undefined) imageUrl = imageGet.value
 
-    const json = JSON.parse(jsonEmbedString)
+    const json = JSON.parse(jsonString)
 
     const channel = guild.channels.cache.find((chn) => chn.id === channelId);
     if (channel == undefined) return interaction.reply({
@@ -53,7 +45,7 @@ module.exports = {
         ephemeral: true,
       });
       
-      if (!imageGet && !jsonComponent) {
+      if (imageGet == undefined) {
         channel.send({embeds:json}).then(c => {
           interaction.reply({
               content: "Embed gerado com sucesso!.",
@@ -66,38 +58,12 @@ module.exports = {
             });
             console.log(err)
         })
-      } else if (imageGet) {
+      } else {
         channel.send({embeds:json, files: [{ attachment: imageUrl, name: `nebiImagem.png` }]}).then(c => {
           interaction.reply({
               content: "Embed gerado com sucesso!.",
               ephemeral: true,
-            });
-        }).catch(err => {
-          interaction.reply({
-              content: "Ocorreu um erro!",
-              ephemeral: true,
-            });
-            console.log(err)
-        })
-      } else if (jsonComponent) {
-        channel.send({embeds:json, components:jsonComponent}).then(c => {
-          interaction.reply({
-              content: "Embed gerado com sucesso!.",
-              ephemeral: true,
-            });
-        }).catch(err => {
-          interaction.reply({
-              content: "Ocorreu um erro!",
-              ephemeral: true,
-            });
-            console.log(err)
-        })
-      } else {
-        channel.send({embeds:json, components:jsonComponent, files: [{ attachment: imageUrl, name: `nebiImagem.png` }]}).then(c => {
-          interaction.reply({
-              content: "Embed gerado com sucesso!.",
-              ephemeral: true,
-            });
+            });    
         }).catch(err => {
           interaction.reply({
               content: "Ocorreu um erro!",

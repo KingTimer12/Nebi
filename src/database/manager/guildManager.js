@@ -112,118 +112,18 @@ const getRole = async (guild, { roleName, roleId }) => {
   return undefined;
 };
 
-const addOrUpdateForm = async (
-  guild,
-  { userId, oldTag, messagesId = [] }
-) => {
-  let guildSchema = await getGuild(guild.id);
-  if (!guildSchema) {
-    guildSchema = await createGuild(guild);
-  }
-
-  const value = {
-    userId: userId,
-    oldTag: oldTag,
-    messagesId: messagesId,
-  };
-  const done = function (error, success) {
-    if (error) {
-      console.log(error);
-    }
-  };
-
-  for (const form of guildSchema.forms) {
-    if (form.userId == userId) {
-      await GuildSchema.updateOne(
-        { "forms.userId": userId },
-        {
-          $set: {
-            "forms.$.oldTag": oldTag,
-            "forms.$.messagesId": messagesId,
-          },
-        },
-        done
-      ).clone();
-      return;
-    }
-  }
-
-  await GuildSchema.findOneAndUpdate(
-    { guildId: guild.id },
-    { $addToSet: { forms: value } },
-    done
-  ).clone();
-};
-
-const getData = async (guild, userId) => {
+const getThemes = async (guild) => {
   const guildSchema = await getGuild(guild.id);
   if (guildSchema) {
-    const array = guildSchema.forms.find((form) => form.userId == userId);
-    return array ? array.data : undefined;
+    return guildSchema.themes
   } else await createGuild(guild);
   return undefined;
 };
 
-const getOldTag = async (guild, userId) => {
-  const guildSchema = await getGuild(guild.id);
-  if (guildSchema) {
-    const array = guildSchema.forms.find((form) => form.userId == userId);
-    return array ? array.oldTag : undefined;
-  } else await createGuild(guild);
-  return undefined;
-};
-
-const getMessagesId = async (guild, userId) => {
-  const guildSchema = await getGuild(guild.id);
-  if (guildSchema) {
-    const array = guildSchema.forms.find((form) => form.userId == userId);
-    return array ? array.messagesId : undefined;
-  } else await createGuild(guild);
-  return undefined;
-};
-
-const addMember = async (guild, { userId, timestamp }) => {
-  let guildSchema = await getGuild(guild.id);
-  if (!guildSchema) {
-    guildSchema = await createGuild(guild);
-  }
-
-  const value = {
-    userId: userId,
-    timestamp: timestamp
-  };
-  const done = function (error, success) {
-    if (error) {
-      console.log(error);
-    }
-  };
-
-  for (const member of guildSchema.newMember) {
-    if (member.userId == userId) {
-      return;
-    }
-  }
-
-  await GuildSchema.findOneAndUpdate(
-    { guildId: guild.id },
-    { $addToSet: { newMember: value } },
-    done
-  ).clone();
-};
-
-const getTimestamp = async (guild, userId) => {
-  const guildSchema = await getGuild(guild.id);
-  if (guildSchema) {
-    const array = guildSchema.newMember.find((member) => member.userId == userId);
-    return array ? array.timestamp : undefined;
-  } else await createGuild(guild);
-  return undefined;
-};
-
-const saveMembers = async (guildId, newMember = []) => {
+const setThemes = async (guildId, themes = []) => {
 
   const filter = { guildId: guildId };
-  const update = { $set: {newMember: newMember} };
+  const update = { $set: {themes: themes} };
 
   const updateOne = await GuildSchema.findOneAndUpdate(
     filter, update, { new: true }
@@ -241,12 +141,6 @@ module.exports = {
   addRole,
   getRole,
 
-  addOrUpdateForm,
-  getData,
-  getOldTag,
-  getMessagesId,
-
-  addMember,
-  getTimestamp,
-  saveMembers
+  getThemes,
+  setThemes
 };

@@ -20,10 +20,10 @@ const GuildSchema = new Schema({
       { userId: String, data: String, oldTag: String, messagesId: [String] },
     ],
   },
-  newMember: [{
-    userId: String,
-    timestamp: Number
-  }]
+  themes: {
+    type: Array,
+    default: [],
+  },
 });
 
 module.exports = model("Guild", GuildSchema);

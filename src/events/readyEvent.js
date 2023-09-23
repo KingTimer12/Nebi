@@ -1,18 +1,10 @@
 const { ActivityType } = require("discord.js");
-const { checking } = require("../managers/checkManager.js");
-const { getError, setError } = require("../utils/googleApi/forumApi");
 const { loadMongo } = require("../database/mongodb.js");
 const { getChannel } = require("../database/manager/guildManager.js");
-const {
-  updateAllUsers,
-  removeCooldowns,
-} = require("../database/handler/userHandler.js");
 const { load } = require("../handlers/emojiHandler.js");
-const { geral1, geral2 } = require("../utils/json/topicChannel.json");
+const { geral1, geral2 } = require("../config/topicChannel.json");
 const { convertStringToEmoji } = require("../utils/convertEmoji.js");
-const { createDrawEvent } = require("../database/manager/drawManager.js");
-const { checkingDraw } = require("../managers/drawCheckManager.js");
-const { checkingMember } = require("../managers/newMemberCheckManager.js");
+const { checkingDraw, sendTheme, sendThemeChoose } = require("../managers/drawCheckManager.js");
 
 const activities = [
   { type: ActivityType.Playing, name: "meu jogo!" },
@@ -67,10 +59,6 @@ module.exports = {
     //Conectar ao banco de dados
     await loadMongo().then(() => console.log("Connected successfully"));
 
-    //Atualizar os usuários no banco de dados
-    setInterval(async () => await updateAllUsers(), 60 * 1000);
-    setInterval(() => removeCooldowns(), 20 * 1000);
-
     for (const guild of client.guilds.cache.values()) {
       //Método para adicionar todos tutorando na planilha
       /*const role = guild.roles.cache.find(role => role.id == '846146794613243915')
@@ -83,20 +71,19 @@ module.exports = {
         await setTopicChannel(guild, 'geral-2', geral2)
       }, 10 * 60 * 1000);
 
-      const forumId = await getChannel(guild, { channelName: "forum" });
-      const forumChannel = guild.channels.cache.find(
-        (chn) => chn.id === forumId
+      const drawChannelId = await getChannel(guild, {
+        channelName: "draw-week",
+      });
+      const drawChannel = guild.channels.cache.find(
+        (chn) => chn.id === drawChannelId
       );
 
-      await checkingMember(guild)
-      setInterval(async () => await checkingMember(guild), 3600*1000)
-
-      if (forumChannel != undefined) {
-        await checkingDraw(guild);
+      if (drawChannel != undefined) {
+        await checkingDraw(guild, drawChannel);
 
         setInterval(async () => {
-          await checkingDraw(guild);
-        }, 30 * 60 * 1000);
+          await checkingDraw(guild, drawChannel);
+        }, 5 * 1000);
       }
     }
 

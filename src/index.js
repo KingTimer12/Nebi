@@ -5,10 +5,6 @@ const {
   GatewayIntentBits,
   Partials,
 } = require("discord.js");
-const { loadEvents } = require("./handlers/eventHandler");
-const discordModals = require("discord-modals");
-const { loadButton } = require("./handlers/buttonHandler");
-const { loadSelect } = require("./handlers/selectHandler");
 
 const { DisTube } = require("distube");
 
@@ -16,6 +12,10 @@ const { SpotifyPlugin } = require("@distube/spotify");
 const { SoundCloudPlugin } = require("@distube/soundcloud");
 const { YtDlpPlugin } = require("@distube/yt-dlp");
 const { DeezerPlugin } = require("@distube/deezer");
+
+const { loadEvents } = require("./handlers/eventHandler");
+const { loadButton } = require("./handlers/buttonHandler");
+const { loadSelect } = require("./handlers/selectHandler");
 const { loadModal } = require("./handlers/modalHandler");
 
 class Bot extends Client {
@@ -74,9 +74,6 @@ class Bot extends Client {
         ],
       });
 
-      //Configurar o sistema de modals
-      discordModals(this);
-
       this.commands = new Collection();
       this.events = new Collection();
       this.buttons = new Collection();
@@ -87,11 +84,11 @@ class Bot extends Client {
       loadEvents(this);
       loadButton(this);
       loadSelect(this);
-      loadModal(this)
+      loadModal(this);
 
       this.login(process.env.BOT_TOKEN);
     })();
   }
 }
 
-new Bot()
+new Bot();

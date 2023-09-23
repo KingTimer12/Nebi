@@ -10,12 +10,20 @@ module.exports = {
     const { channel, guild } = interaction;
 
     const targetMember = guild.members.cache.find(
-      (member) => member.user.tag.replace("#", "") == channel.name
+      (member) => member.user.username == channel.name
     );
 
     const studentId = await getRole(guild, { roleName: "student" });
     if (studentId == undefined) return;
     let studentRole = guild.roles.cache.find((role) => role.id == studentId);
+    if (!targetMember) {
+      return await interaction
+        .reply({
+          content: `${emojis["error"]} Aconteceu um erro. Id do erro: #Abhj29ff.`,
+          ephemeral: true,
+        })
+        .catch(console.error);
+    }
     const hasStudent = targetMember.roles.cache.find(
       (role) => role == studentRole
     );
