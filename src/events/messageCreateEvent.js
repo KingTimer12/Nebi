@@ -22,6 +22,7 @@ module.exports = {
 
   async createEvent(message) {
     if (message.author.bot) return;
+    if (!message.member.roles.cache.find(role => role.id === '726292250010583134')) return
 
     if (
       message.content.startsWith("Nebi,") || message.content.endsWith(", Nebi") || message.content.endsWith(", Nebi?")
