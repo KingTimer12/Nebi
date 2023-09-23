@@ -37,6 +37,7 @@
     "moment": "^2.29.4",
     "mongodb": "^5.7.0",
     "mongoose": "^6.9.0",
+    "openai": "^3.2.1",
     "simple-youtube-api": "^5.2.1",
     "snowflake-uuid": "^1.0.0",
     "ytdl-core": "^4.11.2"
