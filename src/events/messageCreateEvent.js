@@ -22,7 +22,14 @@ module.exports = {
 
   async createEvent(message) {
     if (message.author.bot) return;
-    if (!message.member.roles.cache.find(role => role.id === '726292250010583134')) return
+    /*
+    console.log(message.author.id)
+    console.log(message.author.id == "462040475684175904")
+    console.log(message.member.roles.cache.find(role => role.id === '726292250010583134'))
+    console.log(!message.member.roles.cache.find(role => role.id === '726292250010583134')
+    && message.author.id != "462040475684175904")
+    if (!message.member.roles.cache.find(role => role.id === '726292250010583134')
+        && message.author.id != "462040475684175904") return
 
     if (
       message.content.startsWith("Nebi,") || message.content.endsWith(", Nebi") || message.content.endsWith(", Nebi?")
@@ -34,6 +41,7 @@ module.exports = {
       const answer = await ask(prompt);
       message.reply(answer)
     }
+    */
 
     /*const { user } = message.member;
     const userId = user.id;
