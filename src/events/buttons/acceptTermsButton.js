@@ -111,7 +111,7 @@ const whileResponses = async (interaction, userId, classification) => {
       responseCache = response.content;
     }
 
-    addCacheAndNextQuestion(userId, responseCache);
+    addCacheAndNextQuestion(userId, {"index": f.index, "response":responseCache});
 
     index++;
   }
@@ -179,7 +179,7 @@ module.exports = {
         );
       await interactionResult.update({ fetchReply: true });
       const responseStepTwoForm = interactionResult.customId.split("-")[1];
-      addResponse(userId, responseStepTwoForm === "yes" ? "Sim" : "Não");
+      addResponse(userId, {index:4, response:responseStepTwoForm === "yes" ? "Sim" : "Não"});
 
       embed = new EmbedBuilder()
         .setColor(purpleHex)

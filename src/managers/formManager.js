@@ -37,6 +37,13 @@ const getResponse = (userId, question) => getResponses(userId)[question];
 
 const getResponses = (userId) => responsesMap.get(userId);
 
+const sortAndMapResponses = (userId) => {
+  let responses = getResponses(userId);
+  responses = responses.sort((a, b) => a.index - b.index);
+  responses = responses.map(x => x.response);
+  responsesMap.set(userId, responses)
+}
+
 const sendForm = async (userId, guild) => {
   const forumId = await getChannel(guild, { channelName: "forum" });
   const forumChannel = guild.channels.cache.find((chn) => chn.id === forumId);
@@ -56,6 +63,8 @@ const sendForm = async (userId, guild) => {
     forumChannel.availableTags.find((r) => r.name == "Aberto").id,
   ];
 
+  sortAndMapResponses(userId);
+
   const responses = getResponses(userId);
   if (responses == undefined || !responses.length) {
     return user.send({ content: "Ocorreu um erro ao enviar as respostas! Id do erro: #9A0Db12" });
@@ -69,8 +78,6 @@ const sendForm = async (userId, guild) => {
     );
   }
 
-  removeResponse(userId, 4);
-
   let mainMessagesEmbeds = [];
 
   mainMessagesEmbeds.push(
@@ -80,14 +87,15 @@ const sendForm = async (userId, guild) => {
       .setDescription(
         `**User ID**: ${userId}
         **Idade**: ${getResponse(userId, 0)}
-        **Melhores horários**: ${getResponse(userId, 1)}`
+        **Melhores horários**: ${getResponse(userId, 1)}
+        **Tutorando+**: ${getResponse(userId, 4)}`
       ),
     new EmbedBuilder().setColor(purpleHex).setTitle("Perguntas Essenciais")
   );
 
-  const startIndex = 4;
+  const startIndex = 5;
   for (let i = startIndex; i < form.length; i++) {
-    if (!(i == 4 || i == 5 || i == 22 || i == 23 || i == 24)) continue;
+    if (!(i == 5 || i == 6 || i == 23 || i == 24 || i == 25)) continue;
     const response = getResponse(userId, i);
     if (response == undefined)
       return user.send({
@@ -117,7 +125,7 @@ const sendForm = async (userId, guild) => {
 
       let embeds = [];
 
-      let index = 4;
+      let index = 5;
       for (const f of form) {
         if (f.classification != "knowledge") continue;
         const answer = getResponse(userId, index);
@@ -128,7 +136,7 @@ const sendForm = async (userId, guild) => {
         embeds.push(
           new EmbedBuilder()
             .setColor(purpleHex)
-            .setTitle(`${index - 3} - ${f.question}`)
+            .setTitle(`${index - 4} - ${f.question}`)
             .setDescription(`R: ${answer}`)
         );
         index++;

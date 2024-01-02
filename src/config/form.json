@@ -2,12 +2,14 @@
   {
     "classification": "data",
     "question": "Qual sua idade?",
-    "type": "writer"
+    "type": "writer",
+    "index": 0
   },
   {
     "classification": "data",
     "question": "Quais são os melhores horários para você ter tutoria? (Considere que cada uma dura uns 50 minutos)",
-    "type": "writer"
+    "type": "writer",
+    "index": 1
   },
   {
     "classification": "data",
@@ -17,21 +19,30 @@
     "options": [
       {
         "label": "Por um parceiro (Novel Mania, Kiniga, Vulcan, Reaper Scan, Mangá Livre, Saikai)",
-        "value": "partner"
+        "value": "knowServer-partner"
       },
       {
         "label": "Pelo nosso canal no Youtube",
-        "value": "youtube"
+        "value": "knowServer-youtube"
+      },
+      {
+        "label": "Pelo nosso Instagram",
+        "value": "knowServer-instagram"
       },
       {
         "label": "Pelo nosso site",
-        "value": "site"
+        "value": "knowServer-site"
       },
       {
         "label": "Indicação de amigo",
-        "value": "friend"
+        "value": "knowServer-friend"
+      },
+      {
+        "label": "Nenhuma das opções",
+        "value": "knowServer-none"
       }
-    ]
+    ],
+    "index": 2
   },
   {
     "classification": "data",
@@ -41,138 +52,152 @@
     "options": [
       {
         "label": "Novel Mania",
-        "value": "novelmania"
+        "value": "anySite-novelmania"
       },
       {
         "label": "Kiniga",
-        "value": "kiniga"
+        "value": "anySite-kiniga"
       },
       {
         "label": "Vulcan",
-        "value": "vulcan"
+        "value": "anySite-vulcan"
       },
       {
-        "label": "Reaper Scan",
-        "value": "reaperScan"
-      },
-      {
-        "label": "Mangá Livre",
-        "value": "mangaLivre"
-      },
-      {
-        "label": "Saikai",
-        "value": "saikai"
+        "label": "Outro site",
+        "value": "anySite-other"
       },
       {
         "label": "Ainda não postei",
-        "value": "notPost"
+        "value": "anySite-none"
       }
-    ]
+    ],
+    "index": 3
   },
   {
     "classification": "knowledge",
     "question": "Quais obras e/ou autores te inspiraram para começar a escrever ou foram motivo para escrever o seu atual projeto?",
-    "type": "writer"
+    "type": "writer",
+    "index": 5
   },
   {
     "classification": "knowledge",
     "question": "O que você escreve e que tipos gêneros pretende escrever?",
-    "type": "writer"
+    "type": "writer",
+    "index": 6
   },
   {
     "classification": "knowledge",
     "question": "Você sabe o que é webnovel ou light novel e como escreve um desses dois? Se souber, explique.",
-    "type": "writer"
+    "type": "writer",
+    "index": 7
   },
   {
     "classification": "knowledge",
     "question": "Quais formas existem de compor um capítulo? Explique.",
-    "type": "writer"
+    "type": "writer",
+    "index": 8
   },
   {
     "classification": "knowledge",
     "question": "Consegue explicar a diferença de um narrador de primeira pessoa e um de terceira pessoa?",
-    "type": "writer"
+    "type": "writer",
+    "index": 9
   },
   {
     "classification": "knowledge",
     "question": "Um parágrafo é estruturado como?",
-    "type": "writer"
+    "type": "writer",
+    "index": 10
   },
   {
     "classification": "knowledge",
     "question": "Quais as diferenças existem em frase, oração e período?",
-    "type": "writer"
+    "type": "writer",
+    "index": 11
   },
 
   {
     "classification": "knowledge",
     "question": "Que tipo de funções o travessão, itálico e aspas devem exercer no texto?",
-    "type": "writer"
+    "type": "writer",
+    "index": 12
   },
   {
     "classification": "knowledge",
     "question": "Quando se deve colocar as palavras em letra maiúscula?",
-    "type": "writer"
+    "type": "writer",
+    "index": 13
   },
   {
     "classification": "knowledge",
     "question": "Erra palavras com escrita e/ou som parecidos? (Exemplos simples: acender/ascender,  acento/assento, acidente/incidente, sob/sobre)",
-    "type": "writer"
+    "type": "writer",
+    "index": 14
   },
   {
     "classification": "knowledge",
     "question": "O que são substantivos, adjetivos e pronomes?",
-    "type": "writer"
+    "type": "writer",
+    "index": 15
   },
   {
     "classification": "knowledge",
     "question": "Reconhece que sua escrita possui vícios de internet?",
-    "type": "writer"
+    "type": "writer",
+    "index": 16
   },
   {
     "classification": "knowledge",
     "question": "A vírgula é usada para o que no texto?",
-    "type": "writer"
+    "type": "writer",
+    "index": 17
   },
   {
     "classification": "knowledge",
     "question": "Quando deve usar exclamação, interrogação e reticências?",
-    "type": "writer"
+    "type": "writer",
+    "index": 18
   },
   {
     "classification": "knowledge",
     "question": "Elipse é o quê?",
-    "type": "writer"
+    "type": "writer",
+    "index": 19
   },
   {
     "classification": "knowledge",
     "question": "Se souber, como se deve usar o dicendi?",
-    "type": "writer"
+    "type": "writer",
+    "index": 20
   },
   {
     "classification": "knowledge",
     "question": "O que faz um diálogo ser bom e útil na história?",
-    "type": "writer"
+    "type": "writer",
+    "index": 21
   },
   {
     "classification": "knowledge",
     "question": "Um personagem deve ser criado de que forma?",
-    "type": "writer"
+    "type": "writer",
+    "index": 22
   },
   {
     "classification": "knowledge",
     "question": "O que gostaria de passar, no caso, a mensagem, com a sua história para os leitores?",
-    "type": "writer"
+    "type": "writer",
+    "index": 23
   },
   {
     "classification": "knowledge",
     "question": "Qual o tipo de público que você quer alcançar com o seu projeto?",
-    "type": "writer"
+    "type": "writer",
+    "index": 24
   },
   {
     "classification": "knowledge",
     "question": "Seu objetivo como autor é qual?",
-    "type": "writer"
+    "type": "writer",
+    "index": 25
   }
 ]
