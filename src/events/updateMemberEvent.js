@@ -11,7 +11,7 @@ module.exports = {
 
     const sheetId = 755009417;
     await updateNicknameRow(sheetId, oldMember, newMember)
-    await update_badges(newMember)
+    // await update_badges(newMember)
 
   },
 };
