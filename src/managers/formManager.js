@@ -104,7 +104,7 @@ const sendForm = async (userId, guild) => {
     mainMessagesEmbeds.push(
       new EmbedBuilder()
         .setColor(purpleHex)
-        .setTitle(form[i].question)
+        .setTitle(form[i-1].question)
         .setDescription(`R: ${response}`)
     );
   }
