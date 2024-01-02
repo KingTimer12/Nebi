@@ -1,4 +1,5 @@
 const { getChannel } = require('../database/manager/guildManager');
+const { remove_profile } = require('../database/manager/userManager');
 
 require('dotenv').config()
 
@@ -9,6 +10,9 @@ module.exports = {
   
   async createEvent(member) {
     if (member.bot) return;
+    
+    await remove_profile(member.id)
+
     const guild = member.guild
     const forumId = await getChannel(guild, {channelName:'forum'})
     if (forumId == undefined) return

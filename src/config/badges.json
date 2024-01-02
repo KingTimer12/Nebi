@@ -1,0 +1,8 @@
+{
+    "label_names": ["Desenvolvedor", "Equipe", "Booster", "Verificado"],
+    "raw_names": ["developer", "staff", "nitro", "verify"],
+    "developer": "https://cdn.discordapp.com/attachments/1171871006483288145/1171871085076168844/badge_developer.png",
+    "staff": "https://cdn.discordapp.com/attachments/1046539348536995980/1171142194321694820/6336-shinyredmoderator.png",
+    "nitro": "https://cdn.discordapp.com/attachments/1171871006483288145/1171871279364722709/badge_nitro.png",
+    "verify": "https://cdn.discordapp.com/attachments/1171871006483288145/1171871084589613108/badge_verify.png"
+}

@@ -352,6 +352,7 @@ MigrationBackup/
 .ionide/
 
 .env
-firebaseManager.js
 Nebi.zip
 credentials.json
+src.zip
+src/database/firebase_app.js

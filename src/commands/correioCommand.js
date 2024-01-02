@@ -1,4 +1,4 @@
-/*const {
+const {
   SlashCommandBuilder,
   ModalBuilder,
   TextInputBuilder,
@@ -9,9 +9,9 @@ const { toMoment } = require("../utils/timerApi");
 const { set } = require("../utils/correioCached");
 require("dotenv").config();
 
-const DIADEUSO = 12; //Dia que isso funcionará
-const DIALIMITE = 12; //Dia que parará de funcionar
-const MESDEUSO = 6; //Mês que isso funcionará
+const DIADEUSO = 14; //Dia que isso funcionará
+const DIALIMITE = 21; //Dia que parará de funcionar
+const MESDEUSO = 9; //Mês que isso funcionará
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -32,6 +32,7 @@ module.exports = {
     const userId = user.id;
 
     //Verificando se ainda tá tendo evento.
+    console.log(currentDate.date(), currentDate.month())
     if (currentDate.date() >= DIALIMITE || currentDate.month() != MESDEUSO) {
       return await interaction
         .reply({
@@ -90,15 +91,15 @@ module.exports = {
     //Criando o modal
     const modal = new ModalBuilder()
       .setCustomId("modal-correio")
-      .setTitle("Correio do Amor")
+      .setTitle("Correio Secreto")
       .addComponents(
         new ActionRowBuilder().addComponents(
           new TextInputBuilder()
             .setCustomId("message")
             .setStyle(TextInputStyle.Paragraph)
             .setLabel("Mensagem:")
-            .setPlaceholder("Coloque aqui a mensagem bonitinha")
-            .setMaxLength(2000)
+            .setPlaceholder("Coloque aqui a mensagem")
+            .setMaxLength(400)
             .setRequired(true)
         )
       );
@@ -106,4 +107,3 @@ module.exports = {
     await interaction.showModal(modal).catch(console.log); //Mostrando o modal
   },
 };
-*/

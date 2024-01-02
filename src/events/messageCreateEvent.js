@@ -1,12 +1,7 @@
 const { Configuration, OpenAIApi } = require("openai");
-/*const {
-  getUser,
-  addUser,
-  hasCooldown,
-  addCooldown,
-} = require("../database/handler/userHandler");
-const { hasUser, saveUser } = require("../database/manager/userManager");*/
 const { ask } = require("../utils/aiApi");
+const { hasCooldown, addCooldown } = require("../database/handler/userHandler");
+const { getXp, update_profile, readjustLevel, create_profile, getLastMessage, getRanking, update_badges } = require("../database/manager/userManager");
 
 require("dotenv").config();
 
@@ -22,47 +17,30 @@ module.exports = {
 
   async createEvent(message) {
     if (message.author.bot) return;
-    /*
-    console.log(message.author.id)
-    console.log(message.author.id == "462040475684175904")
-    console.log(message.member.roles.cache.find(role => role.id === '726292250010583134'))
-    console.log(!message.member.roles.cache.find(role => role.id === '726292250010583134')
-    && message.author.id != "462040475684175904")
-    if (!message.member.roles.cache.find(role => role.id === '726292250010583134')
-        && message.author.id != "462040475684175904") return
+    if (message.channel.type === 'dm') return;
 
-    if (
-      message.content.startsWith("Nebi,") || message.content.endsWith(", Nebi") || message.content.endsWith(", Nebi?")
-    ) {
-
-      await message.channel.sendTyping()
-
-      const prompt = message.content.replace('Nebi,', '').replace(', Nebi', '').replace(', Nebi?', '');
-      const answer = await ask(prompt);
-      message.reply(answer)
-    }
-    */
-
-    /*const { user } = message.member;
+    const { user } = message.member;
+    const username = user.username
     const userId = user.id;
-    
+    await create_profile(userId, username)
+    await update_badges(message.member)
+
     if (!hasCooldown(userId)) {
-      addCooldown(userId);
+      addCooldown(userId, 5 * 1000);
 
-      let userProfile = getUser(userId);
-      if (!userProfile) {
-        if (hasUser(userId)) {
-          userProfile = addUser(user);
-          await userProfile.load();
-        } else {
-          userProfile = addUser(user);
-        }
-      }
+      const xpRandom = Math.floor(Math.random() * 9) + 1;
+      const actualXp = await getXp(userId)
+      const xp = actualXp + xpRandom;
+      const level = await readjustLevel(userId, xp)
 
-      const glowsRandom = Math.floor(Math.random() * 9) + 1;
-      let glows = userProfile.glows + glowsRandom;
-      userProfile.setGlows(glows);
-      userProfile.readjustLevel();
-    }*/
+      const checkDate = new Date();
+      checkDate.setMonth(checkDate.getMonth() + 4);
+
+      await update_profile(userId, {
+        xp: xp,
+        level: level,
+        last_message: checkDate
+      })
+    }
   },
 };

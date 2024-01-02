@@ -68,6 +68,7 @@ const sendForm = async (userId, guild) => {
       forumChannel.availableTags.find((r) => r.name == "Tutorando+").id
     );
   }
+
   removeResponse(userId, 4);
 
   let mainMessagesEmbeds = [];

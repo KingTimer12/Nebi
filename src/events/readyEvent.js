@@ -5,6 +5,8 @@ const { load } = require("../handlers/emojiHandler.js");
 const { geral1, geral2 } = require("../config/topicChannel.json");
 const { convertStringToEmoji } = require("../utils/convertEmoji.js");
 const { checkingDraw, sendTheme, sendThemeChoose } = require("../managers/drawCheckManager.js");
+const { processCooldownRemovalQueue } = require("../database/handler/userHandler.js");
+const { loadFlags } = require("../handlers/flagHandler.js");
 
 const activities = [
   { type: ActivityType.Playing, name: "meu jogo!" },
@@ -55,9 +57,11 @@ module.exports = {
     console.log("Bot ready!");
 
     load(client);
+    await loadFlags();
 
     //Conectar ao banco de dados
     await loadMongo().then(() => console.log("Connected successfully"));
+    setInterval(processCooldownRemovalQueue, 1000);
 
     for (const guild of client.guilds.cache.values()) {
       //Método para adicionar todos tutorando na planilha

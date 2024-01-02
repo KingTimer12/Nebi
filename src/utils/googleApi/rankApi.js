@@ -7,7 +7,7 @@ const getDoc = async () => {
   await doc.useServiceAccountAuth({
     client_email: process.env.CLIENT_EMAIL,
     private_key: process.env.PRIVATE_KEY.replace(/\\n/g, "\n"),
-  }).catch(console.error);;
+  }).catch(console.error);
   await doc.loadInfo().catch(console.error);
   return doc;
 };

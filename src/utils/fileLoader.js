@@ -8,4 +8,9 @@ const loadFiles = async (dirName) => {
     return files
 }
 
-module.exports = {loadFiles}
+const loadImages = async (dirName) => {
+    const files = await proGlob(`${process.cwd().replace(/\\/g, '/')}/src/background/${dirName}/*.png`)
+    return files
+}
+
+module.exports = {loadFiles, loadImages}

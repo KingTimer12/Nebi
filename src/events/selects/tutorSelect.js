@@ -16,7 +16,7 @@ module.exports = {
       .deferReply({ ephemeral: true })
       .then(async () => {
         const targetMember = guild.members.cache.find(
-          (member) => member.user.tag.replace("#", "") == channel.name
+          (member) => member.user.username.replace("#", "") == channel.name
         );
 
         const forumId = await getChannel(guild, { channelName: "forum" });
@@ -51,7 +51,8 @@ module.exports = {
             .catch(() => {});
         }
 
-        const tutores = await getTutores(429915779);
+        const sheetId = 429915779
+        const tutores = await getTutores(sheetId);
         for (const row of tutores) {
           if (values == row.tutorId) {
             tutor = row.tutor;

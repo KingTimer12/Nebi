@@ -4,6 +4,10 @@ const unix = (ts) => {
     return moment.unix(ts)
 }
 
+const sundayTimestamp = () => {
+    return moment().day(7).hour(0).minute(0).second(0).unix()
+}
+
 const toMoment = (timestamp) => {
     return moment(timestamp)
 }
@@ -26,4 +30,4 @@ const toCompare = (old, now) => {
     return timestampNow <= timestampOld
 }
 
-module.exports = {toCompare, transformTimestamp, getNextSunday, toMoment, unix}
+module.exports = {toCompare, transformTimestamp, getNextSunday, toMoment, unix, sundayTimestamp}
