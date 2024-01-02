@@ -2,7 +2,7 @@ const allEmojis = ['']
 
 const load = (client) => {
     client.emojis.cache.forEach(emoji => {
-        allEmojis.push(`${emoji.name} <:${emoji.identifier}>`)
+        allEmojis.push(`${emoji.name} <${emoji.identifier}>`)
     })
 }
 
@@ -15,4 +15,4 @@ const getEmoji = (name) => {
     return undefined
 }
 
-module.exports = {load, getEmoji}
+module.exports = { load, getEmoji }

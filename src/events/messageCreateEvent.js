@@ -18,6 +18,7 @@ module.exports = {
   async createEvent(message) {
     if (message.author.bot) return;
     if (message.channel.type === 'dm') return;
+    if (message.guildId != "1046080828716896297") return;
 
     const { user } = message.member;
     const username = user.username
