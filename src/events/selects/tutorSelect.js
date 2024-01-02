@@ -97,7 +97,15 @@ module.exports = {
           (r) => r.name == "Tutorando+"
         );
 
-        if (tutorandoPlus) {
+        if (!tutorandoPlus)
+          return await interaction
+            .reply({
+              content: `Tag Tutorando+ não encontrada no fórum!`,
+              ephemeral: true,
+            })
+            .catch(() => {});
+
+        if (channel.appliedTags.includes(tutorandoPlus)) {
           targetMember.roles.add(studentPlusRole).catch(console.error);
           targetMember.roles.add(studentRole).catch(console.error);
           channel.setAppliedTags([tutorandoPlus.id, close.id]);
